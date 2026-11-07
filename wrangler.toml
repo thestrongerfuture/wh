@@ -1,0 +1,8 @@
+﻿name = "wh-tsf"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wh-db"
+database_id = "c7e3c24a-a4f0-4803-a4ff-4991018082c4"

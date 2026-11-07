@@ -1,0 +1,562 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المنتجات | شركة المستقبل الأقوى</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-page { padding: 30px 0 60px; }
+    .product-admin-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+    .product-admin-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .product-admin-img {
+      width: 60px; height: 60px;
+      border-radius: var(--radius-sm);
+      background: #f9fafb;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .product-admin-img img { width: 100%; height: 100%; object-fit: contain; }
+    .product-admin-info { flex: 1; }
+    .product-admin-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .product-admin-info .meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
+    
+    .btn-delete {
+      background: #fee2e2; color: #dc2626;
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: 0.85rem;
+      transition: all 0.2s ease; flex-shrink: 0;
+    }
+    .btn-delete:hover { background: #dc2626; color: #fff; }
+    
+    .search-bar-admin {
+      width: 100%; padding: 12px 20px;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      font-size: 1rem; font-family: inherit;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+    .search-bar-admin:focus { outline: none; border-color: var(--primary); }
+    
+    #productsAdminList { max-height: 70vh; overflow-y: auto; padding: 4px; }
+  </style>
+
+  <style>
+    /* إصلاح التصميم على الموبايل (منع التمرير الأفقي) */
+    @media (max-width: 768px) {
+      /* 1. منع التمرير الأفقي على مستوى الصفحة */
+      body, html {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* 2. جعل البطاقات تتكيف مع عرض الشاشة */
+      .product-admin-card {
+        flex-wrap: wrap !important; /* السماح بالالتفاف */
+        padding: 10px !important;
+      }
+
+      /* 3. جعل الأزرار (تعديل، إخفاء، حذف) في صف واحد يتكيف */
+      .product-admin-card > div:last-child {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 8px !important;
+      }
+
+      .product-admin-card button {
+        flex: 1 !important; /* الأزرار تأخذ مساحة متساوية */
+        padding: 8px 4px !important;
+        font-size: 0.75rem !important;
+      }
+
+      /* 4. تصغير صورة المنتج */
+      .product-admin-img {
+        width: 50px !important;
+        height: 50px !important;
+      }
+
+      /* 5. تصغير النصوص */
+      .product-admin-info h4 {
+        font-size: 0.85rem !important;
+      }
+      .product-admin-info .meta {
+        font-size: 0.7rem !important;
+        gap: 6px !important;
+      }
+
+      /* 6. تصغير شريط البحث */
+      .search-bar-admin {
+        padding: 10px 16px !important;
+        font-size: 0.9rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/admin.html" class="brand">
+        <img src="/images/logo.png" alt="شعار" class="brand-logo">
+        <div class="brand-text">
+          <span class="ar">إدارة المنتجات</span>
+          <span class="en">Product Management</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a href="/admin.html" class="icon-btn" style="background: #fff; color: #0040C0; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 700;">
+          ⬅️ <span>العودة للطلبات</span>
+        </a>
+        <a href="/" class="icon-btn" style="background: #fff; color: #0040C0; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 700;">
+          🏠 <span>المتجر</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN -->
+  <div id="loginView" class="login-box" style="max-width: 400px; margin: 80px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;">
+    <h2 style="color: var(--primary); margin-bottom: 20px;">🔒 الدخول للوحة الإدارة</h2>
+    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; margin-bottom: 12px; text-align: center; font-family: inherit;">
+    <button id="loginBtn" style="width: 100%; padding: 12px; background: var(--primary); color: #fff; border-radius: 8px; font-weight: 700; font-size: 1rem;">دخول</button>
+    <p id="loginError" style="color: var(--danger); margin-top: 10px; font-size: 0.9rem; display: none;"></p>
+  </div>
+
+  <!-- ADMIN CONTENT -->
+  <main id="adminView" class="container admin-page" style="display: none;">
+    <h1 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5rem;">📦 إدارة المنتجات</h1>
+    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">يمكنك البحث عن أي منتج وحذفه من قاعدة البيانات.</p>
+
+    <input type="text" id="searchAdmin" class="search-bar-admin" placeholder="🔍 ابحث عن منتج بالاسم أو الرقم...">
+
+    <div id="loading" class="loading">⏳ جاري تحميل المنتجات...</div>
+    <div id="emptyState" class="empty-state hidden">
+      <div class="emoji">📭</div>
+      <p>لا توجد منتجات تطابق بحثك</p>
+    </div>
+    <div id="productsAdminList"></div>
+  </main>
+
+  <script>
+    let adminPassword = sessionStorage.getItem('admin_pass') || '';
+    let allProducts = [];
+
+    const $ = (s) => document.querySelector(s);
+    const loginView = $('#loginView');
+    const adminView = $('#adminView');
+    const productsAdminList = $('#productsAdminList');
+    const loading = $('#loading');
+    const emptyState = $('#emptyState');
+
+    // ---------- LOGIN ----------
+    $('#loginBtn').onclick = tryLogin;
+    $('#passwordInput').onkeypress = (e) => { if (e.key === 'Enter') tryLogin(); };
+
+    async function tryLogin() {
+      const pass = $('#passwordInput').value;
+      if (!pass) return;
+      const errEl = $('#loginError');
+      errEl.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin-products-list', { headers: { 'X-Admin-Password': adminPassword } });
+        if (!res.ok) throw new Error('فشل الاتصال');
+        
+        adminPassword = pass;
+        sessionStorage.setItem('admin_pass', pass);
+        showAdmin();
+      } catch (e) {
+        errEl.textContent = 'كلمة المرور غير صحيحة أو حدث خطأ';
+        errEl.style.display = 'block';
+      }
+    }
+
+    function showAdmin() {
+      loginView.style.display = 'none';
+      adminView.style.display = 'block';
+      loadProducts();
+    }
+
+    // ---------- LOAD PRODUCTS ----------
+    async function loadProducts() {
+      loading.style.display = 'block';
+      try {
+        const res = await fetch('/api/admin-products-list', { headers: { 'X-Admin-Password': adminPassword } });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        allProducts = data.products || [];
+        renderProductsList(allProducts);
+        loading.style.display = 'none';
+      } catch (e) {
+        loading.textContent = '❌ فشل تحميل المنتجات: ' + e.message;
+      }
+    }
+
+    // ---------- RENDER LIST ----------
+    function renderProductsList(products) {
+      productsAdminList.innerHTML = '';
+      if (products.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-admin-card';
+        const isHidden = p.is_hidden == 1;
+        card.innerHTML = `
+          <div class="product-admin-img" style="opacity: ${isHidden ? '0.4' : '1'};">
+            <img src="/images/products/${p.id}.png" onerror="this.outerHTML='🛍️'">
+          </div>
+          <div class="product-admin-info" style="opacity: ${isHidden ? '0.6' : '1'};">
+            <h4>#${p.id} — ${p.name} ${isHidden ? '<span style="color:#dc2626; font-size:0.75rem;">(مخفي)</span>' : ''}</h4>
+            <div class="meta">
+              <span>💰 $${Number(p.price).toFixed(2)}</span>
+              <span>📦 المخزون: ${p.stock}</span>
+              <span>🏷️ ${p.brand || 'أخرى'}</span>
+              <span>📂 ${p.category || 'عام'}</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px; flex-shrink: 0;">
+              <button class="btn-edit" data-id="${p.id}" style="background:#eff6ff; color:#0040C0; padding:8px 16px; border-radius:8px; font-weight:700; font-size:0.85rem; border:none; cursor:pointer;">✏️ تعديل</button>
+              <button class="btn-toggle" data-id="${p.id}" style="background: ${isHidden ? '#d1fae5' : '#fef3c7'}; color: ${isHidden ? '#065f46' : '#92400e'}; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none;">
+                ${isHidden ? '👁️ إظهار' : '🙈 إخفاء'}
+              </button>
+              <button class="btn-delete" data-id="${p.id}">🗑️ حذف</button>
+            </div>
+            </div>
+          </div>
+        `;
+        
+        // ربط الأزرار
+        card.querySelector('.btn-delete').onclick = () => deleteProduct(p);
+        card.querySelector('.btn-toggle').onclick = () => toggleProduct(p);
+        
+        productsAdminList.appendChild(card);
+      });
+    }
+
+    // ---------- SEARCH ----------
+    $('#searchAdmin').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) {
+        renderProductsList(allProducts);
+        return;
+      }
+      const filtered = allProducts.filter(p => 
+        p.name.toLowerCase().includes(q) || String(p.id).includes(q)
+      );
+      renderProductsList(filtered);
+    });
+
+    // ---------- TOGGLE PRODUCT (HIDE/SHOW) ----------
+    async function toggleProduct(product) {
+      try {
+        const res = await fetch('/api/toggle-product', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminPassword
+          },
+          body: JSON.stringify({ product_id: product.id })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        // تحديث الحالة محلياً (بدون إعادة تحميل كامل)
+        product.is_hidden = data.is_hidden;
+        loadProducts(); // إعادة التحميل لعرض الحالة الجديدة
+      } catch (e) {
+        alert('❌ فشل الإجراء: ' + e.message);
+      }
+    }
+
+    // ---------- DELETE PRODUCT ----------
+    async function deleteProduct(product) {
+      if (!confirm(`⚠️ هل أنت متأكد من حذف المنتج #${product.id} "${product.name}"؟\n\nهذا الإجراء لا يمكن التراجع عنه!`)) return;
+
+      try {
+        const res = await fetch('/api/delete-product', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminPassword
+          },
+          body: JSON.stringify({ product_id: product.id })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        alert('✅ تم حذف المنتج بنجاح');
+        loadProducts(); // إعادة التحميل
+      } catch (e) {
+        alert('❌ فشل الحذف: ' + e.message);
+      }
+    }
+
+    // ---------- INIT ----------
+    if (adminPassword) showAdmin();
+
+    // ============================================================
+    // تعديل المنتج (Product Edit Modal)
+    // ============================================================
+    
+    // ربط أزرار التعديل بعد تحميل المنتجات
+    const originalRenderProductsList = renderProductsList;
+    renderProductsList = function(products) {
+      originalRenderProductsList(products);
+      // إعادة ربط أزرار التعديل
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.onclick = () => {
+          const productId = btn.dataset.id;
+          const product = allProducts.find(p => p.id == productId);
+          if (product) openEditModal(product);
+        };
+      });
+    };
+
+    // فتح نافذة التعديل
+    function openEditModal(product) {
+      document.getElementById('editProductId').value = product.id;
+      document.getElementById('editProductName').value = product.name || '';
+      document.getElementById('editProductPrice').value = product.price || 0;
+      document.getElementById('editProductStock').value = product.stock || 0;
+      document.getElementById('editProductDescription').value = product.description || '';
+      
+      // تحويل التاريخ إلى صيغة YYYY-MM-DD
+      let dateStr = '';
+      if (product.created_at) {
+        const d = new Date(product.created_at);
+        if (!isNaN(d.getTime())) {
+          dateStr = d.toISOString().split('T')[0];
+        }
+      }
+      document.getElementById('editProductDate').value = dateStr;
+      
+      document.getElementById('editProductModal').classList.remove('hidden');
+    }
+
+    // إغلاق النافذة
+    document.getElementById('closeEditModal').onclick = () => {
+      document.getElementById('editProductModal').classList.add('hidden');
+    };
+    document.getElementById('cancelEditProduct').onclick = () => {
+      document.getElementById('editProductModal').classList.add('hidden');
+    };
+    document.getElementById('editProductModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('editProductModal')) {
+        document.getElementById('editProductModal').classList.add('hidden');
+      }
+    });
+
+    // حفظ التعديلات
+    document.getElementById('saveEditProduct').onclick = async () => {
+      const id = document.getElementById('editProductId').value;
+      const name = document.getElementById('editProductName').value.trim();
+      const price = parseFloat(document.getElementById('editProductPrice').value);
+      const description = document.getElementById('editProductDescription').value.trim();
+      const date = document.getElementById('editProductDate').value;
+
+      if (!id || !name || isNaN(price)) {
+        alert('يرجى ملء جميع الحقول المطلوبة');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/edit-product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify({ id, name, price, stock, description, created_at: date || null })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        alert('✅ تم حفظ التعديلات');
+        document.getElementById('editProductModal').classList.add('hidden');
+        loadProducts(); // إعادة تحميل القائمة
+      } catch (e) {
+        alert('❌ ' + e.message);
+      }
+    };
+
+    // ============================================================
+    // دالة حفظ تعديل المنتج (مستقلة لضمان العمل)
+    // ============================================================
+    window.saveProductEdit = async function() {
+      const id = document.getElementById('editProductId').value;
+      const name = document.getElementById('editProductName').value.trim();
+      const price = parseFloat(document.getElementById('editProductPrice').value);
+      const description = document.getElementById('editProductDescription').value.trim();
+      const date = document.getElementById('editProductDate').value;
+
+      if (!id || !name || isNaN(price)) {
+        alert('يرجى ملء جميع الحقول المطلوبة');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/edit-product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify({ id, name, price, stock, description, created_at: date || null })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        alert('✅ تم حفظ التعديلات');
+        document.getElementById('editProductModal').classList.add('hidden');
+        loadProducts(); // إعادة تحميل القائمة
+      } catch (e) {
+        alert('❌ ' + e.message);
+      }
+    };
+
+    // ============================================================
+    // ربط زر حفظ التعديلات (طريقة مضمونة)
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const saveBtn = document.getElementById('saveEditProduct');
+      if (saveBtn) {
+        // إزالة أي حدث قديم
+        saveBtn.onclick = null;
+        
+        // إضافة الحدث الجديد
+        saveBtn.addEventListener('click', async function(e) {
+          e.preventDefault();
+          
+          const id = document.getElementById('editProductId').value;
+          const name = document.getElementById('editProductName').value.trim();
+          const price = parseFloat(document.getElementById('editProductPrice').value);
+          const description = document.getElementById('editProductDescription').value.trim();
+          const date = document.getElementById('editProductDate').value;
+
+          if (!id || !name || isNaN(price)) {
+            alert('يرجى ملء الحقول المطلوبة (الاسم والسعر)');
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/edit-product', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+              body: JSON.stringify({ id, name, price, stock, description, created_at: date || null })
+            });
+            const data = await res.json();
+            if (!data.ok) throw new Error(data.error);
+            
+            alert('✅ تم حفظ التعديلات');
+            document.getElementById('editProductModal').classList.add('hidden');
+            
+            // إعادة تحميل القائمة
+            if (typeof loadProducts === 'function') {
+              loadProducts();
+            } else {
+              location.reload();
+            }
+          } catch (err) {
+            alert('❌ ' + err.message);
+          }
+        });
+      }
+    });
+
+    // ============================================================
+    // دالة حفظ تعديل المنتج (مباشرة - مضمونة 100%)
+    // ============================================================
+    async function saveProductDirect() {
+      // جلب القيم من الحقول
+      const id = document.getElementById('editProductId').value;
+      const name = document.getElementById('editProductName').value.trim();
+      const price = parseFloat(document.getElementById('editProductPrice').value);
+      const stock = parseInt(document.getElementById('editProductStock').value) || 0;
+      const description = document.getElementById('editProductDescription').value.trim();
+      const date = document.getElementById('editProductDate').value;
+
+      // التحقق من المدخلات
+      if (!id || !name || isNaN(price)) {
+        alert('يرجى ملء الحقول المطلوبة (الاسم والسعر)');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/edit-product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify({ id, name, price, stock, description, created_at: date || null })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        alert('✅ تم حفظ التعديلات');
+        document.getElementById('editProductModal').classList.add('hidden');
+        
+        // إعادة تحميل القائمة
+        if (typeof loadProducts === 'function') {
+          loadProducts();
+        } else {
+          location.reload();
+        }
+      } catch (err) {
+        alert('❌ ' + err.message);
+      }
+    }
+  </script>
+
+  <!-- ============ EDIT PRODUCT MODAL ============ -->
+  <div class="modal-overlay hidden" id="editProductModal" style="z-index: 300;">
+    <div class="modal-content" style="max-width: 500px; padding: 24px; border-radius: 16px; text-align: right;">
+      <button class="modal-close" id="closeEditModal" onclick="document.getElementById('editProductModal').classList.add('hidden')" style="position: absolute; top: 10px; left: 10px; font-size: 1.5rem; color: #999; background: none; border: none; cursor: pointer;">✕</button>
+      
+      <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.2rem;">✏️ تعديل المنتج</h3>
+      
+      <input type="hidden" id="editProductId">
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 4px;">اسم المنتج</label>
+        <input type="text" id="editProductName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 4px;">السعر</label>
+        <input type="number" id="editProductPrice" step="0.01" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 4px;">الكمية (المخزون)</label>
+        <input type="number" id="editProductStock" min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 4px;">الوصف</label>
+        <textarea id="editProductDescription" rows="2" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 4px;">تاريخ الإضافة (لتحديد ظهوره في "جديدنا")</label>
+        <input type="date" id="editProductDate" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+      </div>
+      
+      <div style="display: flex; gap: 10px;">
+        <button id="cancelEditProduct" onclick="document.getElementById('editProductModal').classList.add('hidden')" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff; font-weight: 700; color: #555; cursor: pointer;">إلغاء</button>
+        <button id="saveEditProduct" onclick="saveProductDirect()" style="flex: 2; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer;">حفظ التعديلات</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

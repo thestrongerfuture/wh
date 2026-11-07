@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة العروض | شركة المستقبل الأقوى</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-page { padding: 30px 0 60px; }
+    .offer-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .offer-info { flex: 1; }
+    .offer-info h4 { color: var(--primary); margin-bottom: 4px; }
+    .offer-info p { font-size: 0.85rem; color: var(--text-muted); }
+    .btn-delete-offer { background: #fee2e2; color: #dc2626; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer; }
+    .btn-delete-offer:hover { background: #dc2626; color: #fff; }
+    .btn-edit-offer { background: #eff6ff; color: #0040C0; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer; }
+    .btn-edit-offer:hover { background: #0040C0; color: #fff; }
+    
+    .add-offer-form { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 30px; }
+    .add-offer-form h3 { color: var(--primary); margin-bottom: 15px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 4px; font-size: 0.9rem; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }
+    .btn-add-offer { background: var(--primary); color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; width: 100%; }
+    .btn-add-offer:hover { background: var(--primary-dark); }
+    .btn-cancel { background: #f1f5f9; color: #475569; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: none; }
+    
+    /* تنسيقات المنتجات المتعددة */
+    .product-item-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .product-item-row select {
+      flex: 2;
+    }
+    .product-item-row input {
+      flex: 1;
+      width: 80px;
+    }
+    .btn-remove-product {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn-add-product {
+      background: #eff6ff;
+      color: #0040C0;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+  </style>
+
+  <style>
+    /* تنسيق حقل البحث */
+    .product-search:focus {
+      outline: none;
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(0, 64, 192, 0.1);
+    }
+    .search-results {
+      scrollbar-width: thin;
+    }
+    .search-results::-webkit-scrollbar {
+      width: 6px;
+    }
+    .search-results::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+    .search-results div:hover {
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/admin.html" class="brand">
+        <img src="/images/logo.png" alt="شعار" class="brand-logo">
+        <div class="brand-text">
+          <span class="ar">إدارة العروض</span>
+          <span class="en">Offers Management</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a href="/admin.html" class="icon-btn" style="background: #fff; color: #0040C0; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 700;">
+          ⬅️ <span>العودة للطلبات</span>
+        </a>
+        <a href="/" class="icon-btn" style="background: #fff; color: #0040C0; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 700;">
+          🏠 <span>المتجر</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div id="loginView" class="login-box" style="max-width: 400px; margin: 80px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;">
+    <h2 style="color: var(--primary); margin-bottom: 20px;">🔒 الدخول للوحة الإدارة</h2>
+    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; margin-bottom: 12px; text-align: center; font-family: inherit;">
+    <button id="loginBtn" style="width: 100%; padding: 12px; background: var(--primary); color: #fff; border-radius: 8px; font-weight: 700; font-size: 1rem;">دخول</button>
+    <p id="loginError" style="color: var(--danger); margin-top: 10px; font-size: 0.9rem; display: none;"></p>
+  </div>
+
+  <main id="adminView" class="container admin-page" style="display: none;">
+    <h1 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5rem;">🏷️ إدارة العروض</h1>
+
+    <div class="add-offer-form">
+      <h3 id="formTitle">➕ إضافة عرض جديد</h3>
+      <input type="hidden" id="editOfferId" value="">
+      
+      <div class="form-group">
+        <label>عنوان العرض</label>
+        <input type="text" id="offerTitle" placeholder="مثال: عرض السماعة + الشاحن">
+      </div>
+      
+      <div class="form-group">
+        <label>نسبة الخصم (%)</label>
+        <input type="number" id="offerDiscount" value="0" min="0" max="100" step="0.1" placeholder="مثال: 5 أو 2.5">
+      </div>
+      
+      <div class="form-group">
+        <label>السعر اليدوي (اختياري - يتجاوز الخصم)</label>
+        <input type="number" id="offerManualPrice" value="" min="0" step="0.01" placeholder="اتركه فارغاً لاستخدام الخصم">
+      </div>
+      
+      <div class="form-group">
+        <label>المنتجات المضمنة في العرض</label>
+        <div id="productItemsContainer">
+          <!-- سيتم إضافة صفوف المنتجات هنا ديناميكياً -->
+        </div>
+        <button type="button" class="btn-add-product" id="addProductBtn">➕ إضافة منتج آخر</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-add-offer" id="addOfferBtn" style="flex: 2;">إضافة العرض</button>
+        <button id="cancelEditBtn" class="btn-cancel" style="flex: 1;">إلغاء التعديل</button>
+      </div>
+    </div>
+
+    <h3 style="color: var(--primary); margin-bottom: 15px;">📋 العروض الحالية</h3>
+    <div id="offersList"></div>
+    <div id="emptyOffers" class="empty-state hidden">
+      <div class="emoji">🏷️</div>
+      <p>لا توجد عروض حالياً</p>
+    </div>
+  </main>
+
+  <script>
+    let adminPassword = sessionStorage.getItem('admin_pass') || '';
+    let allProducts = [];
+    const $ = (s) => document.querySelector(s);
+
+    // ---------- LOGIN ----------
+    $('#loginBtn').onclick = tryLogin;
+    $('#passwordInput').onkeypress = (e) => { if (e.key === 'Enter') tryLogin(); };
+
+    async function tryLogin() {
+      const pass = $('#passwordInput').value;
+      if (!pass) return;
+      const errEl = $('#loginError');
+      errEl.style.display = 'none';
+      try {
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error('فشل الاتصال');
+        adminPassword = pass;
+        sessionStorage.setItem('admin_pass', pass);
+        showAdmin();
+      } catch (e) {
+        errEl.textContent = 'كلمة المرور غير صحيحة أو حدث خطأ';
+        errEl.style.display = 'block';
+      }
+    }
+
+    async function showAdmin() {
+      $('#loginView').style.display = 'none';
+      $('#adminView').style.display = 'block';
+      try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        if (data.ok) {
+          allProducts = data.products || [];
+        }
+      } catch (e) { console.error(e); }
+      loadOffers();
+      resetForm();
+    }
+
+    // ---------- PRODUCT ROWS ----------
+    // دالة إضافة صف منتج (قائمة منسدلة كاملة + بحث ذكي + لوحة مفاتيح)
+    function addProductRow(selectedProductId = '', quantity = 1) {
+      const container = $('#productItemsContainer');
+      const row = document.createElement('div');
+      row.className = 'product-item-row';
+      
+      // حاوية البحث
+      const searchWrapper = document.createElement('div');
+      searchWrapper.style.cssText = 'flex: 2; position: relative;';
+      
+      const searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.className = 'product-search';
+      searchInput.placeholder = '🔍 ابحث أو اضغط السهم...';
+      searchInput.style.cssText = 'width: 100%; padding: 10px 30px 10px 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;';
+      
+      // إذا كان هناك منتج محدد مسبقاً (وضع التعديل)
+      let selectedProduct = null;
+      if (selectedProductId) {
+        selectedProduct = allProducts.find(p => p.id == selectedProductId);
+        if (selectedProduct) {
+          searchInput.value = `#${selectedProduct.id} - ${selectedProduct.name}`;
+          searchInput.dataset.productId = selectedProductId;
+        }
+      }
+      
+      // أيقونة السهم (لفتح القائمة الكاملة)
+      const dropdownIcon = document.createElement('span');
+      dropdownIcon.innerHTML = '▼';
+      dropdownIcon.style.cssText = 'position: absolute; left: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999; font-size: 0.7rem; padding: 5px;';
+      dropdownIcon.onclick = (e) => {
+        e.stopPropagation();
+        searchInput.value = ''; // مسح البحث لعرض الكل
+        searchInput.dataset.productId = ''; // مسح المعرف
+        showAllProducts();
+      };
+      
+      // قائمة النتائج المنسدلة
+      const resultsList = document.createElement('div');
+      resultsList.className = 'search-results';
+      resultsList.style.cssText = 'position: absolute; top: 100%; right: 0; left: 0; background: #fff; border: 1px solid #ddd; border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);';
+      
+      searchWrapper.appendChild(searchInput);
+      searchWrapper.appendChild(dropdownIcon);
+      searchWrapper.appendChild(resultsList);
+      
+      // حقل الكمية
+      const qtyInput = document.createElement('input');
+      qtyInput.type = 'number';
+      qtyInput.className = 'product-qty';
+      qtyInput.min = '1';
+      qtyInput.value = quantity;
+      qtyInput.placeholder = 'الكمية';
+      qtyInput.style.cssText = 'flex: 1; width: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;';
+      
+      // زر الحذف
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn-remove-product';
+      removeBtn.textContent = '✕';
+      removeBtn.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700;';
+      removeBtn.onclick = () => row.remove();
+      
+      // متغير لتتبع العنصر المحدد في القائمة (للوحة المفاتيح)
+      let focusedIndex = -1;
+      let currentResults = [];
+
+      // دالة عرض المنتجات (كلها أو مفلترة)
+      function renderResults(query) {
+        let filtered;
+        if (!query) {
+          // عرض جميع المنتجات
+          filtered = allProducts.slice(0, 50); // أول 50 منتج (لتحسين الأداء)
+        } else {
+          // فلترة المنتجات
+          filtered = allProducts.filter(p => 
+            String(p.id).includes(query) || 
+            p.name.toLowerCase().includes(query)
+          ).slice(0, 20);
+        }
+        
+        currentResults = filtered;
+        
+        if (filtered.length === 0) {
+          resultsList.innerHTML = '<div style="padding: 10px; color: #999; text-align: center;">لا توجد نتائج</div>';
+          resultsList.style.display = 'block';
+          return;
+        }
+        
+        resultsList.innerHTML = '';
+        filtered.forEach((p, index) => {
+          const item = document.createElement('div');
+          item.style.cssText = 'padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;';
+          item.textContent = `#${p.id} - ${p.name} ($${p.price})`;
+          item.dataset.index = index;
+          
+          item.onmouseover = () => {
+            item.style.background = '#f8fafc';
+            focusedIndex = index;
+          };
+          item.onmouseout = () => item.style.background = '#fff';
+          item.onclick = () => {
+            searchInput.value = `#${p.id} - ${p.name}`;
+            searchInput.dataset.productId = p.id;
+            resultsList.style.display = 'none';
+            focusedIndex = -1;
+          };
+          resultsList.appendChild(item);
+        });
+        resultsList.style.display = 'block';
+      }
+
+      // دالة عرض جميع المنتجات
+      function showAllProducts() {
+        renderResults('');
+        focusedIndex = -1;
+      }
+
+      // البحث الفوري (عند الكتابة)
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        searchInput.dataset.productId = ''; // مسح المعرف عند التعديل
+        renderResults(query);
+        focusedIndex = -1;
+      });
+
+      // فتح القائمة الكاملة عند التركيز على الحقل (إذا كان فارغاً)
+      searchInput.addEventListener('focus', () => {
+        if (!searchInput.value.trim()) {
+          showAllProducts();
+        }
+      });
+
+      // التنقل بلوحة المفاتيح
+      searchInput.addEventListener('keydown', (e) => {
+        if (resultsList.style.display === 'none') {
+          // فتح القائمة إذا كانت مغلقة
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            renderResults(searchInput.value.trim().toLowerCase());
+          }
+          return;
+        }
+
+        const items = resultsList.querySelectorAll('div[data-index]');
+        
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          focusedIndex = Math.min(focusedIndex + 1, items.length - 1);
+          highlightItem(items);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          focusedIndex = Math.max(focusedIndex - 1, 0);
+          highlightItem(items);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (focusedIndex >= 0 && focusedIndex < currentResults.length) {
+            const p = currentResults[focusedIndex];
+            searchInput.value = `#${p.id} - ${p.name}`;
+            searchInput.dataset.productId = p.id;
+            resultsList.style.display = 'none';
+            focusedIndex = -1;
+          }
+        } else if (e.key === 'Escape') {
+          resultsList.style.display = 'none';
+          focusedIndex = -1;
+        }
+      });
+
+      // دالة إبراز العنصر المحدد
+      function highlightItem(items) {
+        items.forEach((item, i) => {
+          if (i === focusedIndex) {
+            item.style.background = '#eff6ff';
+            item.scrollIntoView({ block: 'nearest' });
+          } else {
+            item.style.background = '#fff';
+          }
+        });
+      }
+
+      // إخفاء القائمة عند النقر خارجها
+      document.addEventListener('click', (e) => {
+        if (!searchWrapper.contains(e.target)) {
+          resultsList.style.display = 'none';
+        }
+      });
+      
+      row.appendChild(searchWrapper);
+      row.appendChild(qtyInput);
+      row.appendChild(removeBtn);
+      container.appendChild(row);
+    }
+
+    $('#addProductBtn').onclick = () => addProductRow();
+
+    // ---------- RESET FORM ----------
+    function resetForm() {
+      $('#editOfferId').value = '';
+      $('#offerTitle').value = '';
+      $('#offerDiscount').value = '0';
+      $('#offerManualPrice').value = '';
+      $('#offerManualPrice').value = '';
+      $('#productItemsContainer').innerHTML = '';
+      addProductRow(); // صف واحد افتراضي
+      $('#formTitle').textContent = '➕ إضافة عرض جديد';
+      $('#addOfferBtn').textContent = 'إضافة العرض';
+      $('#cancelEditBtn').style.display = 'none';
+    }
+
+    $('#cancelEditBtn').onclick = resetForm;
+
+    // ---------- LOAD OFFERS ----------
+    async function loadOffers() {
+      const list = $('#offersList');
+      const empty = $('#emptyOffers');
+      list.innerHTML = '';
+      empty.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/offers?admin=true', { headers: { 'X-Admin-Password': adminPassword } });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+
+        if (data.offers.length === 0) {
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        data.offers.forEach(o => {
+          const card = document.createElement('div');
+          card.className = 'offer-card';
+          
+          // جلب منتجات العرض
+          const itemsList = (o.items || []).map(i => `#${i.product_id} (${i.quantity})`).join(' + ');
+          
+          card.innerHTML = `
+            <div class="offer-info">
+              <h4>${o.title}</h4>
+              <p>المنتجات: ${itemsList || 'لا توجد منتجات'} — الخصم: ${o.discount_percent}%</p>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-edit-offer" data-id="${o.id}">✏️ تعديل</button>
+              <button class="btn-delete-offer" data-id="${o.id}">🗑️ حذف</button>
+            </div>
+          `;
+          
+          card.querySelector('.btn-delete-offer').onclick = () => deleteOffer(o.id);
+          card.querySelector('.btn-edit-offer').onclick = () => editOffer(o);
+          
+          list.appendChild(card);
+        });
+      } catch (e) {
+        list.innerHTML = `<p style="color:red;">خطأ: ${e.message}</p>`;
+      }
+    }
+
+    // ---------- EDIT OFFER ----------
+    function editOffer(offer) {
+      $('#editOfferId').value = offer.id;
+      $('#offerTitle').value = offer.title;
+      $('#offerDiscount').value = offer.discount_percent || 0;
+      $('#offerManualPrice').value = offer.manual_price || '';
+      $('#offerManualPrice').value = offer.manual_price || '';
+      $('#productItemsContainer').innerHTML = '';
+      
+      // إضافة المنتجات الموجودة في العرض
+      if (offer.items && offer.items.length > 0) {
+        offer.items.forEach(item => {
+          addProductRow(item.product_id, item.quantity);
+        });
+      } else {
+        addProductRow();
+      }
+      
+      $('#formTitle').textContent = '✏️ تعديل العرض';
+      $('#addOfferBtn').textContent = 'حفظ التعديلات';
+      $('#cancelEditBtn').style.display = 'block';
+      $('.add-offer-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ---------- SAVE OFFER (ADD/EDIT) ----------
+    $('#addOfferBtn').onclick = async () => {
+      const title = $('#offerTitle').value.trim();
+      const discount_percent = parseFloat($('#offerDiscount').value) || 0;
+      const manual_price = parseFloat($('#offerManualPrice').value) || null;
+      const editId = $('#editOfferId').value;
+      
+      // جمع المنتجات من حقل البحث
+      const rows = $('#productItemsContainer').querySelectorAll('.product-item-row');
+      const items = [];
+      let hasEmpty = false;
+      
+      rows.forEach(row => {
+        const searchInput = row.querySelector('.product-search');
+        const productId = searchInput ? searchInput.dataset.productId : null;
+        const qty = parseInt(row.querySelector('.product-qty').value) || 1;
+        
+        if (!productId) { 
+          hasEmpty = true; 
+          return; 
+        }
+        items.push({ product_id: parseInt(productId), quantity: qty });
+      });
+
+      if (!title || items.length === 0 || hasEmpty) {
+        alert('يرجى ملء جميع الحقول واختيار منتج واحد على الأقل');
+        return;
+      }
+
+      const action = editId ? 'edit' : 'add';
+      const payload = editId 
+        ? { action, offer_id: parseInt(editId), title, discount_percent, manual_price, items }
+        : { action, title, discount_percent, manual_price, items };
+
+      try {
+        const res = await fetch('/api/offers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        
+        alert(editId ? '✅ تم تعديل العرض' : '✅ تم إضافة العرض');
+        resetForm();
+        loadOffers();
+      } catch (e) { alert('❌ ' + e.message); }
+    };
+
+    // ---------- DELETE OFFER ----------
+    async function deleteOffer(id) {
+      if (!confirm('هل أنت متأكد من حذف هذا العرض؟')) return;
+      try {
+        const res = await fetch('/api/offers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify({ action: 'delete', offer_id: id })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+        loadOffers();
+      } catch (e) { alert('❌ ' + e.message); }
+    }
+
+    if (adminPassword) showAdmin();
+  </script>
+</body>
+</html>

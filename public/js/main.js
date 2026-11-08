@@ -213,7 +213,7 @@ function buildProductCard(p) {
     ${p.created_at && (new Date() - new Date(p.created_at)) < 7 * 24 * 60 * 60 * 1000 ? '<span style="position:absolute; top:10px; left:10px; background:#10b981; color:#fff; padding:3px 10px; border-radius:999px; font-size:0.7rem; font-weight:700; z-index:2;">جديد</span>' : ''}
     <span class="product-id-badge">#${p.id}</span>
     <div class="product-img-wrap">
-      <img src="/images/products/${p.id}.png" alt="${escapeHtml(p.name)}" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='/images/products/${p.id}.jpg';}else{this.outerHTML='<div class=&quot;product-placeholder&quot;>🛍️</div>';}">
+      <img src="/images/products/${p.id}.webp" alt="${escapeHtml(p.name)}" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='/images/products/${p.id}.jpg';}else{this.outerHTML='<div class=&quot;product-placeholder&quot;>🛍️</div>';}">
     </div>
     <div class="product-info">
       <div class="product-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
@@ -402,7 +402,7 @@ function renderProductModal(p) {
       img.outerHTML = '<div class="product-placeholder">🛍️</div>';
     }
   };
-  img.src = `/images/products/${p.id}.png`;
+  img.src = `/images/products/${p.id}.webp`;
 
   // --- إضافة تكبير/تصغير الصورة بعجلة الماوس (آمن) ---
   try {

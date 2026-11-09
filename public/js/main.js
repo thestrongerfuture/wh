@@ -605,10 +605,10 @@ if (searchInput) {
         if (state.selectedCategory && p.category !== state.selectedCategory) return false;
         
         const nameMatch = (p.name || '').toLowerCase().includes(q);
-        const idMatch = String(p.id).includes(q);
+        const descMatch = (p.description || '').toLowerCase().includes(q);
         const brandMatch = (p.brand || '').toLowerCase().includes(q);
         
-        return nameMatch || idMatch || brandMatch;
+        return nameMatch || descMatch || brandMatch;
       });
 
       renderProducts();

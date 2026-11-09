@@ -273,8 +273,8 @@
         } else {
           // فلترة المنتجات
           filtered = allProducts.filter(p => 
-            String(p.id).includes(query) || 
-            p.name.toLowerCase().includes(query)
+            p.name.toLowerCase().includes(query) || 
+            (p.description || '').toLowerCase().includes(query)
           ).slice(0, 20);
         }
         

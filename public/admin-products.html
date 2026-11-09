@@ -259,7 +259,7 @@
         return;
       }
       const filtered = allProducts.filter(p => 
-        p.name.toLowerCase().includes(q) || String(p.id).includes(q)
+        p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q)
       );
       renderProductsList(filtered);
     });

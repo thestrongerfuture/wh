@@ -379,14 +379,11 @@
       $('#invPhone').textContent = o.customer_phone;
       $('#invAddress').textContent = o.customer_address || '—';
 
-      // الحالة
+            // الحالة
       const statusEl = $('#invStatus');
-      if (o.status === 'pending' && o.is_confirmed == 0) {
+      if (o.status === 'pending') {
         statusEl.textContent = 'قيد الانتظار للموافقة';
         statusEl.className = 'status-badge status-pending';
-      } else if (o.status === 'pending' && o.is_confirmed == 1) {
-        statusEl.textContent = 'بانتظار الموافقة';
-        statusEl.className = 'status-badge status-confirmed';
       } else if (o.status === 'approved') {
         statusEl.textContent = 'تمت الموافقة ✅';
         statusEl.className = 'status-badge status-approved';
@@ -395,6 +392,9 @@
         statusEl.className = 'status-badge';
         statusEl.style.background = '#fee2e2';
         statusEl.style.color = '#991b1b';
+      } else {
+        statusEl.textContent = 'قيد الانتظار للموافقة'; // افتراضي
+        statusEl.className = 'status-badge status-pending';
       }
 
       // المنتجات

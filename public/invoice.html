@@ -775,7 +775,7 @@
         <img src="/images/logo.png" alt="شعار" class="brand-logo">
         <div class="brand-text">
           <span class="ar">شركة المستقبل الأقوى</span>
-          <span class="en">متجر الصين</span>
+          <span class="en">متجر الجملة</span>
         </div>
       </a>
       <div class="header-actions">
@@ -809,6 +809,7 @@
           <div><strong>العميل:</strong> <span id="invName"></span></div>
           <div><strong>الهاتف:</strong> <span id="invPhone"></span></div>
           <div><strong>العنوان:</strong> <span id="invAddress"></span></div>
+          <div id="invLocationRow" style="display: none;"><strong>الموقع:</strong> <a id="invLocation" href="#" target="_blank" style="color: var(--primary); text-decoration: underline;">عرض على الخريطة</a></div>
           <div><strong>الحالة:</strong> <span id="invStatus" class="status-badge"></span></div>
         </div>
 
@@ -878,6 +879,16 @@
       $('#invName').textContent = o.customer_name;
       $('#invPhone').textContent = o.customer_phone;
       $('#invAddress').textContent = o.customer_address || '—';
+
+      // عرض رابط الموقع (إذا كانت الإحداثيات موجودة)
+      if (o.location_lat && o.location_lng) {
+        const locationRow = document.getElementById('invLocationRow');
+        const locationLink = document.getElementById('invLocation');
+        if (locationRow && locationLink) {
+          locationRow.style.display = 'block';
+          locationLink.href = `https://www.google.com/maps?q=${o.location_lat},${o.location_lng}`;
+        }
+      }
 
             // الحالة
       const statusEl = $('#invStatus');

@@ -3,9 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>السلة | متجر الصين</title>
+  <title>السلة | متجر الجملة</title>
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <style>
     .cart-page { padding: 30px 0 60px; }
     .cart-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
@@ -73,6 +79,15 @@
     }
     .btn-submit:hover { background: var(--primary-dark); }
     .btn-submit:disabled { background: var(--text-muted); cursor: not-allowed; }
+
+    /* تنسيق خريطة تحديد الموقع */
+    #mapContainer {
+      height: 250px;
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -84,7 +99,7 @@
         <img src="/images/logo.png" alt="شعار" class="brand-logo">
         <div class="brand-text">
           <span class="ar">شركة المستقبل الأقوى</span>
-          <span class="en">متجر الصين</span>
+          <span class="en">متجر الجملة</span>
         </div>
       </a>
       <div class="header-actions">
@@ -132,6 +147,21 @@
             <label>العنوان (اختياري)</label>
             <textarea id="customerAddress" rows="2" placeholder="المدينة، الحي، الشارع"></textarea>
           </div>
+
+          <!-- خريطة تحديد الموقع -->
+          <div class="form-group" style="margin-top: 10px;">
+            <button type="button" id="toggleMapBtn" class="btn-outline" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid var(--primary); color: var(--primary); background: transparent; font-weight: 700; cursor: pointer;">
+              📍 تحديد الموقع على الخريطة (اختياري)
+            </button>
+            <div id="mapContainer"></div>
+            <button type="button" id="useMyLocationBtn" class="btn-outline" style="width: 100%; padding: 8px; border-radius: 8px; border: 2px solid var(--primary); color: var(--primary); background: transparent; font-weight: 700; cursor: pointer; margin-top: 8px;">
+              📍 استخدام موقعي الحالي
+            </button>
+            <input type="hidden" id="locationLat" value="">
+            <input type="hidden" id="locationLng" value="">
+            <p id="locationStatus" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: none;"></p>
+          </div>
+
           <button type="submit" class="btn-submit" id="submitBtn">تأكيد الطلب</button>
         </form>
       </div>
@@ -170,11 +200,9 @@
         const div = document.createElement('div');
         div.className = 'cart-item';
         
-        // التحقق مما إذا كان العنصر عرضاً (Offer)
         const isOffer = item.is_offer || String(item.id).startsWith('offer-');
         
         if (isOffer) {
-          // عرض الحزمة (Offer)
           const itemsList = item.items_details ? item.items_details.split(' + ').map(d => `<li>${d}</li>`).join('') : '';
           div.innerHTML = `
             <div class="cart-item-img" style="background:#eff6ff;">
@@ -198,7 +226,6 @@
             <button class="cart-item-remove" title="حذف">✕</button>
           `;
         } else {
-          // منتج عادي
           div.innerHTML = `
             <div class="cart-item-img">
               <img src="/images/products/${item.id}.webp" 
@@ -229,7 +256,6 @@
           const c = loadCart();
           const it = c.find(i => String(i.id) === String(item.id));
           if (it) { 
-            // إذا كان عرضاً، لا يوجد حد أقصى للمخزون (أو نضع حداً كبيراً)
             const maxStock = it.stock || 9999;
             it.quantity = Math.min(maxStock, it.quantity + 1); 
             saveCart(c); renderCart(); 
@@ -254,7 +280,9 @@
       }[c]));
     }
 
-    // إرسال الطلب
+    // ============================================================
+    // إرسال الطلب (مع الإحداثيات)
+    // ============================================================
     document.getElementById('orderForm').onsubmit = async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -268,6 +296,8 @@
       const name = document.getElementById('customerName').value.trim();
       const phone = document.getElementById('customerPhone').value.trim();
       const address = document.getElementById('customerAddress').value.trim();
+      const lat = document.getElementById('locationLat').value;
+      const lng = document.getElementById('locationLng').value;
 
       if (!name || !phone) {
         alert('يرجى إدخال الاسم ورقم الهاتف');
@@ -280,10 +310,11 @@
         customer_name: name,
         customer_phone: phone,
         customer_address: address,
+        location_lat: lat || null,
+        location_lng: lng || null,
         total: total,
         items: cart.map(i => {
           if (i.is_offer) {
-            // إذا كان عرضاً، نرسله مع offer_id و item_name
             return {
               product_id: null,
               offer_id: parseInt(String(i.id).replace('offer-', '')),
@@ -292,7 +323,6 @@
               item_name: i.name
             };
           } else {
-            // منتج عادي
             return { product_id: i.id, quantity: i.quantity, price: i.price };
           }
         })
@@ -312,12 +342,13 @@
         if (!data.ok) throw new Error(data.error || 'فشل الطلب');
 
         // --- تجهيز رسالة الواتساب ---
-        const managerPhone = '963956410417'; // رقم المدير
+        const managerPhone = '963956410417';
         let waMessage = ` *فاتورة طلب جديدة* \n`;
         waMessage += `--------------------\n`;
         waMessage += ` *الاسم:* ${name}\n`;
         waMessage += ` *الهاتف:* ${phone}\n`;
         if (address) waMessage += ` *العنوان:* ${address}\n`;
+        if (lat && lng) waMessage += ` *الموقع:* https://www.google.com/maps?q=${lat},${lng}\n`;
         waMessage += `--------------------\n`;
         waMessage += ` *المنتجات:*\n`;
 
@@ -334,16 +365,11 @@
         const encodedMessage = encodeURIComponent(waMessage);
         const waUrl = `https://wa.me/${managerPhone}?text=${encodedMessage}`;
 
-        // إفراغ السلة
         localStorage.removeItem(CART_KEY);
 
-        // إعلام المستخدم
         alert(`✅ تم حفظ طلبك بنجاح!\nسيتم الآن تحويلك لواتساب لتأكيد الطلب وإرسال الفاتورة للمدير.`);
 
-        // فتح واتساب في نافذة جديدة
         window.open(waUrl, '_blank');
-        
-        // العودة للصفحة الرئيسية
         window.location.href = '/';
       } catch (err) {
         alert('❌ حدث خطأ: ' + err.message);
@@ -351,6 +377,98 @@
         submitBtn.textContent = 'تأكيد الطلب';
       }
     };
+
+    // ============================================================
+    // خريطة تحديد الموقع (Leaflet) - في وسم منفصل
+    // ============================================================
+    let map = null;
+    let marker = null;
+
+    function initMap() {
+      const mapContainer = document.getElementById('mapContainer');
+      if (!mapContainer) return;
+      if (map) return;
+
+      map = L.map('mapContainer').setView([33.5138, 36.2765], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      marker = L.marker([33.5138, 36.2765], { draggable: true }).addTo(map);
+
+      marker.on('dragend', function() {
+        const latlng = marker.getLatLng();
+        updateLocation(latlng.lat, latlng.lng);
+      });
+
+      map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        updateLocation(e.latlng.lat, e.latlng.lng);
+      });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+            updateLocation(lat, lng);
+          },
+          () => {}
+        );
+      }
+    }
+
+    function updateLocation(lat, lng) {
+      document.getElementById('locationLat').value = lat;
+      document.getElementById('locationLng').value = lng;
+      const status = document.getElementById('locationStatus');
+      if (status) {
+        status.style.display = 'block';
+        status.textContent = `✅ تم تحديد الموقع: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      }
+    }
+
+    document.getElementById('useMyLocationBtn').addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            if (map && marker) {
+              map.setView([lat, lng], 15);
+              marker.setLatLng([lat, lng]);
+              updateLocation(lat, lng);
+            }
+          },
+          () => {
+            alert('❌ لم نتمكن من جلب موقعك. يرجى التأكد من السماح بالوصول إلى الموقع.');
+          }
+        );
+      } else {
+        alert('❌ متصفحك لا يدعم تحديد الموقع.');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggleMapBtn');
+      const mapContainer = document.getElementById('mapContainer');
+      if (toggleBtn && mapContainer) {
+        toggleBtn.addEventListener('click', () => {
+          if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+            mapContainer.style.display = 'block';
+            toggleBtn.textContent = '❌ إخفاء الخريطة';
+            initMap();
+            setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+          } else {
+            mapContainer.style.display = 'none';
+            toggleBtn.textContent = '📍 تحديد الموقع على الخريطة (اختياري)';
+          }
+        });
+      }
+    });
 
     renderCart();
   </script>

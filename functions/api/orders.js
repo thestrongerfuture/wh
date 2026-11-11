@@ -28,15 +28,15 @@
     // ---------- POST: إضافة طلب جديد ----------
     if (method === 'POST') {
       const body = await request.json();
-      const { customer_name, customer_phone, customer_address, total, items } = body;
+      const { customer_name, customer_phone, customer_address, total, items, location_lat, location_lng } = body;
 
       if (!customer_name || !customer_phone || !items || items.length === 0) {
         return jsonError('البيانات ناقصة', 400);
       }
 
       const insertOrder = env.DB.prepare(
-        'INSERT INTO orders (customer_name, customer_phone, customer_address, total, status) VALUES (?, ?, ?, ?, ?)'
-      ).bind(customer_name, customer_phone, customer_address || '', total, 'pending');
+        'INSERT INTO orders (customer_name, customer_phone, customer_address, total, status, location_lat, location_lng) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      ).bind(customer_name, customer_phone, customer_address || '', total, 'pending', location_lat || null, location_lng || null);
       const result = await insertOrder.run();
       if (!result.success) return jsonError('فشل إنشاء الطلب', 500);
       const orderId = result.meta.last_row_id;

@@ -48,6 +48,106 @@
       .invoice-box { box-shadow: none !important; border: 1px solid #ccc !important; margin: 0 !important; }
       .invoice-page { padding: 0 !important; }
     }
+  
+    /* ============================================================
+       تحسين الطباعة على A4 (ضبط عرض الأعمدة)
+       ============================================================ */
+    @media print and (min-width: 81mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* عرض الأعمدة (A4) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 8% !important; }   /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 42% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 12% !important; }  /* الكمية */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) { width: 18% !important; }  /* سعر الوحدة */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 20% !important; }  /* الإجمالي */
+    }
+
+    /* ============================================================
+       تحسين الطباعة على الطابعة الحرارية (80mm)
+       ============================================================ */
+    @media print and (max-width: 80mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 2px 3px !important;
+        font-size: 8pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* إخفاء عمود سعر الوحدة فقط على ورق 80mm (للحفاظ على الترقيم والمنتج والكمية والإجمالي) */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) {
+        display: none !important;
+      }
+      /* عرض الأعمدة المتبقية (الترقيم، المنتج، الكمية، الإجمالي) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 10% !important; }  /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 45% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 15% !important; }  /* الكمية */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 30% !important; }  /* الإجمالي */
+    }
+  
+    /* ============================================================
+       ترتيب حقول الفاتورة (الاسم، الهاتف، العنوان) تحت بعضها البعض
+       ============================================================ */
+
+    .invoice-meta {
+      display: flex !important;
+      flex-direction: column !important; /* ترتيب عمودي */
+      align-items: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-bottom: 20px !important;
+    }
+
+    .invoice-meta div {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.95rem !important;
+      text-align: right !important;
+    }
+
+    .invoice-meta div strong {
+      min-width: 80px !important; /* عرض ثابت للعناوين */
+    }
+
+    /* على الطباعة: نفس الترتيب */
+    @media print {
+      .invoice-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      .invoice-meta div {
+        font-size: 9pt !important;
+      }
+    }
   </style>
 
   <style>
@@ -112,6 +212,106 @@
         justify-content: center !important;
       }
     }
+  
+    /* ============================================================
+       تحسين الطباعة على A4 (ضبط عرض الأعمدة)
+       ============================================================ */
+    @media print and (min-width: 81mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* عرض الأعمدة (A4) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 8% !important; }   /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 42% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 12% !important; }  /* الكمية */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) { width: 18% !important; }  /* سعر الوحدة */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 20% !important; }  /* الإجمالي */
+    }
+
+    /* ============================================================
+       تحسين الطباعة على الطابعة الحرارية (80mm)
+       ============================================================ */
+    @media print and (max-width: 80mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 2px 3px !important;
+        font-size: 8pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* إخفاء عمود سعر الوحدة فقط على ورق 80mm (للحفاظ على الترقيم والمنتج والكمية والإجمالي) */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) {
+        display: none !important;
+      }
+      /* عرض الأعمدة المتبقية (الترقيم، المنتج، الكمية، الإجمالي) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 10% !important; }  /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 45% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 15% !important; }  /* الكمية */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 30% !important; }  /* الإجمالي */
+    }
+  
+    /* ============================================================
+       ترتيب حقول الفاتورة (الاسم، الهاتف، العنوان) تحت بعضها البعض
+       ============================================================ */
+
+    .invoice-meta {
+      display: flex !important;
+      flex-direction: column !important; /* ترتيب عمودي */
+      align-items: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-bottom: 20px !important;
+    }
+
+    .invoice-meta div {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.95rem !important;
+      text-align: right !important;
+    }
+
+    .invoice-meta div strong {
+      min-width: 80px !important; /* عرض ثابت للعناوين */
+    }
+
+    /* على الطباعة: نفس الترتيب */
+    @media print {
+      .invoice-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      .invoice-meta div {
+        font-size: 9pt !important;
+      }
+    }
   </style>
 
   <style>
@@ -137,6 +337,106 @@
       }
       .invoice-page {
         padding: 0 !important;
+      }
+    }
+  
+    /* ============================================================
+       تحسين الطباعة على A4 (ضبط عرض الأعمدة)
+       ============================================================ */
+    @media print and (min-width: 81mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* عرض الأعمدة (A4) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 8% !important; }   /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 42% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 12% !important; }  /* الكمية */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) { width: 18% !important; }  /* سعر الوحدة */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 20% !important; }  /* الإجمالي */
+    }
+
+    /* ============================================================
+       تحسين الطباعة على الطابعة الحرارية (80mm)
+       ============================================================ */
+    @media print and (max-width: 80mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 2px 3px !important;
+        font-size: 8pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* إخفاء عمود سعر الوحدة فقط على ورق 80mm (للحفاظ على الترقيم والمنتج والكمية والإجمالي) */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) {
+        display: none !important;
+      }
+      /* عرض الأعمدة المتبقية (الترقيم، المنتج، الكمية، الإجمالي) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 10% !important; }  /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 45% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 15% !important; }  /* الكمية */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 30% !important; }  /* الإجمالي */
+    }
+  
+    /* ============================================================
+       ترتيب حقول الفاتورة (الاسم، الهاتف، العنوان) تحت بعضها البعض
+       ============================================================ */
+
+    .invoice-meta {
+      display: flex !important;
+      flex-direction: column !important; /* ترتيب عمودي */
+      align-items: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-bottom: 20px !important;
+    }
+
+    .invoice-meta div {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.95rem !important;
+      text-align: right !important;
+    }
+
+    .invoice-meta div strong {
+      min-width: 80px !important; /* عرض ثابت للعناوين */
+    }
+
+    /* على الطباعة: نفس الترتيب */
+    @media print {
+      .invoice-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      .invoice-meta div {
+        font-size: 9pt !important;
       }
     }
   </style>
@@ -179,6 +479,106 @@
         .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 15% !important; }
         .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 25% !important; }
         .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 25% !important; }
+      }
+    }
+  
+    /* ============================================================
+       تحسين الطباعة على A4 (ضبط عرض الأعمدة)
+       ============================================================ */
+    @media print and (min-width: 81mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* عرض الأعمدة (A4) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 8% !important; }   /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 42% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 12% !important; }  /* الكمية */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) { width: 18% !important; }  /* سعر الوحدة */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 20% !important; }  /* الإجمالي */
+    }
+
+    /* ============================================================
+       تحسين الطباعة على الطابعة الحرارية (80mm)
+       ============================================================ */
+    @media print and (max-width: 80mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 2px 3px !important;
+        font-size: 8pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* إخفاء عمود سعر الوحدة فقط على ورق 80mm (للحفاظ على الترقيم والمنتج والكمية والإجمالي) */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) {
+        display: none !important;
+      }
+      /* عرض الأعمدة المتبقية (الترقيم، المنتج، الكمية، الإجمالي) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 10% !important; }  /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 45% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 15% !important; }  /* الكمية */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 30% !important; }  /* الإجمالي */
+    }
+  
+    /* ============================================================
+       ترتيب حقول الفاتورة (الاسم، الهاتف، العنوان) تحت بعضها البعض
+       ============================================================ */
+
+    .invoice-meta {
+      display: flex !important;
+      flex-direction: column !important; /* ترتيب عمودي */
+      align-items: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-bottom: 20px !important;
+    }
+
+    .invoice-meta div {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.95rem !important;
+      text-align: right !important;
+    }
+
+    .invoice-meta div strong {
+      min-width: 80px !important; /* عرض ثابت للعناوين */
+    }
+
+    /* على الطباعة: نفس الترتيب */
+    @media print {
+      .invoice-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      .invoice-meta div {
+        font-size: 9pt !important;
       }
     }
   </style>
@@ -265,6 +665,106 @@
         break-inside: avoid !important;
       }
     }
+  
+    /* ============================================================
+       تحسين الطباعة على A4 (ضبط عرض الأعمدة)
+       ============================================================ */
+    @media print and (min-width: 81mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* عرض الأعمدة (A4) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 8% !important; }   /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 42% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 12% !important; }  /* الكمية */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) { width: 18% !important; }  /* سعر الوحدة */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 20% !important; }  /* الإجمالي */
+    }
+
+    /* ============================================================
+       تحسين الطباعة على الطابعة الحرارية (80mm)
+       ============================================================ */
+    @media print and (max-width: 80mm) {
+      .invoice-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 2px 3px !important;
+        font-size: 8pt !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+      }
+      /* إخفاء عمود سعر الوحدة فقط على ورق 80mm (للحفاظ على الترقيم والمنتج والكمية والإجمالي) */
+      .invoice-table th:nth-child(4),
+      .invoice-table td:nth-child(4) {
+        display: none !important;
+      }
+      /* عرض الأعمدة المتبقية (الترقيم، المنتج، الكمية، الإجمالي) */
+      .invoice-table th:nth-child(1),
+      .invoice-table td:nth-child(1) { width: 10% !important; }  /* # */
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) { width: 45% !important; }  /* المنتج */
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) { width: 15% !important; }  /* الكمية */
+      .invoice-table th:nth-child(5),
+      .invoice-table td:nth-child(5) { width: 30% !important; }  /* الإجمالي */
+    }
+  
+    /* ============================================================
+       ترتيب حقول الفاتورة (الاسم، الهاتف، العنوان) تحت بعضها البعض
+       ============================================================ */
+
+    .invoice-meta {
+      display: flex !important;
+      flex-direction: column !important; /* ترتيب عمودي */
+      align-items: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-bottom: 20px !important;
+    }
+
+    .invoice-meta div {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.95rem !important;
+      text-align: right !important;
+    }
+
+    .invoice-meta div strong {
+      min-width: 80px !important; /* عرض ثابت للعناوين */
+    }
+
+    /* على الطباعة: نفس الترتيب */
+    @media print {
+      .invoice-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      .invoice-meta div {
+        font-size: 9pt !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -316,7 +816,7 @@
         <table class="invoice-table">
           <thead>
             <tr>
-              <th>المنتج</th>
+              <th>#</th><th>المنتج</th>
               <th>الكمية</th>
               <th>سعر الوحدة</th>
               <th>الإجمالي</th>
@@ -401,12 +901,12 @@
       const itemsBody = $('#invItems');
       itemsBody.innerHTML = '';
       let total = 0;
-      (o.items || []).forEach(item => {
+      (o.items || []).forEach((item, index) => {
         const itemTotal = item.quantity * item.price;
         total += itemTotal;
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td class="item-name">${item.name || 'منتج'}</td>
+          <td>${index + 1}</td><td class="item-name">${item.name || 'منتج'}</td>
           <td>${item.quantity}</td>
           <td>$${Number(item.price).toFixed(2)}</td>
           <td class="item-total">$${itemTotal.toFixed(2)}</td>

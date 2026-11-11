@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>السلة | متجر الجملة</title>
+  <title>السلة | متجر الصين</title>
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/style.css">
   <style>
@@ -84,7 +84,7 @@
         <img src="/images/logo.png" alt="شعار" class="brand-logo">
         <div class="brand-text">
           <span class="ar">شركة المستقبل الأقوى</span>
-          <span class="en">متجر الجملة</span>
+          <span class="en">متجر الصين</span>
         </div>
       </a>
       <div class="header-actions">
@@ -163,7 +163,7 @@
       let total = 0;
       let count = 0;
 
-      cart.forEach(item => {
+      cart.forEach((item, index) => {
         total += item.price * item.quantity;
         count += item.quantity;
 
@@ -201,7 +201,7 @@
           // منتج عادي
           div.innerHTML = `
             <div class="cart-item-img">
-              <img src="/images/products/${item.id}.png" 
+              <img src="/images/products/${item.id}.webp" 
                    onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='/images/products/${item.id}.jpg';}else{this.outerHTML='🛍️';}">
             </div>
             <div class="cart-item-info">
@@ -313,23 +313,23 @@
 
         // --- تجهيز رسالة الواتساب ---
         const managerPhone = '963956410417'; // رقم المدير
-        let waMessage = `🧾 *فاتورة طلب جديدة* 🧾\n`;
-        waMessage += `------------------------\n`;
-        waMessage += `👤 *الاسم:* ${name}\n`;
-        waMessage += `📞 *الهاتف:* ${phone}\n`;
-        if (address) waMessage += `📍 *العنوان:* ${address}\n`;
-        waMessage += `------------------------\n`;
-        waMessage += `📦 *المنتجات:*\n`;
+        let waMessage = ` *فاتورة طلب جديدة* \n`;
+        waMessage += `--------------------\n`;
+        waMessage += ` *الاسم:* ${name}\n`;
+        waMessage += ` *الهاتف:* ${phone}\n`;
+        if (address) waMessage += ` *العنوان:* ${address}\n`;
+        waMessage += `--------------------\n`;
+        waMessage += ` *المنتجات:*\n`;
 
-        cart.forEach(item => {
+        cart.forEach((item, index) => {
           const itemTotal = (item.price * item.quantity).toFixed(2);
-          waMessage += `▪️ ${item.name} (الكمية: ${item.quantity}) = $${itemTotal}\n`;
+          waMessage += ` ${index + 1}. ${item.name} (الكمية: ${item.quantity}) = $${itemTotal}\n`;
         });
 
-        waMessage += `------------------------\n`;
-        waMessage += `💰 *الإجمالي:* $${total.toFixed(2)}\n`;
-        waMessage += `🔗 *رابط الفاتورة:* ${location.origin}/invoice.html?id=${data.order_id}\n`;
-        waMessage += `📝 *رقم الطلب:* #${data.order_id}`;
+        waMessage += `--------------------\n`;
+        waMessage += ` *الإجمالي:* $${total.toFixed(2)}\n`;
+        waMessage += ` *رابط الفاتورة:* ${location.origin}/invoice.html?id=${data.order_id}\n`;
+        waMessage += ` *رقم الطلب:* #${data.order_id}`;
 
         const encodedMessage = encodeURIComponent(waMessage);
         const waUrl = `https://wa.me/${managerPhone}?text=${encodedMessage}`;

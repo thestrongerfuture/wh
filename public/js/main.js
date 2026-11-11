@@ -218,7 +218,10 @@ function buildProductCard(p) {
     <div class="product-info">
       <div class="product-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
       <div class="product-meta">
-        <span class="product-price">$${Number(p.price).toFixed(2)}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span class="product-price">$${Number(p.price).toFixed(2)}</span>
+          <span class="qty-total" style="display:none; font-size:0.85rem; color:var(--success); font-weight:700;"></span>
+        </div>
         <span class="product-stock ${p.stock <= 5 ? 'low' : ''}">${outOfStock ? 'نفد' : `مخزون: ${p.stock}`}</span>
       </div>
       <div class="qty-control">
@@ -250,12 +253,12 @@ function buildProductCard(p) {
     qtyVal.textContent = v;
     
     // تحديث السعر الإجمالي
-    const totalEl = document.getElementById('pmTotalPrice');
+    const totalEl = card.querySelector('.qty-total');
     if (totalEl) {
       if (v > 1) {
         const total = (v * Number(p.price)).toFixed(2);
         totalEl.textContent = `$${total}`;
-        totalEl.style.display = 'block';
+        totalEl.style.display = 'inline';
       } else {
         totalEl.style.display = 'none';
       }
@@ -378,6 +381,12 @@ function closeProductModal(pushHistory = true) {
 
 // رسم محتوى النافذة
 function renderProductModal(p) {
+  // تصفير السعر الإجمالي عند فتح منتج جديد
+  const totalEl = document.getElementById('pmTotalPrice');
+  if (totalEl) {
+    totalEl.textContent = '';
+    totalEl.style.display = 'none';
+  }
   pmLoading.classList.add('hidden');
   pmError.classList.add('hidden');
   pmContent.classList.remove('hidden');
@@ -492,7 +501,7 @@ function renderProductModal(p) {
   // مشاركة (تفتح القائمة)
   shareBtn.onclick = () => {
     const url = `${location.origin}/share?id=${p.id}`;
-    const text = `شاهد ${p.name} على متجر الصين - شركة المستقبل الأقوى`;
+    const text = `شاهد ${p.name} على متجر الجملة - شركة المستقبل الأقوى`;
     
     // تجهيز روابط المنصات
     document.getElementById('shareWa').href = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;

@@ -2175,3 +2175,43 @@ body.modal-open {
     font-size: 0.85rem !important;
   }
 }
+
+/* ============================================================
+   إخفاء نص المخزون (لأن شريط السحب يعبر عنه)
+   ============================================================ */
+
+/* في البطاقات الخارجية */
+.product-card .product-stock {
+  display: none !important;
+}
+
+/* في النافذة المنبثقة */
+#pmStock {
+  display: none !important;
+}
+#pmStock.parentElement {
+  display: none !important;
+}
+
+/* إخفاء الحاوية التي تحتوي على كلمة "المخزون" في النافذة المنبثقة */
+#pmStock {
+  display: none !important;
+}
+#pmStock.parentElement {
+  display: none !important;
+}
+
+/* ============================================================
+   إخفاء حاوية المخزون في النافذة المنبثقة (بدون لمس HTML)
+   ============================================================ */
+
+/* إخفاء أي عنصر يحتوي على كلمة "المخزون" */
+.pm-stock-container,
+div:has(> #pmStock) {
+  display: none !important;
+}
+
+/* إخفاء العنصر الأب لـ pmStock (إذا كان موجوداً) */
+#pmStock {
+  display: none !important;
+}

@@ -875,7 +875,7 @@
 
       // تعبئة البيانات
       $('#invId').textContent = `#${o.id}`;
-      $('#invDate').textContent = new Date(o.created_at).toLocaleString('ar-EG');
+      $('#invDate').textContent = new Date(o.created_at).toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
       $('#invName').textContent = o.customer_name;
       $('#invPhone').textContent = o.customer_phone;
       $('#invAddress').textContent = o.customer_address || '—';

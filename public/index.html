@@ -7,6 +7,25 @@
   <meta name="description" content="متجر شركة المستقبل الأقوى - The Stronger Future">
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/style.css">
+    <!-- [Clock] CSS -->
+    <style>
+      .syria-clock {
+        display: inline-block;
+        margin-top: 4px;
+        background: #ffffff;
+        color: #1e3a8a;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        font-family: 'Tajawal', sans-serif;
+        border: 1px solid #1e3a8a;
+        white-space: nowrap;
+      }
+      @media (max-width: 900px) {
+        .syria-clock { font-size: 10px; padding: 2px 6px; margin-top: 2px; }
+      }
+    </style>
 </head>
 <body>
 
@@ -20,6 +39,7 @@
         <div class="brand-text">
           <span class="ar">شركة المستقبل الأقوى</span>
           <span class="en">متجر الجملة</span>
+          <div class="syria-clock" id="syriaClock">جاري التحميل...</div>
         </div>
       </a>
 
@@ -270,5 +290,18 @@
     </a>
   </nav>
 
+    <!-- [Clock] JS -->
+    <script>
+      function updateSyriaClock() {
+        const now = new Date();
+        const options = { timeZone: 'Asia/Damascus', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+        const formatter = new Intl.DateTimeFormat('ar-SY', options);
+        const el = document.getElementById('syriaClock');
+        if(el) el.textContent = formatter.format(now);
+      }
+      setInterval(updateSyriaClock, 1000);
+      updateSyriaClock();
+    </script>
 </body>
 </html>
+

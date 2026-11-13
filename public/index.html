@@ -294,14 +294,22 @@
     <script>
       function updateSyriaClock() {
         const now = new Date();
-        const options = { timeZone: 'Asia/Damascus', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-        const formatter = new Intl.DateTimeFormat('ar-SY', options);
+        const timeFormatter = new Intl.DateTimeFormat('ar-SY', { timeZone: 'Asia/Damascus', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        const timeStr = timeFormatter.format(now);
+        
+        const dateFormatter = new Intl.DateTimeFormat('ar-SY', { timeZone: 'Asia/Damascus', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const dateStr = dateFormatter.format(now);
+
         const el = document.getElementById('syriaClock');
-        if(el) el.textContent = formatter.format(now);
+        if(el) {
+            el.style.direction = 'rtl';
+            el.innerHTML = timeStr + ' - ' + dateStr;
+        }
       }
       setInterval(updateSyriaClock, 1000);
       updateSyriaClock();
     </script>
 </body>
 </html>
+
 

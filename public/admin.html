@@ -1,3 +1,4 @@
+﻿=====بداية الملف=====
 ﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -61,7 +62,7 @@
     .order-body { padding: 16px; }
     .order-item-row {
       display: grid;
-      grid-template-columns: 1fr 100px 100px 100px;
+      grid-template-columns: 1fr 80px 80px 80px 90px;
       gap: 10px;
       align-items: center;
       padding: 10px 0;
@@ -74,6 +75,11 @@
       padding: 6px;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .line-subtotal {
+      font-weight: 700;
+      color: var(--primary);
       text-align: center;
     }
     .order-actions {
@@ -271,6 +277,7 @@
     function renderOrder(o) {
       const card = document.createElement('div');
       card.className = 'order-card';
+      card.dataset.orderId = o.id;
 
       const date = new Date(o.created_at);
       const syriaDate = new Date(date.getTime() + (3 * 60 * 60 * 1000));
@@ -280,8 +287,9 @@
 
       let itemsHtml = '';
       o.items.forEach(it => {
+        const lineSubtotal = Number(it.price) * Number(it.quantity);
         itemsHtml += `
-          <div class="order-item-row">
+          <div class="order-item-row" data-price="${Number(it.price)}" data-qty="${Number(it.quantity)}">
             <span>${it.product_id ? `<strong>#${it.product_id}</strong> ` : ''}${it.name || 'منتج'}${it.offer_id ? ' (عرض)' : ''}</span>
             <span>$${Number(it.price).toFixed(2)}</span>
             <span>
@@ -290,6 +298,7 @@
                 : `<strong>${it.quantity}</strong>`
               }
             </span>
+            <span class="line-subtotal">$${lineSubtotal.toFixed(2)}</span>
             <span style="color:var(--text-muted); font-size:0.8rem;">${it.product_id ? `متاح: ${it.stock ?? '?'}` : 'عرض'}</span>
           </div>
         `;
@@ -306,7 +315,7 @@
           </div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <span class="status-badge status-${o.status}">${statusLabels[o.status]}</span>
-            <strong style="color:var(--primary); font-size:1.2rem;">$${Number(o.total).toFixed(2)}</strong>
+            <strong id="total-${o.id}" style="color:var(--primary); font-size:1.2rem;">$${Number(o.total).toFixed(2)}</strong>
           </div>
         </div>
         <div class="order-body">${itemsHtml}</div>
@@ -321,9 +330,28 @@
       if (isPending) {
         card.querySelector('.btn-approve').onclick = () => approveOrder(o, card);
         card.querySelector('.btn-reject').onclick = () => rejectOrder(o);
+        card.querySelectorAll('.qty-input').forEach(inp => {
+          inp.addEventListener('input', () => recalcTotal(card));
+        });
       }
 
       return card;
+    }
+
+    // ---------- إعادة حساب الإجمالي الفرعي والكلي ----------
+    function recalcTotal(card) {
+      let total = 0;
+      card.querySelectorAll('.order-item-row').forEach(row => {
+        const price = parseFloat(row.dataset.price) || 0;
+        const qtyInput = row.querySelector('.qty-input');
+        const qty = qtyInput ? (parseInt(qtyInput.value) || 0) : (parseInt(row.dataset.qty) || 0);
+        const lineTotal = price * qty;
+        const subEl = row.querySelector('.line-subtotal');
+        if (subEl) subEl.textContent = '$' + lineTotal.toFixed(2);
+        total += lineTotal;
+      });
+      const totalEl = card.querySelector('[id^="total-"]');
+      if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
     }
 
     // ---------- APPROVE ----------
@@ -459,3 +487,4 @@
   </script>
 </body>
 </html>
+=====نهاية الملف=====

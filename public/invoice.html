@@ -875,7 +875,11 @@
 
       // تعبئة البيانات
       $('#invId').textContent = `#${o.id}`;
-      $('#invDate').textContent = new Date(o.created_at).toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
+      const date = new Date(o.created_at);
+      const syriaDate = new Date(date.getTime() + (3 * 60 * 60 * 1000));
+      const dateStr = syriaDate.toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
+      document.getElementById('invDate').textContent = dateStr;
+      document.getElementById('invDate').textContent = dateStr;
       $('#invName').textContent = o.customer_name;
       $('#invPhone').textContent = o.customer_phone;
       $('#invAddress').textContent = o.customer_address || '—';
@@ -994,3 +998,6 @@
   </script>
 </body>
 </html>
+
+
+

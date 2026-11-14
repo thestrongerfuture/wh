@@ -9,128 +9,37 @@
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .admin-page { padding: 30px 0 60px; }
-    
-    .login-box {
-      max-width: 400px;
-      margin: 80px auto;
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
+    .login-box { max-width: 400px; margin: 80px auto; background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
     .login-box h2 { color: var(--primary); margin-bottom: 20px; }
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 1rem;
-      margin-bottom: 12px;
-      font-family: inherit;
-      text-align: center;
-    }
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .order-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    .order-header {
-      background: #f8fafc;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      border-bottom: 1px solid var(--border);
-    }
+    .login-box input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; margin-bottom: 12px; font-family: inherit; text-align: center; }
+    .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; }
+    .order-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+    .order-header { background: #f8fafc; padding: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); }
     .order-info { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
     .order-info strong { color: var(--primary); font-size: 1rem; }
-    
     .order-body { padding: 16px; }
-    .order-item-row {
-      display: grid;
-      grid-template-columns: 1fr 80px 80px 80px 90px;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
+    .order-item-row { display: grid; grid-template-columns: 1fr 80px 80px 80px 90px 40px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
     .order-item-row:last-child { border-bottom: none; }
-    .order-item-row input {
-      width: 70px;
-      padding: 6px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      text-align: center;
-    }
-    .line-subtotal {
-      font-weight: 700;
-      color: var(--primary);
-      text-align: center;
-    }
-    .order-actions {
-      padding: 16px;
-      background: #f8fafc;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .btn-approve {
-      background: var(--success);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-    }
+    .order-item-row input { width: 70px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: center; }
+    .line-subtotal { font-weight: 700; color: var(--primary); text-align: center; }
+    .btn-del-item { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-weight: 700; font-size: 1rem; }
+    .btn-del-item:hover { background: #fecaca; }
+    .order-actions { padding: 16px; background: #f8fafc; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-approve { background: var(--success); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
     .btn-approve:hover { background: #059669; }
-    .btn-reject {
-      background: var(--danger);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-    }
+    .btn-reject { background: var(--danger); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
     .btn-reject:hover { background: #dc2626; }
-    
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
+    .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
     .status-pending { background: #fef3c7; color: #92400e; }
     .status-approved { background: #d1fae5; color: #065f46; }
     .status-rejected { background: #fee2e2; color: #991b1b; }
-
     .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .tab-btn {
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      background: #fff;
-      border: 2px solid var(--border);
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
+    .tab-btn { padding: 8px 16px; border-radius: var(--radius-sm); background: #fff; border: 2px solid var(--border); font-weight: 700; font-size: 0.9rem; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="icon-btn" style="background:#fff; color:#0040C0; border:none; box-shadow:0 2px 5px rgba(0,0,0,0.1); font-weight:700;">
@@ -147,7 +56,6 @@
     </div>
   </header>
 
-  <!-- LOGIN -->
   <div id="loginView" class="login-box">
     <h2>🔒 الدخول للوحة الإدارة</h2>
     <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" autofocus>
@@ -155,7 +63,6 @@
     <p id="loginError" style="color: var(--danger); margin-top: 10px; font-size: 0.9rem; display: none;"></p>
   </div>
 
-  <!-- ADMIN CONTENT -->
   <main id="adminView" class="container admin-page" style="display: none;">
     <div class="tabs" style="align-items: center;">
       <a href="/admin-products.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem;">📦 إدارة المنتجات</a>
@@ -165,7 +72,6 @@
       <button class="tab-btn" data-status="rejected">❌ مرفوضة</button>
     </div>
 
-    <!-- قسم رفع CSV -->
     <div style="background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
       <div style="flex: 1; min-width: 200px;">
         <strong style="color: var(--primary);">📦 تحديث المخزون والأسعار (CSV)</strong>
@@ -196,37 +102,22 @@
     const emptyState = $('#emptyState');
     const logoutBtn = $('#logoutBtn');
 
-    // ---------- LOGIN ----------
     $('#loginBtn').onclick = tryLogin;
     $('#passwordInput').onkeypress = (e) => { if (e.key === 'Enter') tryLogin(); };
-    logoutBtn.onclick = () => {
-      sessionStorage.removeItem('admin_pass');
-      location.reload();
-    };
+    logoutBtn.onclick = () => { sessionStorage.removeItem('admin_pass'); location.reload(); };
 
     async function tryLogin() {
       const pass = $('#passwordInput').value;
       if (!pass) return;
       const errEl = $('#loginError');
       errEl.style.display = 'none';
-
-      // اختبار الاتصال
       try {
-        const res = await fetch('/api/admin?status=pending', {
-          headers: { 'X-Admin-Password': pass }
-        });
-        if (res.status === 401) {
-          errEl.textContent = 'كلمة المرور غير صحيحة';
-          errEl.style.display = 'block';
-          return;
-        }
+        const res = await fetch('/api/admin?status=pending', { headers: { 'X-Admin-Password': pass } });
+        if (res.status === 401) { errEl.textContent = 'كلمة المرور غير صحيحة'; errEl.style.display = 'block'; return; }
         adminPassword = pass;
         sessionStorage.setItem('admin_pass', pass);
         showAdmin();
-      } catch (e) {
-        errEl.textContent = 'خطأ في الاتصال';
-        errEl.style.display = 'block';
-      }
+      } catch (e) { errEl.textContent = 'خطأ في الاتصال'; errEl.style.display = 'block'; }
     }
 
     function showAdmin() {
@@ -236,7 +127,6 @@
       loadOrders();
     }
 
-    // ---------- TABS ----------
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.onclick = () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -246,26 +136,16 @@
       };
     });
 
-    // ---------- LOAD ORDERS ----------
     async function loadOrders() {
       loading.style.display = 'block';
       emptyState.classList.add('hidden');
       ordersContainer.innerHTML = '';
-
       try {
-        const res = await fetch(`/api/admin?status=${currentStatus}`, {
-          headers: { 'X-Admin-Password': adminPassword }
-        });
+        const res = await fetch(`/api/admin?status=${currentStatus}`, { headers: { 'X-Admin-Password': adminPassword } });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
-
         loading.style.display = 'none';
-
-        if (data.orders.length === 0) {
-          emptyState.classList.remove('hidden');
-          return;
-        }
-
+        if (data.orders.length === 0) { emptyState.classList.remove('hidden'); return; }
         data.orders.forEach(o => ordersContainer.appendChild(renderOrder(o)));
       } catch (e) {
         loading.style.display = 'none';
@@ -273,7 +153,6 @@
       }
     }
 
-    // ---------- RENDER ORDER ----------
     function renderOrder(o) {
       const card = document.createElement('div');
       card.className = 'order-card';
@@ -289,17 +168,20 @@
       o.items.forEach(it => {
         const lineSubtotal = Number(it.price) * Number(it.quantity);
         itemsHtml += `
-          <div class="order-item-row" data-price="${Number(it.price)}" data-qty="${Number(it.quantity)}">
+          <div class="order-item-row" data-item-id="${it.id}" data-price="${Number(it.price)}" data-qty="${Number(it.quantity)}">
             <span>${it.product_id ? `<strong>#${it.product_id}</strong> ` : ''}${it.name || 'منتج'}${it.offer_id ? ' (عرض)' : ''}</span>
             <span>$${Number(it.price).toFixed(2)}</span>
             <span>
               ${isPending 
-                ? `<input type="number" class="qty-input" data-pid="${it.product_id || ''}" data-oid="${it.offer_id || ''}" min="1" max="${it.stock || 999}" value="${it.quantity}">`
+                ? `<input type="number" class="qty-input" data-item-id="${it.id}" min="1" max="${it.stock || 999}" value="${it.quantity}">`
                 : `<strong>${it.quantity}</strong>`
               }
             </span>
             <span class="line-subtotal">$${lineSubtotal.toFixed(2)}</span>
             <span style="color:var(--text-muted); font-size:0.8rem;">${it.product_id ? `متاح: ${it.stock ?? '?'}` : 'عرض'}</span>
+            <span>
+              ${isPending ? `<button class="btn-del-item" data-item-id="${it.id}" title="حذف الصنف">🗑️</button>` : ''}
+            </span>
           </div>
         `;
       });
@@ -333,12 +215,20 @@
         card.querySelectorAll('.qty-input').forEach(inp => {
           inp.addEventListener('input', () => recalcTotal(card));
         });
+        card.querySelectorAll('.btn-del-item').forEach(btn => {
+          btn.onclick = () => {
+            if (confirm('حذف هذا الصنف من الطلب؟')) {
+              const row = btn.closest('.order-item-row');
+              row.remove();
+              recalcTotal(card);
+            }
+          };
+        });
       }
 
       return card;
     }
 
-    // ---------- إعادة حساب الإجمالي الفرعي والكلي ----------
     function recalcTotal(card) {
       let total = 0;
       card.querySelectorAll('.order-item-row').forEach(row => {
@@ -354,126 +244,75 @@
       if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
     }
 
-    // ---------- APPROVE ----------
     async function approveOrder(o, card) {
       const inputs = card.querySelectorAll('.qty-input');
-      const items = Array.from(inputs).map(inp => {
-        const productId = inp.dataset.pid;
-        const offerId = inp.dataset.oid;
-        
-        if (offerId && offerId !== 'null' && offerId !== '') {
-          // عرض
-          return {
-            offer_id: parseInt(offerId),
-            quantity: parseInt(inp.value)
-          };
-        } else {
-          // منتج عادي
-          return {
-            product_id: parseInt(productId),
-            quantity: parseInt(inp.value)
-          };
-        }
-      });
+      const items = Array.from(inputs).map(inp => ({
+        item_id: parseInt(inp.dataset.itemId),
+        quantity: parseInt(inp.value)
+      }));
+
+      const visibleIds = new Set(items.map(i => i.item_id));
+      const originalIds = (o.items || []).map(it => Number(it.id));
+      const deleted_item_ids = originalIds.filter(id => !visibleIds.has(id));
 
       if (!confirm(`هل أنت متأكد من الموافقة على الطلب #${o.id}؟\nسيتم خصم الكميات من المخزون.`)) return;
 
       try {
         const res = await fetch('/api/admin', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Admin-Password': adminPassword
-          },
-          body: JSON.stringify({ action: 'approve', order_id: o.id, items })
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          body: JSON.stringify({ action: 'approve', order_id: o.id, items, deleted_item_ids })
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
         alert('✅ تمت الموافقة بنجاح');
         loadOrders();
-      } catch (e) {
-        alert('❌ ' + e.message);
-      }
+      } catch (e) { alert('❌ ' + e.message); }
     }
 
-    // ---------- REJECT ----------
     async function rejectOrder(o) {
       if (!confirm(`رفض الطلب #${o.id}؟`)) return;
       try {
         const res = await fetch('/api/admin', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Admin-Password': adminPassword
-          },
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
           body: JSON.stringify({ action: 'reject', order_id: o.id })
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
         alert('❌ تم رفض الطلب');
         loadOrders();
-      } catch (e) {
-        alert('❌ ' + e.message);
-      }
+      } catch (e) { alert('❌ ' + e.message); }
     }
 
-
-    // ---------- رفع CSV ----------
     const uploadCsvBtn = document.getElementById('uploadCsvBtn');
     const csvFileInput = document.getElementById('csvFileInput');
-
     if (uploadCsvBtn && csvFileInput) {
       uploadCsvBtn.onclick = () => csvFileInput.click();
-
       csvFileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
-        if (!file.name.toLowerCase().endsWith('.csv')) {
-          alert('❌ الملف يجب أن يكون بصيغة CSV');
-          return;
-        }
-
+        if (!file.name.toLowerCase().endsWith('.csv')) { alert('❌ الملف يجب أن يكون بصيغة CSV'); return; }
         const formData = new FormData();
         formData.append('file', file);
-
         uploadCsvBtn.disabled = true;
         uploadCsvBtn.textContent = '⏳ جاري الرفع...';
-
         try {
-          const res = await fetch('/api/update-stock', {
-            method: 'POST',
-            headers: { 'X-Admin-Password': adminPassword },
-            body: formData
-          });
+          const res = await fetch('/api/update-stock', { method: 'POST', headers: { 'X-Admin-Password': adminPassword }, body: formData });
           const data = await res.json();
-
           if (!data.ok) throw new Error(data.error);
-
-          let msg = `✅ تمت المعالجة بنجاح!\n\n`;
-          msg += `📦 إجمالي الصفوف في الملف: ${data.total}\n`;
-          msg += `➕ تمت إضافة منتجات جديدة: ${data.added}\n`;
-          msg += `🔄 تم تحديث منتجات موجودة: ${data.updated}`;
-
+          let msg = `✅ تمت المعالجة بنجاح!\n\n📦 إجمالي الصفوف في الملف: ${data.total}\n➕ تمت إضافة منتجات جديدة: ${data.added}\n🔄 تم تحديث منتجات موجودة: ${data.updated}`;
           alert(msg);
-          loadOrders(); // تحديث الطلبات (لأن المخزون تغيّر)
-        } catch (err) {
-          alert('❌ خطأ: ' + err.message);
-        } finally {
-          uploadCsvBtn.disabled = false;
-          uploadCsvBtn.textContent = '📤 رفع الملف';
-          csvFileInput.value = ''; // لتمكين رفع نفس الملف مرة أخرى
-        }
+          loadOrders();
+        } catch (err) { alert('❌ خطأ: ' + err.message); }
+        finally { uploadCsvBtn.disabled = false; uploadCsvBtn.textContent = '📤 رفع الملف'; csvFileInput.value = ''; }
       };
     }
 
-    // ---------- تنزيل نموذج CSV ----------
     const downloadSampleBtn = document.getElementById('downloadSampleBtn');
     if (downloadSampleBtn) {
       downloadSampleBtn.onclick = () => {
-        const csvContent = "unique_id,name,brand,category,stock,price_usd\n" +
-                           "5001,منتج تجريبي 1,ATARAXY,شاحن,150,5.99\n" +
-                           "5002,منتج تجريبي 2,أخرى,سماعة,80,12.50\n";
+        const csvContent = "unique_id,name,brand,category,stock,price_usd\n5001,منتج تجريبي 1,ATARAXY,شاحن,150,5.99\n5002,منتج تجريبي 2,أخرى,سماعة,80,12.50\n";
         const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -482,7 +321,7 @@
         URL.revokeObjectURL(link.href);
       };
     }
-    // ---------- INIT ----------
+
     if (adminPassword) showAdmin();
   </script>
 </body>

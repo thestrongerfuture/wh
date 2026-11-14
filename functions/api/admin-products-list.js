@@ -2,7 +2,6 @@
   const { env, request } = context;
 
   try {
-    // التحقق من كلمة المرور
     const authHeader = request.headers.get('X-Admin-Password') || '';
     const passRow = await env.DB.prepare(
       "SELECT value FROM settings WHERE key = 'admin_password'"
@@ -13,9 +12,8 @@
       return jsonError('كلمة المرور غير صحيحة', 401);
     }
 
-    // جلب جميع المنتجات (بما فيها المخفية)
     const result = await env.DB.prepare(
-      'SELECT id, name, brand, category, price, stock, image_url, is_hidden FROM products ORDER BY id ASC'
+      'SELECT id, name, brand, category, price, stock, image_url, is_hidden, description, created_at FROM products ORDER BY id ASC'
     ).all();
 
     return new Response(JSON.stringify({

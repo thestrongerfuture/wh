@@ -12,26 +12,54 @@
     .login-box h2 { color: var(--primary); margin-bottom: 20px; }
     .login-box input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; margin-bottom: 12px; font-family: inherit; text-align: center; }
     .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; }
+
     .order-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
     .order-header { background: #f8fafc; padding: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); }
     .order-info { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
     .order-info strong { color: var(--primary); font-size: 1rem; }
+    
     .order-body { padding: 16px; }
-    .order-item-row { display: grid; grid-template-columns: 1fr 80px 80px 80px 90px 40px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    
+    .order-item-row {
+      display: grid;
+      grid-template-columns: 1fr 100px 100px 100px 40px;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
     .order-item-row:last-child { border-bottom: none; }
+    
+    .btn-delete-item {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      justify-self: center;
+      transition: 0.2s;
+    }
+    .btn-delete-item:hover { background: #fca5a5; }
+
     .order-item-row input { width: 70px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: center; }
-    .line-subtotal { font-weight: 700; color: var(--primary); text-align: center; }
-    .btn-del-item { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-weight: 700; font-size: 1rem; }
-    .btn-del-item:hover { background: #fecaca; }
     .order-actions { padding: 16px; background: #f8fafc; display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-approve { background: var(--success); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
     .btn-approve:hover { background: #059669; }
     .btn-reject { background: var(--danger); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
     .btn-reject:hover { background: #dc2626; }
+    
     .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
     .status-pending { background: #fef3c7; color: #92400e; }
     .status-approved { background: #d1fae5; color: #065f46; }
     .status-rejected { background: #fee2e2; color: #991b1b; }
+
     .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
     .tab-btn { padding: 8px 16px; border-radius: var(--radius-sm); background: #fff; border: 2px solid var(--border); font-weight: 700; font-size: 0.9rem; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -69,16 +97,6 @@
       <button class="tab-btn active" data-status="pending">⏳ معلقة</button>
       <button class="tab-btn" data-status="approved">✅ موافق عليها</button>
       <button class="tab-btn" data-status="rejected">❌ مرفوضة</button>
-    </div>
-
-    <div style="background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 200px;">
-        <strong style="color: var(--primary);">📦 تحديث المخزون والأسعار (CSV)</strong>
-        <p style="margin: 4px 0 0; font-size: 0.85rem; color: var(--text-muted);">ارفع ملف CSV يحتوي على أعمدة <code>unique_id</code> و <code>stock</code> (واختيارياً <code>price_usd</code>)</p>
-      </div>
-      <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-      <button id="downloadSampleBtn" class="btn-outline" style="padding: 10px 20px; background: #fff; border-color: var(--primary); color: var(--primary);">📥 تنزيل نموذج</button>
-      <button id="uploadCsvBtn" class="btn-primary" style="padding: 10px 20px;">📤 رفع الملف</button>
     </div>
 
     <div id="loading" class="loading">⏳ جاري التحميل...</div>
@@ -157,30 +175,27 @@
       card.className = 'order-card';
       card.dataset.orderId = o.id;
 
-      const date = new Date(o.created_at);
-      const syriaDate = new Date(date.getTime() + (3 * 60 * 60 * 1000));
-      const dateStr = syriaDate.toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
+      const safeDate = o.created_at.includes('Z') ? o.created_at : o.created_at.replace(' ', 'T') + 'Z';
+      const date = new Date(safeDate);
+      const dateStr = date.toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
       const isPending = o.status === 'pending';
       const statusLabels = { pending: 'معلقة', approved: 'موافق عليها', rejected: 'مرفوضة' };
 
       let itemsHtml = '';
       o.items.forEach(it => {
-        const lineSubtotal = Number(it.price) * Number(it.quantity);
+        const subtotal = Number(it.price) * Number(it.quantity);
         itemsHtml += `
           <div class="order-item-row" data-item-id="${it.id}" data-price="${Number(it.price)}" data-qty="${Number(it.quantity)}">
             <span>${it.product_id ? `<strong>#${it.product_id}</strong> ` : ''}${it.name || 'منتج'}${it.offer_id ? ' (عرض)' : ''}</span>
             <span>$${Number(it.price).toFixed(2)}</span>
+            <span class="line-subtotal">$${subtotal.toFixed(2)}</span>
             <span>
               ${isPending 
-                ? `<input type="number" class="qty-input" data-item-id="${it.id}" min="1" max="${it.stock || 999}" value="${it.quantity}">`
+                ? `<input type="number" class="qty-input" data-pid="${it.product_id || ''}" data-oid="${it.offer_id || ''}" min="1" max="${it.stock || 999}" value="${it.quantity}">`
                 : `<strong>${it.quantity}</strong>`
               }
             </span>
-            <span class="line-subtotal">$${lineSubtotal.toFixed(2)}</span>
-            <span style="color:var(--text-muted); font-size:0.8rem;">${it.product_id ? `متاح: ${it.stock ?? '?'}` : 'عرض'}</span>
-            <span>
-              ${isPending ? `<button class="btn-del-item" data-item-id="${it.id}" title="حذف الصنف">🗑️</button>` : ''}
-            </span>
+            ${isPending ? `<button class="btn-delete-item" title="حذف الصنف">🗑️</button>` : `<span></span>`}
           </div>
         `;
       });
@@ -211,10 +226,8 @@
       if (isPending) {
         card.querySelector('.btn-approve').onclick = () => approveOrder(o, card);
         card.querySelector('.btn-reject').onclick = () => rejectOrder(o);
-        card.querySelectorAll('.qty-input').forEach(inp => {
-          inp.addEventListener('input', () => recalcTotal(card));
-        });
-        card.querySelectorAll('.btn-del-item').forEach(btn => {
+
+        card.querySelectorAll('.btn-delete-item').forEach(btn => {
           btn.onclick = () => {
             if (confirm('حذف هذا الصنف من الطلب؟')) {
               const row = btn.closest('.order-item-row');
@@ -222,6 +235,10 @@
               recalcTotal(card);
             }
           };
+        });
+
+        card.querySelectorAll('.qty-input').forEach(inp => {
+          inp.addEventListener('input', () => recalcTotal(card));
         });
       }
 
@@ -245,14 +262,19 @@
 
     async function approveOrder(o, card) {
       const inputs = card.querySelectorAll('.qty-input');
-      const items = Array.from(inputs).map(inp => ({
-        item_id: parseInt(inp.dataset.itemId),
-        quantity: parseInt(inp.value)
-      }));
+      const items = Array.from(inputs).map(inp => {
+        const productId = inp.dataset.pid;
+        const offerId = inp.dataset.oid;
+        if (offerId && offerId !== 'null' && offerId !== '') {
+          return { offer_id: parseInt(offerId), quantity: parseInt(inp.value) };
+        } else {
+          return { product_id: parseInt(productId), quantity: parseInt(inp.value) };
+        }
+      });
 
-      const visibleIds = new Set(items.map(i => i.item_id));
-      const originalIds = (o.items || []).map(it => Number(it.id));
-      const deleted_item_ids = originalIds.filter(id => !visibleIds.has(id));
+      const currentItemIds = Array.from(card.querySelectorAll('.order-item-row')).map(r => parseInt(r.dataset.itemId));
+      const originalItemIds = o.items.map(it => it.id);
+      const deletedIds = originalItemIds.filter(id => !currentItemIds.includes(id));
 
       if (!confirm(`هل أنت متأكد من الموافقة على الطلب #${o.id}؟\nسيتم خصم الكميات من المخزون.`)) return;
 
@@ -260,7 +282,7 @@
         const res = await fetch('/api/admin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
-          body: JSON.stringify({ action: 'approve', order_id: o.id, items, deleted_item_ids })
+          body: JSON.stringify({ action: 'approve', order_id: o.id, items, deleted_item_ids: deletedIds })
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
@@ -282,43 +304,6 @@
         alert('❌ تم رفض الطلب');
         loadOrders();
       } catch (e) { alert('❌ ' + e.message); }
-    }
-
-    const uploadCsvBtn = document.getElementById('uploadCsvBtn');
-    const csvFileInput = document.getElementById('csvFileInput');
-    if (uploadCsvBtn && csvFileInput) {
-      uploadCsvBtn.onclick = () => csvFileInput.click();
-      csvFileInput.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (!file.name.toLowerCase().endsWith('.csv')) { alert('❌ الملف يجب أن يكون بصيغة CSV'); return; }
-        const formData = new FormData();
-        formData.append('file', file);
-        uploadCsvBtn.disabled = true;
-        uploadCsvBtn.textContent = '⏳ جاري الرفع...';
-        try {
-          const res = await fetch('/api/update-stock', { method: 'POST', headers: { 'X-Admin-Password': adminPassword }, body: formData });
-          const data = await res.json();
-          if (!data.ok) throw new Error(data.error);
-          let msg = `✅ تمت المعالجة بنجاح!\n\n📦 إجمالي الصفوف في الملف: ${data.total}\n➕ تمت إضافة منتجات جديدة: ${data.added}\n🔄 تم تحديث منتجات موجودة: ${data.updated}`;
-          alert(msg);
-          loadOrders();
-        } catch (err) { alert('❌ خطأ: ' + err.message); }
-        finally { uploadCsvBtn.disabled = false; uploadCsvBtn.textContent = '📤 رفع الملف'; csvFileInput.value = ''; }
-      };
-    }
-
-    const downloadSampleBtn = document.getElementById('downloadSampleBtn');
-    if (downloadSampleBtn) {
-      downloadSampleBtn.onclick = () => {
-        const csvContent = "unique_id,name,brand,category,stock,price_usd\n5001,منتج تجريبي 1,ATARAXY,شاحن,150,5.99\n5002,منتج تجريبي 2,أخرى,سماعة,80,12.50\n";
-        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'sample_products.csv';
-        link.click();
-        URL.revokeObjectURL(link.href);
-      };
     }
 
     if (adminPassword) showAdmin();

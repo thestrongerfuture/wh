@@ -431,24 +431,37 @@
       }
     }
 
-    document.getElementById('useMyLocationBtn').addEventListener('click', () => {
+        document.getElementById('useMyLocationBtn').addEventListener('click', () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
+            
+            document.getElementById('locationLat').value = lat;
+            document.getElementById('locationLng').value = lng;
+            
             if (map && marker) {
               map.setView([lat, lng], 15);
               marker.setLatLng([lat, lng]);
-              updateLocation(lat, lng);
+            }
+            
+            const statusEl = document.getElementById('locationStatus');
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.textContent = '✅ تم تحديد موقعك الحالي بنجاح';
+              statusEl.style.color = 'green';
             }
           },
-          () => {
-            alert('❌ لم نتمكن من جلب موقعك. يرجى التأكد من السماح بالوصول إلى الموقع.');
+          (error) => {
+            const statusEl = document.getElementById('locationStatus');
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.textContent = '❌ تعذر تحديد الموقع. يرجى فتح الخريطة وتحديده يدوياً.';
+              statusEl.style.color = 'red';
+            }
           }
         );
-      } else {
-        alert('❌ متصفحك لا يدعم تحديد الموقع.');
       }
     });
 

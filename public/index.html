@@ -7,25 +7,6 @@
   <meta name="description" content="متجر شركة المستقبل الأقوى - The Stronger Future">
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/style.css">
-    <!-- [Clock] CSS -->
-    <style>
-      .syria-clock {
-        display: inline-block;
-        margin-top: 4px;
-        background: #ffffff;
-        color: #1e3a8a;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: bold;
-        font-family: 'Tajawal', sans-serif;
-        border: 1px solid #1e3a8a;
-        white-space: nowrap;
-      }
-      @media (max-width: 900px) {
-        .syria-clock { font-size: 10px; padding: 2px 6px; margin-top: 2px; }
-      }
-    </style>
 </head>
 <body>
 
@@ -39,12 +20,18 @@
         <div class="brand-text">
           <span class="ar">شركة المستقبل الأقوى</span>
           <span class="en">متجر الجملة</span>
-          <div class="syria-clock" id="syriaClock">جاري التحميل...</div>
         </div>
       </a>
 
       <!-- أزرار (يسار) -->
       <div class="header-actions">
+
+        <!-- الساعة والتاريخ (بالألوان القديمة: أبيض + أزرق) -->
+        <div class="header-clock" id="headerClock" style="display: flex; align-items: center; gap: 5px; background: #ffffff; border: 1px solid #0A2472; padding: 6px 15px; border-radius: 8px; font-size: 0.85rem; margin-left: auto; margin-right: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <span id="clockTime" style="font-weight: bold; color: #0A2472;"></span>
+            <span id="clockDate" style="color: #0A2472; opacity: 0.8;"></span>
+        </div>
+
         <!-- الخريطة -->
         <a href="https://maps.app.goo.gl/EZ3p8wQMnWsoLa227" target="_blank" rel="noopener" class="icon-btn" style="background: #fff; color: #374151; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
           📍 <span>الخريطة</span>
@@ -67,13 +54,13 @@
           💳 <span>شام كاش</span>
         </button>
 
-        <!-- الإدارة -->
+        <!-- السلة -->
         <a href="/cart.html" class="icon-btn" id="cartBtn" style="background: #fff; color: #0040C0; border: none; font-weight: 700;">
           🛒 <span>السلة:</span>
           <span class="cart-badge" id="cartBadge" style="background: #0040C0; color: #fff; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-right: 4px;">0</span>
         </a>
 
-        <!-- السلة -->
+        <!-- الإدارة -->
         <a href="/admin.html" class="icon-btn" style="background: #fff; color: #374151; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
           ⚙️ <span>الإدارة</span>
         </a>
@@ -85,71 +72,31 @@
   <section class="brand-selector" id="brandSelector">
     <div class="container">
       <div class="selector-actions" style="display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; align-items: center; justify-content: flex-start; padding-bottom: 5px;">
-        
-        
       </div>
-      <div class="brand-buttons" id="brandButtons">
-        <!-- تُملأ بـ JS -->
-      </div>
+      <div class="brand-buttons" id="brandButtons"></div>
     </div>
   </section>
 
   <!-- ============ CATEGORY BAR ============ -->
   <nav class="category-bar" id="categoryBar">
-    <div class="container" id="categoryChips">
-      <!-- تُملأ بـ JS -->
-    </div>
+    <div class="container" id="categoryChips"></div>
   </nav>
 
-  <!-- ============ PRODUCTS ============ -->
-    <!-- ============ SEARCH BAR ============ -->
+  <!-- ============ SEARCH BAR ============ -->
   <div class="container" style="padding-top: 12px;">
     <div style="position: relative; max-width: 500px; margin: 0 auto;">
-      <input 
-        type="text" 
-        id="searchInput" 
-        placeholder="🔍 ابحث عن منتج بالاسم أو الرقم..." 
-        style="
-          width: 100%;
-          padding: 12px 44px 12px 44px;
-          border: 2px solid var(--border);
-          border-radius: 999px;
-          font-size: 1rem;
-          font-family: inherit;
-          transition: all 0.2s;
-          background: #fff;
-        "
-      >
-      <button 
-        id="clearSearchBtn" 
-        style="
-          position: absolute;
-          left: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: #f3f4f6;
-          color: var(--text-muted);
-          display: none;
-          align-items: center;
-          justify-content: center;
-          font-size: 1rem;
-        "
-        title="مسح البحث"
-      >✕</button>
+      <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج بالاسم أو الرقم..." style="width: 100%; padding: 12px 44px 12px 44px; border: 2px solid var(--border); border-radius: 999px; font-size: 1rem; font-family: inherit; transition: all 0.2s; background: #fff;">
+      <button id="clearSearchBtn" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: #f3f4f6; color: var(--text-muted); display: none; align-items: center; justify-content: center; font-size: 1rem;" title="مسح البحث">✕</button>
     </div>
   </div>
-<main class="container">
+  
+  <main class="container">
     <div id="loadingState" class="loading">⏳ جاري تحميل المنتجات...</div>
     <div id="emptyState" class="empty-state hidden">
       <div class="emoji">🛍️</div>
       <p>لا توجد منتجات مطابقة للفلاتر الحالية</p>
     </div>
-    <div class="products-grid" id="productsGrid">
-      <!-- تُملأ بـ JS -->
-    </div>
+    <div class="products-grid" id="productsGrid"></div>
   </main>
 
   <!-- ============ FLOATING WHATSAPP ============ -->
@@ -168,8 +115,6 @@
     </div>
   </div>
 
-  <!-- ============ SCRIPTS ============ -->
-  
   <!-- ============ PRODUCT MODAL ============ -->
   <div class="modal-overlay hidden" id="productModal">
     <div class="modal-content product-modal-content">
@@ -218,37 +163,22 @@
           <button class="btn-primary" id="pmAddToCart" style="flex:1; padding:14px; font-size:1rem;">🛒 أضف للسلة</button>
           <button class="btn-icon-small share" id="pmShareBtn" style="width:50px; height:auto;">🔗</button>
           <button class="btn-icon-small trash" id="pmTrashBtn" style="width:50px; height:auto; color:var(--danger);" title="حذف من السلة">🗑️</button>
-          
-          
         </div>
       </div>
     </div>
   </div>
 
   <style>
-    .product-modal-content {
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px;
-    }
-    .pm-image-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1/1;
-      background: #f9fafb;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .product-modal-content { max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 20px; }
+    .pm-image-wrap { position: relative; width: 100%; aspect-ratio: 1/1; background: #f9fafb; border-radius: var(--radius-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .pm-image-wrap img { width: 100%; height: 100%; object-fit: contain; }
     .pm-image-wrap .product-placeholder { font-size: 4rem; }
     .meta-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .badge { background: #e0e7ff; color: var(--primary); padding: 3px 10px; border-radius: 999px; font-weight: 700; font-size: 0.75rem; }
   </style>
+  
   <script src="/js/main.js"></script>
+
   <!-- ============ SHARE MENU ============ -->
   <div class="modal-overlay hidden" id="shareModal" style="z-index: 300;">
     <div class="modal-content" style="max-width: 320px; padding: 20px;">
@@ -290,26 +220,22 @@
     </a>
   </nav>
 
-    <!-- [Clock] JS -->
-    <script>
-      function updateSyriaClock() {
-        const now = new Date();
-        const timeFormatter = new Intl.DateTimeFormat('ar-SY', { timeZone: 'Asia/Damascus', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-        const timeStr = timeFormatter.format(now);
-        
-        const dateFormatter = new Intl.DateTimeFormat('ar-SY', { timeZone: 'Asia/Damascus', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        const dateStr = dateFormatter.format(now);
-
-        const el = document.getElementById('syriaClock');
-        if(el) {
-            el.style.direction = 'rtl';
-            el.innerHTML = timeStr + ' - ' + dateStr;
-        }
+  <!-- ساعة سوريا -->
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('ar-SY', { timeZone: 'Asia/Damascus', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const dateStr = now.toLocaleDateString('ar-SY', { timeZone: 'Asia/Damascus', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      
+      const clockEl = document.getElementById('headerClock');
+      if (clockEl) {
+        clockEl.style.display = 'flex';
+        document.getElementById('clockTime').textContent = timeStr;
+        document.getElementById('clockDate').textContent = ' - ' + dateStr;
       }
-      setInterval(updateSyriaClock, 1000);
-      updateSyriaClock();
-    </script>
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 </body>
 </html>
-
-

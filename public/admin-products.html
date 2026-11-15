@@ -350,11 +350,38 @@
       } catch (e) { alert('❌ ' + e.message); }
     };
 
-    $('#exportProductsBtn').onclick = () => {
+    // التصدير مع عمود الصورة picture
+    $('#exportProductsBtn').onclick = async () => {
       if (allProducts.length === 0) { alert('❌ لا توجد منتجات لتصديرها'); return; }
-      const headers = ['id', 'name', 'brand', 'category', 'stock', 'price', 'description'];
+      
+      const btn = document.getElementById('exportProductsBtn');
+      btn.textContent = '⏳ جاري فحص الصور...';
+      btn.disabled = true;
+
+      const headers = ['id', 'name', 'brand', 'category', 'stock', 'price', 'description', 'picture'];
       const csvRows = [headers.join(',')];
-      allProducts.forEach(p => {
+      
+      for (let p of allProducts) {
+        let hasImage = 'لا';
+        
+        try {
+          // نستخدم fetch لفحص وجود الصورة. إذا أعاد السيرفر صورة، فهي موجودة.
+          // ملاحظة: إذا كانت الصورة غير موجودة، خوادم Cloudflare قد تعيد صفحة 404 أو index.html.
+          const res = await fetch('/images/products/' + p.id + '.webp');
+          const contentType = res.headers.get('content-type');
+          
+          if (res.ok && contentType && contentType.includes('image')) {
+             hasImage = 'نعم';
+          } else {
+             // فحص صيغة jpg
+             const resJpg = await fetch('/images/products/' + p.id + '.jpg');
+             const typeJpg = resJpg.headers.get('content-type');
+             if (resJpg.ok && typeJpg && typeJpg.includes('image')) {
+                 hasImage = 'نعم';
+             }
+          }
+        } catch (e) { /* تجاهل */ }
+
         const row = [
           p.id,
           `"${(p.name || '').replace(/"/g, '""')}"`,
@@ -362,10 +389,12 @@
           `"${(p.category || '').replace(/"/g, '""')}"`,
           p.stock,
           p.price,
-          `"${(p.description || '').replace(/"/g, '""')}"`
+          `"${(p.description || '').replace(/"/g, '""')}"`,
+          `"${hasImage}"`
         ];
         csvRows.push(row.join(','));
-      });
+      }
+      
       const csvContent = csvRows.join('\n');
       const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
@@ -373,6 +402,9 @@
       link.download = `products_export_${new Date().toISOString().split('T')[0]}.csv`;
       link.click();
       URL.revokeObjectURL(link.href);
+
+      btn.textContent = '📤 تصدير منتجات المتجر إلى ملف CSV';
+      btn.disabled = false;
     };
 
     const csvFileInput = $('#csvFileInput');

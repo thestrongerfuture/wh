@@ -2215,3 +2215,161 @@ div:has(> #pmStock) {
 #pmStock {
   display: none !important;
 }
+/* ============================================================
+   تصحيح ترتيب الشريط العلوي في الموبايل (الساعة تحت الأزرار)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    .header-clock {
+        order: 2 !important; /* ترتيب الساعة ليكون في الأسفل */
+        margin: 10px auto 0 auto !important;
+    }
+}
+
+/* ============================================================
+   تصحيح ترتيب الشريط العلوي في الموبايل (الساعة تحت الأزرار)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    .header-clock {
+        flex-basis: 100% !important; /* الساعة تأخذ سطراً كاملاً وتنزل للأسفل */
+        order: 99 !important;
+        margin: 10px auto 0 auto !important;
+    }
+}
+
+/* ============================================================
+   تصحيح شكل الساعة في الموبايل (تصغير العرض والتوسط)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    .header-clock {
+        flex-basis: 100% !important;
+        order: 99 !important;
+        margin: 10px auto 0 auto !important;
+        width: 85% !important; /* تصغير العرض */
+        justify-content: center !important; /* توسيط النص داخل الساعة */
+        font-size: 0.75rem !important; /* تصغير الخط قليلاً */
+    }
+}
+
+/* ============================================================
+   📱 ترتيب الشريط العلوي في الموبايل (نفس متجر السعدني)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* 1. ترتيب الشعار أولاً */
+    .brand {
+        order: 1 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 2. ترتيب الأزرار ثالثاً وأسفل الساعة */
+    .header-actions {
+        order: 3 !important;
+        justify-content: center !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* 3. ترتيب الساعة في الأسفل لتأخذ سطراً كاملاً وتتوسط */
+    .header-clock {
+        order: 2 !important;
+        flex-basis: 100% !important;
+        margin: 10px auto 0 auto !important;
+        width: 85% !important;
+        justify-content: center !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* ============================================================
+   📱 ترتيب الشريط العلوي في الموبايل (نفس متجر السعدني)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* 1. الشعار أولاً */
+    .brand {
+        order: 1 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 2. الأزرار في المنتصف */
+    .header-actions {
+        order: 2 !important;
+        justify-content: center !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* 3. الساعة في الأسفل (تأخذ سطراً كاملاً وصغيرة في المنتصف) */
+    .header-clock {
+        order: 3 !important;
+        flex-basis: 100% !important;
+        margin: 10px auto 0 auto !important;
+        width: 85% !important;
+        justify-content: center !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* ============================================================
+   📱 ترتيب الشريط العلوي في الموبايل (الساعة كبسولة صغيرة)
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* 1. الشعار أولاً */
+    .brand {
+        order: 1 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 2. الأزرار في المنتصف */
+    .header-actions {
+        order: 2 !important;
+        justify-content: center !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* 3. الساعة في الأسفل، بحجم المحتوى فقط، ومتوسطة */
+    .header-clock {
+        order: 3 !important;
+        display: inline-flex !important;
+        width: max-content !important; /* العرض على قدر المحتوى */
+        margin: 10px auto 0 auto !important; /* توسيط */
+        font-size: 0.75rem !important;
+    }
+}

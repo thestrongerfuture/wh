@@ -1,0 +1,2544 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إعدادات المتجر</title>
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  color: #000000;
+}
+
+.settings-wrap {
+  width: 100%;
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.06);
+  border: 1px solid #eee;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.card h2 {
+  margin: 0 0 16px;
+  color: #000000;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field { margin-bottom: 14px; }
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: .9rem;
+  color: #000000;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .95rem;
+  color: #000000;
+  direction: ltr;
+  text-align: left;
+}
+
+.field textarea {
+  direction: rtl;
+  text-align: right;
+  min-height: 70px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10,36,114,.1);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .95rem;
+  transition: opacity .15s;
+}
+
+.btn:hover { opacity: .88; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-success { background: #10b981; color: #fff; }
+.btn-danger { background: #dc2626; color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: .85rem; }
+
+.login-box { max-width: 400px; margin: 80px auto; }
+
+.pm-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.pm-table th,
+.pm-table td {
+  padding: 10px;
+  text-align: right;
+  border-bottom: 1px solid #eee;
+  font-size: .9rem;
+  color: #000000;
+}
+
+.pm-table th {
+  background: #f9fafb;
+  font-weight: 700;
+}
+
+.pm-table .actions { display: flex; gap: 6px; }
+
+.pm-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.badge-active {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.badge-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-box h3 {
+  margin: 0 0 16px;
+  color: #000000;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+.toast.error { background: #dc2626; }
+.toast.success { background: #10b981; }
+
+.hidden { display: none !important; }
+
+.page-heading,
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo-preview-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+#storeLogoPreview {
+  display: block;
+  max-width: 220px;
+  max-height: 130px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.logo-empty {
+  color: #000000;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.logo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.help-text {
+  color: #000000;
+  font-size: .85rem;
+  line-height: 1.8;
+}
+
+.palette-wrap {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.palette-heading {
+  margin: 0 0 8px;
+  font-size: .98rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.palette-color {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.palette-swatch {
+  height: 42px;
+  width: 100%;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.palette-info {
+  padding: 8px;
+  text-align: center;
+}
+
+.palette-name {
+  display: block;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 6px;
+}
+
+.palette-manual-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.palette-picker {
+  width: 34px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.palette-hex-input {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 7px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  direction: ltr;
+  text-align: center;
+  font-size: .76rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+.palette-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.palette-actions-row .btn {
+  flex: 1;
+  min-width: 200px;
+}
+
+.palette-empty {
+  color: #000000;
+  font-size: .85rem;
+  line-height: 1.8;
+}
+
+.palette-apply-area {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.palette-status {
+  margin-bottom: 12px;
+  font-size: .9rem;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.palette-status.active { color: #047857; }
+.palette-status.inactive { color: #000000; }
+
+#applyBrandPaletteBtn {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .settings-wrap {
+    margin: 14px auto;
+    padding: 0 10px;
+  }
+
+  .card {
+    padding: 16px 13px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+  }
+
+  .card h2 {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    flex-wrap: wrap;
+  }
+
+  .page-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .page-heading h1 {
+    font-size: 1.2rem !important;
+    margin: 0;
+  }
+
+  .page-heading a { align-self: flex-start; }
+
+  .section-heading { align-items: stretch; }
+
+  .section-heading h2 { margin-bottom: 6px !important; }
+
+  .section-heading button { width: 100%; }
+
+  .field { margin-bottom: 13px; }
+
+  .field label {
+    font-size: .88rem;
+    line-height: 1.6;
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px;
+    font-size: 16px;
+  }
+
+  .btn {
+    min-height: 42px;
+    padding: 10px 14px;
+  }
+
+  #saveSettingsBtn,
+  #saveStoreIdentityBtn,
+  #saveCommunityWhatsappBtn,
+  #changeAdminPasswordBtn,
+  #checkCleanupBtn,
+  #confirmCleanupBtn,
+  #cancelCleanupBtn,
+  #saveManualPaletteBtn {
+    width: 100%;
+  }
+
+  .login-box {
+    width: calc(100% - 24px);
+    max-width: 400px;
+    margin: 45px auto;
+  }
+
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 10px;
+  }
+
+  .modal-box {
+    width: 100%;
+    max-width: none;
+    max-height: 85vh;
+    padding: 18px 14px;
+    border-radius: 16px 16px 12px 12px;
+  }
+
+  .modal-box h3 { font-size: 1.05rem; }
+
+  .modal-box > div:last-child { flex-wrap: wrap; }
+
+  .toast {
+    width: calc(100% - 24px);
+    max-width: 420px;
+    left: 12px;
+    bottom: 15px;
+    transform: none;
+    text-align: center;
+    padding: 12px;
+    font-size: .9rem;
+  }
+
+  #cleanupResult { overflow-wrap: anywhere; }
+
+  .logo-actions { flex-direction: column; }
+  .logo-actions .btn { width: 100%; }
+
+  .palette-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 360px) {
+  .settings-wrap { padding: 0 7px; }
+  .card { padding: 13px 10px; }
+  .card h2 { font-size: .96rem; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- تسجيل الدخول -->
+<div id="loginSection" class="hidden">
+  <div class="login-box card">
+    <h2>🔐 لوحة إعدادات المتجر</h2>
+    <div class="field">
+      <label>كلمة مرور المدير</label>
+      <input type="password" id="adminPass" placeholder="أدخل كلمة المرور">
+    </div>
+    <button class="btn btn-primary" id="loginBtn" style="width:100%;">دخول</button>
+  </div>
+</div>
+
+<!-- الإعدادات -->
+<div id="settingsSection" class="settings-wrap hidden">
+
+  <div class="page-heading" style="margin-bottom:16px;">
+    <h1 style="color:#000000;font-size:1.4rem;">⚙️ إعدادات المتجر</h1>
+    <a href="/admin.html" class="btn btn-sm"
+       style="background:#e5e7eb;color:#000000;text-decoration:none;">
+      ← رجوع للطلبات
+    </a>
+  </div>
+
+  <!-- هوية المتجر -->
+  <div class="card">
+    <h2>🏪 هوية المتجر</h2>
+
+    <div class="field">
+      <label for="store_name_ar">اسم المتجر بالعربية</label>
+      <input type="text" id="store_name_ar" placeholder="اسم المتجر بالعربية" dir="rtl">
+    </div>
+
+    <div class="field">
+      <label for="store_name_en">اسم المتجر بالإنجليزية</label>
+      <input type="text" id="store_name_en" placeholder="Store name in English" dir="ltr">
+    </div>
+
+    <button class="btn btn-success" id="saveStoreIdentityBtn">
+      💾 حفظ أسماء المتجر
+    </button>
+
+    <hr style="border:0;border-top:1px solid #eee;margin:22px 0;">
+
+    <h2>🖼️ شعار المتجر</h2>
+
+    <div class="logo-preview-wrap">
+      <img id="storeLogoPreview" class="hidden" alt="معاينة شعار المتجر">
+      <div id="logoEmpty" class="logo-empty">لا يوجد شعار مرفوع حالياً</div>
+    </div>
+
+    <div class="field">
+      <label for="storeLogoFile">اختيار شعار جديد</label>
+      <input type="file" id="storeLogoFile" accept="image/png">
+      <small class="help-text">
+        الصيغة المطلوبة PNG، والحد الأقصى لحجم الملف 5 ميجابايت.
+      </small>
+    </div>
+
+    <div class="logo-actions">
+      <button class="btn btn-primary" id="uploadLogoBtn">
+        ⬆️ رفع واستبدال الشعار
+      </button>
+
+      <button class="btn btn-danger" id="deleteLogoBtn">
+        🗑️ مسح الشعار
+      </button>
+    </div>
+
+    <!-- لوحة الألوان المستخرجة من الشعار + التعديل اليدوي -->
+    <div class="palette-wrap">
+      <h3 class="palette-heading">🎨 هوية المتجر اللونية</h3>
+      <p class="help-text">
+        يستخرج النظام لونين أساسيين واضحين من الشعار عند رفعه، ويمكنك أيضاً اختيار أو تعديل أي لون يدوياً في أي وقت دون الاستغناء عن استيراد الألوان من الشعار.
+      </p>
+
+      <div id="paletteEmpty" class="palette-empty">
+        لم يتم استخراج لوحة ألوان بعد. ارفع شعار المتجر لإنشائها أو عدّل الألوان يدوياً واحفظها.
+      </div>
+
+      <div id="paletteGrid" class="palette-grid hidden"></div>
+
+      <div class="palette-apply-area">
+        <div id="paletteStatus" class="palette-status inactive">
+          ألوان الشعار غير مطبقة حالياً.
+        </div>
+
+        <div class="palette-actions-row">
+          <button class="btn btn-success" id="saveManualPaletteBtn">
+            💾 حفظ الألوان اليدوية
+          </button>
+
+          <button class="btn btn-primary" id="applyBrandPaletteBtn" disabled>
+            🎨 تطبيق ألوان الشعار على المتجر بالكامل
+          </button>
+        </div>
+
+        <p class="help-text">
+          يمكنك العودة إلى الهوية الافتراضية بالأبيض والأسود عند حذف الشعار.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- عملة المتجر -->
+  <div class="card">
+    <h2>💱 عملة المتجر</h2>
+
+    <div class="field">
+      <label for="currencyPresetSelect">اختيار عملة جاهزة (اختياري)</label>
+      <select id="currencyPresetSelect">
+        <option value="">-- اختر عملة جاهزة أو اكتب رمزاً مخصصاً --</option>
+        <option value="ج.م">جنيه مصري (ج.م)</option>
+        <option value="ل.س">ليرة سورية (ل.س)</option>
+        <option value="$">دولار أمريكي ($)</option>
+        <option value="ر.س">ريال سعودي (ر.س)</option>
+        <option value="د.إ">درهم إماراتي (د.إ)</option>
+        <option value="€">يورو (€)</option>
+        <option value="__NONE__">بدون عملة (عرض الرقم فقط)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="store_currency">رمز أو اسم العملة المعروض مع السعر</label>
+      <input type="text" id="store_currency" placeholder="مثال: ج.م أو ل.س أو $ (اتركه فارغاً لعرض الرقم فقط)">
+      <small class="help-text">
+        إذا تركت الحقل فارغاً، سيُعرض السعر كرقم فقط بدون أي عملة وبدون فراغ إضافي.
+      </small>
+    </div>
+
+    <button class="btn btn-success" id="saveCurrencyBtn">
+      💾 حفظ عملة المتجر
+    </button>
+  </div>
+
+  <!-- توقيت المتجر -->
+  <div class="card">
+    <h2>🕒 منطقة التوقيت والساعة</h2>
+
+    <div class="field">
+      <label for="timezonePresetSelect">اختيار منطقة توقيت جاهزة (اختياري)</label>
+      <select id="timezonePresetSelect">
+        <option value="">-- اختر منطقة توقيت أو اكتبها يدوياً --</option>
+        <option value="GMT+2">توقيت القاهرة / أوروبا الشرقية (GMT+2)</option>
+        <option value="GMT+3">توقيت دمشق / الرياض / موسكو (GMT+3)</option>
+        <option value="GMT+4">توقيت دبي / أبوظبي (GMT+4)</option>
+        <option value="GMT+0">التوقيت العالمي المنسق (GMT+0)</option>
+        <option value="GMT-5">توقيت نيويورك الشتوي (GMT-5)</option>
+        <option value="GMT-4">توقيت نيويورك الصيفي (GMT-4)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="store_timezone">منطقة التوقيت المعتمدة للمتجر</label>
+      <input type="text" id="store_timezone" placeholder="مثال: GMT+3 أو +03:00 أو Asia/Damascus">
+      <small class="help-text">
+        سيُستخدم هذا التوقيت لعرض الساعة والتاريخ في الفواتير والأماكن المرتبطة به.
+      </small>
+    </div>
+
+    <button class="btn btn-success" id="saveTimezoneBtn">
+      💾 حفظ منطقة التوقيت
+    </button>
+  </div>
+
+  <!-- بيانات التواصل -->
+  <div class="card">
+    <h2>📞 بيانات التواصل</h2>
+
+    <div class="field">
+      <label>رقم الواتساب (بصيغة دولية بدون +)</label>
+      <input type="text" id="whatsapp_number">
+    </div>
+
+    <div class="field">
+      <label>رقم واتساب استقبال فواتير الطلبات (بصيغة دولية بدون +)</label>
+      <input type="text" id="orders_whatsapp_number">
+      <small class="help-text">
+        هذا الرقم يستقبل فواتير الطلبات الجديدة من سلة المشتريات.
+      </small>
+    </div>
+
+    <div class="field">
+      <label>رابط صفحة الفيسبوك</label>
+      <input type="url" id="facebook_url">
+    </div>
+
+    <div class="field">
+      <label>رابط صفحة الإنستغرام</label>
+      <input type="url" id="instagram_url" placeholder="https://www.instagram.com/your-account">
+    </div>
+
+    <div class="field">
+      <label>رابط موقع الشركة على خرائط جوجل</label>
+      <input type="url" id="google_maps_url">
+    </div>
+
+    <button class="btn btn-success" id="saveSettingsBtn">
+      💾 حفظ الإعدادات
+    </button>
+  </div>
+
+  <!-- مجتمع واتساب -->
+  <div class="card">
+    <h2>👥 مجتمع واتساب</h2>
+
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="community_whatsapp_enabled" style="width:auto;">
+        إظهار زر مجتمع واتساب العائم
+      </label>
+    </div>
+
+    <div class="field">
+      <label>رابط دعوة مجتمع واتساب</label>
+      <input type="url" id="community_whatsapp_url">
+      <small class="help-text">
+        أدخل رابط دعوة المجتمع، وليس رقم واتساب التواصل العام.
+      </small>
+    </div>
+
+    <div class="field">
+      <label>رسالة التلميح عند المرور على الزر</label>
+      <input type="text" id="community_whatsapp_tooltip">
+    </div>
+
+    <button class="btn btn-success" id="saveCommunityWhatsappBtn">
+      💾 حفظ إعدادات المجتمع
+    </button>
+  </div>
+
+  <!-- العلامة المائية -->
+  <div class="card">
+    <h2>💧 العلامة المائية</h2>
+
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="watermark_enabled" style="width:auto;">
+        إظهار العلامة المائية على الصفحات الرئيسية الثلاثة
+      </label>
+    </div>
+
+    <div class="field">
+      <label for="watermark_type">نوع العلامة المائية</label>
+      <select id="watermark_type">
+        <option value="text">نص يكتبه المدير</option>
+        <option value="logo">شعار المتجر المرفوع</option>
+        <option value="image">صورة مخصصة (رابط)</option>
+      </select>
+    </div>
+
+    <div class="field" id="watermarkTextField">
+      <label for="watermark_text">نص العلامة المائية</label>
+      <input type="text" id="watermark_text" placeholder="مثال: اسم المتجر أو نص العلامة المائية" dir="rtl">
+    </div>
+
+    <div class="field hidden" id="watermarkImageField">
+      <label for="watermark_image_url">رابط صورة العلامة المائية</label>
+      <input type="url" id="watermark_image_url" placeholder="/api/image/Watermark.png أو رابط خارجي">
+      <small class="help-text">
+        يُستخدم عند اختيار "صورة مخصصة". يمكنك رفع صورة PNG ليتم حفظها باسم <strong>Watermark.png</strong> وتعبئة الرابط تلقائياً، أو مسحها بنفس طريقة الشعار.
+      </small>
+
+      <div class="logo-preview-wrap" style="margin-top:12px;min-height:120px;">
+        <img id="watermarkImagePreview" class="hidden" alt="معاينة صورة العلامة المائية"
+             style="display:block;max-width:200px;max-height:110px;width:auto;height:auto;object-fit:contain;">
+        <div id="watermarkImageEmpty" class="logo-empty">لا توجد صورة علامة مائية مرفوعة حالياً</div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label for="watermarkImageFile">اختيار صورة علامة مائية (PNG)</label>
+        <input type="file" id="watermarkImageFile" accept="image/png">
+        <small class="help-text">
+          الصيغة المطلوبة PNG، والحد الأقصى لحجم الملف 5 ميجابايت.
+        </small>
+      </div>
+
+      <div class="logo-actions">
+        <button type="button" class="btn btn-primary" id="uploadWatermarkBtn">
+          ⬆️ رفع واستبدال صورة العلامة المائية
+        </button>
+
+        <button type="button" class="btn btn-danger" id="deleteWatermarkBtn">
+          🗑️ مسح صورة العلامة المائية
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="watermark_opacity">شفافية العلامة المائية (من 0.05 إلى 0.40)</label>
+      <input type="number" id="watermark_opacity" step="0.01" min="0.05" max="0.40" value="0.10">
+      <small class="help-text">
+        رقم أصغر يعني شفافية أخف (مثلاً 0.08 أو 0.12) حتى تبقى مريحة ولا تغطي على المحتوى.
+      </small>
+    </div>
+
+    <button class="btn btn-success" id="saveWatermarkBtn">
+      💾 حفظ إعدادات العلامة المائية
+    </button>
+  </div>
+
+  <!-- تغيير كلمة مرور المدير -->
+  <div class="card">
+    <h2>🔐 تغيير كلمة مرور المدير</h2>
+
+    <div class="field">
+      <label>كلمة المرور الحالية</label>
+      <input type="password" id="currentAdminPassword"
+        placeholder="أدخل كلمة المرور الحالية" autocomplete="current-password">
+    </div>
+
+    <div class="field">
+      <label>كلمة المرور الجديدة</label>
+      <input type="password" id="newAdminPassword"
+        placeholder="6 أحرف على الأقل" autocomplete="new-password">
+    </div>
+
+    <div class="field">
+      <label>تأكيد كلمة المرور الجديدة</label>
+      <input type="password" id="confirmAdminPassword"
+        placeholder="أعد كتابة كلمة المرور الجديدة" autocomplete="new-password">
+    </div>
+
+    <button class="btn btn-primary" id="changeAdminPasswordBtn">
+      🔒 تغيير كلمة المرور
+    </button>
+
+    <p class="help-text">
+      يجب أن تتكون كلمة المرور الجديدة من 6 أحرف على الأقل.
+    </p>
+  </div>
+
+  <!-- طرق الدفع -->
+  <div class="card">
+    <div class="section-heading" style="margin-bottom:8px;">
+      <h2 style="margin:0;">💳 طرق الدفع</h2>
+      <button class="btn btn-primary btn-sm" id="addPmBtn">+ إضافة طريقة</button>
+    </div>
+
+    <p class="help-text" style="margin:0 0 8px;">
+      النص الذي تكتبه في التفاصيل هو ما سيُنسخ عند نقر الزبون على الطريقة.
+    </p>
+
+    <div class="pm-table-wrap">
+      <table class="pm-table" id="pmTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>التفاصيل</th>
+            <th>الحالة</th>
+            <th>الترتيب</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="pmTbody"></tbody>
+      </table>
+    </div>
+
+    <div id="pmEmpty" class="hidden"
+      style="text-align:center;padding:24px;color:#000000;">
+      لا توجد طرق دفع بعد. اضغط "+ إضافة طريقة".
+    </div>
+  </div>
+
+  <!-- تنظيف الطلبات -->
+  <div class="card">
+    <h2>🗑️ تنظيف الطلبات</h2>
+
+    <p style="color:#000000;font-size:.9rem;line-height:1.8;">
+      يمكنك حذف الطلبات حسب حالتها. سيتم حذف الطلبات وأصنافها فقط،
+      ولن يتم حذف المنتجات أو تغيير المخزون أو إعدادات المتجر.
+    </p>
+
+    <div class="field">
+      <label for="cleanupStatus">اختر حالة الطلبات المراد حذفها</label>
+      <select id="cleanupStatus"
+        style="width:100%;padding:11px;border:1px solid #d1d5db;border-radius:8px;font-family:inherit;">
+        <option value="approved">الطلبات التي تمت الموافقة عليها</option>
+        <option value="rejected">الطلبات المرفوضة</option>
+        <option value="pending">الطلبات المعلقة</option>
+      </select>
+    </div>
+
+    <button class="btn btn-danger" id="checkCleanupBtn">
+      🗑️ متابعة تنظيف الطلبات
+    </button>
+
+    <div id="cleanupResult" class="hidden"
+      style="margin-top:16px;padding:14px;border-radius:8px;background:#fff7ed;color:#000000;line-height:1.8;">
+    </div>
+
+    <button class="btn btn-danger hidden" id="confirmCleanupBtn" style="margin-top:12px;">
+      تأكيد حذف الطلبات
+    </button>
+
+    <button class="btn hidden" id="cancelCleanupBtn"
+      style="margin-top:12px;background:#e5e7eb;color:#000000;">
+      إلغاء
+    </button>
+  </div>
+</div>
+
+<!-- نافذة طرق الدفع -->
+<div class="modal-overlay hidden" id="pmModal">
+  <div class="modal-box">
+    <h3 id="pmModalTitle">إضافة طريقة دفع</h3>
+
+    <div class="field">
+      <label>اسم الطريقة</label>
+      <input type="text" id="pmName" placeholder="أدخل اسم طريقة الدفع">
+    </div>
+
+    <div class="field">
+      <label>التفاصيل (النص الذي سيُنسخ)</label>
+      <textarea id="pmDetails" placeholder="أدخل تفاصيل طريقة الدفع"></textarea>
+    </div>
+
+    <div class="field">
+      <label>الترتيب (رقم أصغر = يظهر أولاً)</label>
+      <input type="number" id="pmSort" value="0">
+    </div>
+
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="pmActive" checked style="width:auto;">
+        نشطة (ظاهرة للزبائن)
+      </label>
+    </div>
+
+    <input type="hidden" id="pmEditId" value="">
+
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-success" id="pmSaveBtn" style="flex:1;">حفظ</button>
+      <button class="btn" id="pmCancelBtn"
+        style="flex:1;background:#e5e7eb;color:#000000;">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastBox"></div>
+
+<script>
+const API = "/api";
+const $ = selector => document.querySelector(selector);
+
+let ADMIN_PASS = "";
+let currentLogoUrl = "";
+let currentBrandPalette = null;
+let brandPaletteActive = false;
+let storeCurrency = (typeof window.STORE_CURRENCY === "string")
+  ? window.STORE_CURRENCY
+  : (localStorage.getItem("store_currency") || "");
+
+function formatCurrency(amount) {
+  const num = Number(amount || 0).toFixed(2);
+  const cur = String(storeCurrency ?? "").trim();
+  return cur ? `${num} ${cur}` : num;
+}
+
+// ---------- Toast ----------
+function toast(message, type = "success") {
+  const element = document.createElement("div");
+  element.className = "toast " + type;
+  element.textContent = message;
+  document.body.appendChild(element);
+  setTimeout(() => element.remove(), 3000);
+}
+
+// ---------- API helper ----------
+async function readResponse(response) {
+  const data = await response.json();
+
+  if (!response.ok || data.ok === false || data.success === false) {
+    throw new Error(
+      data.error || data.message || "حدث خطأ أثناء تنفيذ الطلب"
+    );
+  }
+
+  return data;
+}
+
+// ---------- Palette helpers ----------
+const PALETTE_LABELS = {
+  primary: "اللون الأساسي",
+  secondary: "اللون الثانوي",
+  accent: "لون التمييز",
+  background: "الخلفية",
+  surface: "الأسطح",
+  text: "النصوص"
+};
+
+const DEFAULT_MANUAL_PALETTE = {
+  primary: "#0A2472",
+  secondary: "#1E40AF",
+  accent: "#3B82F6",
+  background: "#FFFFFF",
+  surface: "#F8FAFC",
+  text: "#000000"
+};
+
+function normalizeHexColor(raw) {
+  let val = String(raw || "").trim();
+  if (!val) return null;
+  if (!val.startsWith("#")) val = "#" + val;
+  if (!/^#[0-9A-Fa-f]{6}$/.test(val)) return null;
+  return val.toUpperCase();
+}
+
+function hexToRgb(hex) {
+  const value = String(hex || "").replace("#", "");
+
+  if (!/^[0-9a-fA-F]{6}$/.test(value)) {
+    throw new Error("قيمة لون غير صالحة");
+  }
+
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  };
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + [r, g, b]
+    .map(value => Math.max(0, Math.min(255, Math.round(value)))
+      .toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
+}
+
+function mixColor(color, target, amount) {
+  const a = hexToRgb(color);
+  const b = hexToRgb(target);
+
+  return rgbToHex(
+    a.r + (b.r - a.r) * amount,
+    a.g + (b.g - a.g) * amount,
+    a.b + (b.b - a.b) * amount
+  );
+}
+
+function colorDistance(a, b) {
+  const x = hexToRgb(a);
+  const y = hexToRgb(b);
+
+  return Math.sqrt(
+    Math.pow(x.r - y.r, 2) +
+    Math.pow(x.g - y.g, 2) +
+    Math.pow(x.b - y.b, 2)
+  );
+}
+
+function colorSaturation(color) {
+  const { r, g, b } = hexToRgb(color);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+
+  return max === 0 ? 0 : (max - min) / max;
+}
+
+function colorLuminance(color) {
+  const { r, g, b } = hexToRgb(color);
+
+  const channels = [r, g, b].map(value => {
+    const normalized = value / 255;
+
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+  });
+
+  return (
+    0.2126 * channels[0] +
+    0.7152 * channels[1] +
+    0.0722 * channels[2]
+  );
+}
+
+function isValidBrandPalette(palette) {
+  if (!palette || typeof palette !== "object") return false;
+
+  return Object.keys(PALETTE_LABELS).every(key =>
+    /^#[0-9A-F]{6}$/i.test(String(palette[key] || ""))
+  );
+}
+
+function updatePaletteControls() {
+  const button = $("#applyBrandPaletteBtn");
+  const status = $("#paletteStatus");
+
+  const hasPalette = isValidBrandPalette(currentBrandPalette);
+  const canApply = Boolean(currentLogoUrl && hasPalette);
+
+  button.disabled = !canApply || brandPaletteActive;
+
+  status.classList.toggle("active", brandPaletteActive);
+  status.classList.toggle("inactive", !brandPaletteActive);
+
+  if (brandPaletteActive) {
+    status.textContent = "✓ ألوان الهوية مطبقة حالياً على المتجر.";
+  } else if (!hasPalette) {
+    status.textContent = "ألوان الهوية غير مطبقة: لا توجد لوحة ألوان صالحة.";
+  } else if (!currentLogoUrl) {
+    status.textContent = "لوحة الألوان محفوظة، لكنها غير مطبقة حالياً (يمكنك حفظها يدوياً أو رفع شعار لتطبيق ألوان الشعار).";
+  } else {
+    status.textContent = "ألوان الشعار محفوظة وجاهزة للتطبيق، لكنها غير مطبقة حالياً.";
+  }
+}
+
+function setBrandPaletteActive(active) {
+  brandPaletteActive = Boolean(active);
+  updatePaletteControls();
+}
+
+function renderBrandPalette(palette) {
+  const grid = $("#paletteGrid");
+  const empty = $("#paletteEmpty");
+
+  grid.innerHTML = "";
+
+  const source = (palette && typeof palette === "object")
+    ? palette
+    : DEFAULT_MANUAL_PALETTE;
+
+  const built = {};
+  Object.keys(PALETTE_LABELS).forEach(key => {
+    built[key] = normalizeHexColor(source[key]) || DEFAULT_MANUAL_PALETTE[key];
+  });
+
+  currentBrandPalette = { ...built };
+
+  Object.keys(PALETTE_LABELS).forEach(key => {
+    const color = currentBrandPalette[key];
+
+    const item = document.createElement("div");
+    item.className = "palette-color";
+    item.dataset.colorKey = key;
+
+    const swatch = document.createElement("div");
+    swatch.className = "palette-swatch";
+    swatch.style.backgroundColor = color;
+
+    const info = document.createElement("div");
+    info.className = "palette-info";
+
+    const name = document.createElement("span");
+    name.className = "palette-name";
+    name.textContent = PALETTE_LABELS[key];
+
+    const controls = document.createElement("div");
+    controls.className = "palette-manual-controls";
+
+    const picker = document.createElement("input");
+    picker.type = "color";
+    picker.className = "palette-picker";
+    picker.value = color;
+    picker.setAttribute("aria-label", `اختيار ${PALETTE_LABELS[key]}`);
+
+    const hexInput = document.createElement("input");
+    hexInput.type = "text";
+    hexInput.className = "palette-hex-input";
+    hexInput.value = color;
+    hexInput.maxLength = 7;
+
+    const syncColorValue = (rawValue) => {
+      const normalized = normalizeHexColor(rawValue);
+      if (!normalized) return;
+
+      currentBrandPalette[key] = normalized;
+      swatch.style.backgroundColor = normalized;
+      picker.value = normalized;
+      hexInput.value = normalized;
+    };
+
+    picker.addEventListener("input", event => {
+      syncColorValue(event.target.value);
+    });
+
+    hexInput.addEventListener("change", event => {
+      const normalized = normalizeHexColor(event.target.value);
+      if (normalized) {
+        syncColorValue(normalized);
+      } else {
+        hexInput.value = currentBrandPalette[key];
+        toast("أدخل كود لون سداسي عشري صحيحاً مثل #0A2472", "error");
+      }
+    });
+
+    controls.appendChild(picker);
+    controls.appendChild(hexInput);
+
+    info.appendChild(name);
+    info.appendChild(controls);
+
+    item.appendChild(swatch);
+    item.appendChild(info);
+    grid.appendChild(item);
+  });
+
+  empty.classList.add("hidden");
+  grid.classList.remove("hidden");
+
+  updatePaletteControls();
+}
+
+// استخراج لونين أساسيين واضحين من ملف PNG المختار محلياً
+async function extractBrandPalette(file) {
+  const imageUrl = URL.createObjectURL(file);
+
+  try {
+    const image = new Image();
+
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () => reject(
+        new Error("تعذر قراءة صورة الشعار")
+      );
+
+      image.src = imageUrl;
+    });
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d", {
+      willReadFrequently: true
+    });
+
+    if (!context) {
+      throw new Error("المتصفح لا يدعم استخراج ألوان الصورة");
+    }
+
+    const maxSize = 120;
+    const scale = Math.min(
+      1,
+      maxSize / Math.max(image.naturalWidth, image.naturalHeight)
+    );
+
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const pixels = context.getImageData(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    ).data;
+
+    const buckets = new Map();
+
+    let totalR = 0;
+    let totalG = 0;
+    let totalB = 0;
+    let totalWeight = 0;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+      const alpha = pixels[i + 3] / 255;
+
+      if (alpha < 0.45) continue;
+
+      const r = pixels[i];
+      const g = pixels[i + 1];
+      const b = pixels[i + 2];
+
+      totalR += r * alpha;
+      totalG += g * alpha;
+      totalB += b * alpha;
+      totalWeight += alpha;
+
+      const qr = Math.round(r / 24);
+      const qg = Math.round(g / 24);
+      const qb = Math.round(b / 24);
+
+      const key = `${qr},${qg},${qb}`;
+
+      let bucket = buckets.get(key);
+
+      if (!bucket) {
+        bucket = {
+          r: 0,
+          g: 0,
+          b: 0,
+          count: 0
+        };
+
+        buckets.set(key, bucket);
+      }
+
+      bucket.r += r;
+      bucket.g += g;
+      bucket.b += b;
+      bucket.count += alpha;
+    }
+
+    if (!totalWeight || !buckets.size) {
+      throw new Error("الصورة لا تحتوي على ألوان ظاهرة قابلة للاستخراج");
+    }
+
+    const candidates = Array.from(buckets.values())
+      .map(bucket => {
+        const color = rgbToHex(
+          bucket.r / bucket.count,
+          bucket.g / bucket.count,
+          bucket.b / bucket.count
+        );
+
+        const saturation = colorSaturation(color);
+        const lum = colorLuminance(color);
+        const clarityFactor = saturation > 0.25 && lum < 0.72 ? 2.2 : 0.45;
+
+        return {
+          color,
+          count: bucket.count,
+          saturation,
+          score: bucket.count * clarityFactor * (0.4 + saturation * 1.8)
+        };
+      })
+      .sort((a, b) => b.score - a.score);
+
+    const selected = [];
+
+    for (const candidate of candidates) {
+      if (
+        selected.every(item =>
+          colorDistance(item.color, candidate.color) > 65
+        )
+      ) {
+        selected.push(candidate);
+      }
+
+      if (selected.length === 2) break;
+    }
+
+    if (!selected.length) {
+      throw new Error("تعذر تحديد ألوان الشعار");
+    }
+
+    const average = rgbToHex(
+      totalR / totalWeight,
+      totalG / totalWeight,
+      totalB / totalWeight
+    );
+
+    const primary = selected[0].color;
+
+    const secondary = selected[1]
+      ? selected[1].color
+      : mixColor(primary, "#0F172A", 0.35);
+
+    const accent = mixColor(secondary, "#FFFFFF", 0.35);
+
+    const neutralBase = colorSaturation(average) > 0.35
+      ? mixColor(average, "#808080", 0.65)
+      : average;
+
+    const background = "#FFFFFF";
+    const surface = mixColor(neutralBase, "#FFFFFF", 0.92);
+    const text = "#000000";
+
+    const palette = {
+      primary,
+      secondary,
+      accent,
+      background,
+      surface,
+      text
+    };
+
+    Object.values(palette).forEach(hexToRgb);
+
+    return palette;
+
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
+// حفظ لوحة الألوان وحالة تطبيقها
+async function saveBrandPalette(palette, active = "0") {
+  const response = await fetch(`${API}/settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Password": ADMIN_PASS
+    },
+    body: JSON.stringify({
+      settings: {
+        store_brand_palette: JSON.stringify(palette),
+        store_brand_palette_active: active
+      }
+    })
+  });
+
+  await readResponse(response);
+}
+
+// حفظ حالة تفعيل الألوان فقط
+async function saveBrandPaletteActive(active) {
+  const response = await fetch(`${API}/settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Password": ADMIN_PASS
+    },
+    body: JSON.stringify({
+      settings: {
+        store_brand_palette_active: active
+      }
+    })
+  });
+
+  await readResponse(response);
+}
+
+// ---------- Save Manual Palette ----------
+$("#saveManualPaletteBtn").onclick = async () => {
+  if (!isValidBrandPalette(currentBrandPalette)) {
+    return toast("تأكد من صحة جميع أكواد الألوان قبل الحفظ", "error");
+  }
+
+  const button = $("#saveManualPaletteBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ حفظ الألوان...";
+
+  try {
+    const activeFlag = brandPaletteActive ? "1" : "1";
+    await saveBrandPalette(currentBrandPalette, activeFlag);
+    setBrandPaletteActive(true);
+
+    if (typeof loadStoreBrandPalette === "function") {
+      await loadStoreBrandPalette();
+    }
+
+    toast("تم حفظ وتطبيق الألوان اليدوية بنجاح");
+  } catch (error) {
+    toast("تعذر حفظ الألوان اليدوية: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "💾 حفظ الألوان اليدوية";
+  }
+};
+
+// ---------- Logo preview ----------
+function showLogo(url) {
+  const preview = $("#storeLogoPreview");
+  const empty = $("#logoEmpty");
+
+  currentLogoUrl = url || "";
+
+  if (!currentLogoUrl) {
+    preview.removeAttribute("src");
+    preview.classList.add("hidden");
+    empty.textContent = "لا يوجد شعار مرفوع حالياً";
+    empty.classList.remove("hidden");
+    updatePaletteControls();
+    return;
+  }
+
+  preview.src = currentLogoUrl;
+  preview.classList.remove("hidden");
+  empty.classList.add("hidden");
+
+  preview.onerror = () => {
+    preview.removeAttribute("src");
+    preview.classList.add("hidden");
+    empty.textContent = "تعذر تحميل صورة الشعار";
+    empty.classList.remove("hidden");
+  };
+
+  preview.onload = () => {
+    empty.classList.add("hidden");
+    preview.classList.remove("hidden");
+  };
+
+  updatePaletteControls();
+}
+
+// ---------- Apply Brand Palette ----------
+$("#applyBrandPaletteBtn").onclick = async () => {
+  if (!currentLogoUrl) {
+    return toast("يجب رفع شعار المتجر أولاً", "error");
+  }
+
+  if (!isValidBrandPalette(currentBrandPalette)) {
+    return toast("لا توجد لوحة ألوان صالحة للتطبيق", "error");
+  }
+
+  if (brandPaletteActive) {
+    return toast("ألوان الشعار مطبقة بالفعل", "error");
+  }
+
+  const button = $("#applyBrandPaletteBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ تطبيق الألوان...";
+
+  try {
+    await saveBrandPalette(currentBrandPalette, "1");
+
+    setBrandPaletteActive(true);
+
+    if (typeof loadStoreBrandPalette === "function") {
+      await loadStoreBrandPalette();
+    }
+
+    toast("تم حفظ تفعيل ألوان الشعار بنجاح");
+
+  } catch (error) {
+    toast("تعذر تطبيق ألوان الشعار: " + error.message, "error");
+  } finally {
+    button.textContent = "🎨 تطبيق ألوان الشعار على المتجر بالكامل";
+    updatePaletteControls();
+  }
+};
+
+// ---------- Change Admin Password ----------
+$("#changeAdminPasswordBtn").onclick = async () => {
+  const currentPassword = $("#currentAdminPassword").value;
+  const newPassword = $("#newAdminPassword").value;
+  const confirmPassword = $("#confirmAdminPassword").value;
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return toast("يرجى ملء جميع حقول كلمة المرور", "error");
+  }
+
+  if (newPassword.length < 6) {
+    return toast("كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل", "error");
+  }
+
+  if (newPassword !== confirmPassword) {
+    return toast("كلمتا المرور الجديدتان غير متطابقتين", "error");
+  }
+
+  if (newPassword === currentPassword) {
+    return toast("اختر كلمة مرور مختلفة عن الحالية", "error");
+  }
+
+  const button = $("#changeAdminPasswordBtn");
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": currentPassword
+      },
+      body: JSON.stringify({
+        action: "change_password",
+        newPassword
+      })
+    });
+
+    await readResponse(response);
+
+    ADMIN_PASS = newPassword;
+    sessionStorage.setItem("admin_pass", newPassword);
+
+    $("#currentAdminPassword").value = "";
+    $("#newAdminPassword").value = "";
+    $("#confirmAdminPassword").value = "";
+
+    toast("تم تغيير كلمة مرور المدير بنجاح");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Login ----------
+async function tryLogin(password) {
+  const response = await fetch(`${API}/settings?admin=1`, {
+    headers: { "X-Admin-Password": password }
+  });
+
+  return response.ok;
+}
+
+async function enterSettings(password) {
+  ADMIN_PASS = password;
+  sessionStorage.setItem("admin_pass", password);
+
+  $("#loginSection").classList.add("hidden");
+  $("#settingsSection").classList.remove("hidden");
+
+  await loadSettings();
+  await loadPaymentMethods();
+}
+
+$("#loginBtn").onclick = async () => {
+  const password = $("#adminPass").value.trim();
+
+  if (!password) return toast("أدخل كلمة المرور", "error");
+
+  const button = $("#loginBtn");
+  button.disabled = true;
+
+  try {
+    if (await tryLogin(password)) {
+      await enterSettings(password);
+    } else {
+      toast("كلمة المرور غير صحيحة", "error");
+    }
+  } catch {
+    toast("تعذر الاتصال بالخادم", "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+$("#adminPass").addEventListener("keydown", event => {
+  if (event.key === "Enter") $("#loginBtn").click();
+});
+
+// ---------- Load Settings ----------
+async function loadSettings() {
+  try {
+    const response = await fetch(`${API}/settings?admin=1`, {
+      headers: { "X-Admin-Password": ADMIN_PASS }
+    });
+
+    const data = await readResponse(response);
+    const settings = data.settings || {};
+
+    Object.entries(settings).forEach(([key, value]) => {
+      const element = $("#" + key);
+      if (!element) return;
+
+      if (element.type === "checkbox") {
+        element.checked = String(value) === "1";
+      } else {
+        element.value = value || "";
+      }
+    });
+
+    showLogo(settings.store_logo_url || "");
+    showWatermarkImage(settings.watermark_image_url || "");
+
+    let savedPalette = null;
+
+    if (settings.store_brand_palette) {
+      try {
+        savedPalette = typeof settings.store_brand_palette === "string"
+          ? JSON.parse(settings.store_brand_palette)
+          : settings.store_brand_palette;
+      } catch {
+        console.warn("تعذر قراءة لوحة ألوان المتجر المحفوظة");
+      }
+    }
+
+    renderBrandPalette(savedPalette);
+
+    setBrandPaletteActive(
+      String(settings.store_brand_palette_active || "0") === "1"
+    );
+
+    const loadedCurrency = String(settings.store_currency ?? "").trim();
+    storeCurrency = loadedCurrency;
+    window.STORE_CURRENCY = loadedCurrency;
+    localStorage.setItem("store_currency", loadedCurrency);
+
+    const loadedTimezone = String(settings.store_timezone ?? "").trim();
+    window.STORE_TIMEZONE = loadedTimezone;
+    localStorage.setItem("store_timezone", loadedTimezone);
+
+    syncCurrencyPresetFromInput();
+    syncTimezonePresetFromInput();
+
+    if ($("#watermark_opacity") && !$("#watermark_opacity").value) {
+      $("#watermark_opacity").value = "0.10";
+    }
+    syncWatermarkTypeFields();
+
+  } catch (error) {
+    toast("فشل تحميل الإعدادات: " + error.message, "error");
+  }
+}
+
+// ---------- Save Store Names ----------
+$("#saveStoreIdentityBtn").onclick = async () => {
+  const button = $("#saveStoreIdentityBtn");
+
+  const payload = {
+    settings: {
+      store_name_ar: $("#store_name_ar").value.trim(),
+      store_name_en: $("#store_name_en").value.trim()
+    }
+  };
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify(payload)
+    });
+
+    await readResponse(response);
+    toast("تم حفظ اسمي المتجر بنجاح");
+  } catch (error) {
+    toast("فشل حفظ أسماء المتجر: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Upload / Replace Logo ----------
+$("#uploadLogoBtn").onclick = async () => {
+  const fileInput = $("#storeLogoFile");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    return toast("اختر صورة الشعار أولاً", "error");
+  }
+
+  if (file.type !== "image/png") {
+    return toast("يجب اختيار صورة بصيغة PNG", "error");
+  }
+
+  if (file.size <= 0 || file.size > 5 * 1024 * 1024) {
+    return toast("حجم الصورة غير صالح أو يتجاوز 5 ميجابايت", "error");
+  }
+
+  const button = $("#uploadLogoBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ تحليل الشعار...";
+
+  try {
+    const palette = await extractBrandPalette(file);
+
+    button.textContent = "جارٍ رفع الشعار...";
+
+    const formData = new FormData();
+    formData.append("type", "logo");
+    formData.append("file", file);
+
+    const response = await fetch(`${API}/upload-image`, {
+      method: "POST",
+      headers: {
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: formData
+    });
+
+    const data = await readResponse(response);
+
+    if (!data.image_url) {
+      throw new Error("لم يرجع الخادم رابط الشعار");
+    }
+
+    showLogo(data.image_url);
+    fileInput.value = "";
+
+    button.textContent = "جارٍ حفظ الهوية اللونية...";
+
+    try {
+      await saveBrandPalette(palette, "0");
+
+      renderBrandPalette(palette);
+      setBrandPaletteActive(false);
+
+      if (typeof loadStoreBrandPalette === "function") {
+        await loadStoreBrandPalette();
+      }
+
+      toast("تم رفع الشعار وحفظ ألوانه. اضغط زر التطبيق لتفعيلها.");
+
+    } catch (paletteError) {
+      renderBrandPalette(null);
+      setBrandPaletteActive(false);
+
+      toast(
+        "تم رفع الشعار، لكن تعذر حفظ لوحة الألوان: " +
+        paletteError.message,
+        "error"
+      );
+    }
+
+  } catch (error) {
+    toast("فشل رفع الشعار: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "⬆️ رفع واستبدال الشعار";
+  }
+};
+
+// ---------- Delete Logo ----------
+$("#deleteLogoBtn").onclick = async () => {
+  if (!currentLogoUrl) {
+    return toast("لا يوجد شعار مسجل لحذفه", "error");
+  }
+
+  if (!confirm("هل أنت متأكد من مسح شعار المتجر نهائياً؟")) {
+    return;
+  }
+
+  const button = $("#deleteLogoBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ إلغاء الألوان...";
+
+  try {
+    await saveBrandPaletteActive("0");
+    setBrandPaletteActive(false);
+
+    button.textContent = "جارٍ حذف الشعار...";
+
+    const response = await fetch(`${API}/delete-image`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify({ type: "logo" })
+    });
+
+    await readResponse(response);
+
+    showLogo("");
+    $("#storeLogoFile").value = "";
+
+    if (typeof loadStoreBrandPalette === "function") {
+      await loadStoreBrandPalette();
+    }
+
+    toast("تم حذف الشعار وإيقاف ألوانه. لوحة الألوان ما زالت محفوظة.");
+
+  } catch (error) {
+    toast("تعذر إكمال حذف الشعار: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "🗑️ مسح الشعار";
+  }
+};
+
+// ---------- Currency Preset & Save ----------
+function syncCurrencyPresetFromInput() {
+  const presetSelect = $("#currencyPresetSelect");
+  const currencyInput = $("#store_currency");
+  if (!presetSelect || !currencyInput) return;
+
+  const currentVal = currencyInput.value.trim();
+  if (!currentVal) {
+    presetSelect.value = "__NONE__";
+    return;
+  }
+
+  const matchedOption = Array.from(presetSelect.options).find(
+    opt => opt.value === currentVal
+  );
+  presetSelect.value = matchedOption ? matchedOption.value : "";
+}
+
+$("#currencyPresetSelect").addEventListener("change", () => {
+  const val = $("#currencyPresetSelect").value;
+  const currencyInput = $("#store_currency");
+  if (!currencyInput) return;
+
+  if (val === "__NONE__") {
+    currencyInput.value = "";
+  } else if (val) {
+    currencyInput.value = val;
+  }
+});
+
+$("#store_currency").addEventListener("input", () => {
+  syncCurrencyPresetFromInput();
+});
+
+$("#saveCurrencyBtn").onclick = async () => {
+  const button = $("#saveCurrencyBtn");
+  const currencyValue = $("#store_currency").value.trim();
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify({
+        settings: {
+          store_currency: currencyValue
+        }
+      })
+    });
+
+    await readResponse(response);
+    storeCurrency = currencyValue;
+    window.STORE_CURRENCY = currencyValue;
+    localStorage.setItem("store_currency", currencyValue);
+    syncCurrencyPresetFromInput();
+    toast("تم حفظ عملة المتجر بنجاح");
+  } catch (error) {
+    toast("فشل حفظ عملة المتجر: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Timezone Preset & Save ----------
+function syncTimezonePresetFromInput() {
+  const presetSelect = $("#timezonePresetSelect");
+  const timezoneInput = $("#store_timezone");
+  if (!presetSelect || !timezoneInput) return;
+
+  const currentVal = timezoneInput.value.trim();
+  const matchedOption = Array.from(presetSelect.options).find(
+    opt => opt.value && opt.value.toLowerCase() === currentVal.toLowerCase()
+  );
+  presetSelect.value = matchedOption ? matchedOption.value : "";
+}
+
+$("#timezonePresetSelect").addEventListener("change", () => {
+  const val = $("#timezonePresetSelect").value;
+  const timezoneInput = $("#store_timezone");
+  if (!timezoneInput) return;
+
+  if (val) {
+    timezoneInput.value = val;
+  }
+});
+
+$("#store_timezone").addEventListener("input", () => {
+  syncTimezonePresetFromInput();
+});
+
+$("#saveTimezoneBtn").onclick = async () => {
+  const button = $("#saveTimezoneBtn");
+  const timezoneValue = $("#store_timezone").value.trim();
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify({
+        settings: {
+          store_timezone: timezoneValue
+        }
+      })
+    });
+
+    await readResponse(response);
+    window.STORE_TIMEZONE = timezoneValue;
+    localStorage.setItem("store_timezone", timezoneValue);
+    syncTimezonePresetFromInput();
+    toast("تم حفظ منطقة التوقيت بنجاح");
+  } catch (error) {
+    toast("فشل حفظ منطقة التوقيت: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Save Contact Settings ----------
+$("#saveSettingsBtn").onclick = async () => {
+  const button = $("#saveSettingsBtn");
+
+  const payload = {
+    settings: {
+      whatsapp_number: $("#whatsapp_number").value.trim(),
+      orders_whatsapp_number: $("#orders_whatsapp_number").value.trim(),
+      facebook_url: $("#facebook_url").value.trim(),
+      instagram_url: $("#instagram_url").value.trim(),
+      google_maps_url: $("#google_maps_url").value.trim()
+    }
+  };
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify(payload)
+    });
+
+    await readResponse(response);
+    toast("تم حفظ الإعدادات");
+  } catch (error) {
+    toast("فشل الحفظ: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Save Community WhatsApp ----------
+$("#saveCommunityWhatsappBtn").onclick = async () => {
+  const button = $("#saveCommunityWhatsappBtn");
+
+  const enabled = $("#community_whatsapp_enabled").checked ? "1" : "0";
+  const communityUrl = $("#community_whatsapp_url").value.trim();
+
+  if (enabled === "1") {
+    try {
+      const url = new URL(communityUrl);
+
+      if (
+        url.protocol !== "https:" ||
+        url.hostname !== "chat.whatsapp.com"
+      ) {
+        return toast("أدخل رابط دعوة مجتمع واتساب صحيحاً", "error");
+      }
+    } catch {
+      return toast("أدخل رابط دعوة مجتمع واتساب صحيحاً", "error");
+    }
+  }
+
+  const payload = {
+    settings: {
+      community_whatsapp_enabled: enabled,
+      community_whatsapp_url: communityUrl,
+      community_whatsapp_tooltip: $("#community_whatsapp_tooltip").value.trim()
+    }
+  };
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify(payload)
+    });
+
+    await readResponse(response);
+    toast("تم حفظ إعدادات مجتمع واتساب بنجاح");
+  } catch (error) {
+    toast("فشل حفظ إعدادات المجتمع: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Watermark Image Preview / Upload / Delete ----------
+function showWatermarkImage(url) {
+  const preview = $("#watermarkImagePreview");
+  const empty = $("#watermarkImageEmpty");
+  const cleanUrl = String(url || "").trim();
+
+  if (!preview || !empty) return;
+
+  if (!cleanUrl) {
+    preview.removeAttribute("src");
+    preview.classList.add("hidden");
+    empty.textContent = "لا توجد صورة علامة مائية مرفوعة حالياً";
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  preview.src = cleanUrl;
+  preview.classList.remove("hidden");
+  empty.classList.add("hidden");
+
+  preview.onerror = () => {
+    preview.removeAttribute("src");
+    preview.classList.add("hidden");
+    empty.textContent = "تعذر تحميل صورة العلامة المائية";
+    empty.classList.remove("hidden");
+  };
+
+  preview.onload = () => {
+    empty.classList.add("hidden");
+    preview.classList.remove("hidden");
+  };
+}
+
+$("#watermark_image_url")?.addEventListener("input", () => {
+  showWatermarkImage($("#watermark_image_url").value);
+});
+
+$("#uploadWatermarkBtn").onclick = async () => {
+  const fileInput = $("#watermarkImageFile");
+  const file = fileInput?.files?.[0];
+
+  if (!file) {
+    return toast("اختر صورة العلامة المائية أولاً", "error");
+  }
+
+  if (file.type !== "image/png") {
+    return toast("يجب اختيار صورة بصيغة PNG", "error");
+  }
+
+  if (file.size <= 0 || file.size > 5 * 1024 * 1024) {
+    return toast("حجم الصورة غير صالح أو يتجاوز 5 ميجابايت", "error");
+  }
+
+  const button = $("#uploadWatermarkBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ رفع Watermark.png...";
+
+  try {
+    const formData = new FormData();
+    formData.append("type", "watermark");
+    formData.append("file", file);
+
+    const response = await fetch(`${API}/upload-image`, {
+      method: "POST",
+      headers: {
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: formData
+    });
+
+    const data = await readResponse(response);
+
+    if (!data.image_url) {
+      throw new Error("لم يرجع الخادم رابط صورة العلامة المائية");
+    }
+
+    $("#watermark_image_url").value = data.image_url;
+    showWatermarkImage(data.image_url);
+    fileInput.value = "";
+
+    toast("تم رفع وحفظ صورة العلامة المائية (Watermark.png) بنجاح");
+  } catch (error) {
+    toast("فشل رفع صورة العلامة المائية: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "⬆️ رفع واستبدال صورة العلامة المائية";
+  }
+};
+
+$("#deleteWatermarkBtn").onclick = async () => {
+  const currentUrl = ($("#watermark_image_url")?.value || "").trim();
+
+  if (!currentUrl) {
+    return toast("لا توجد صورة علامة مائية مسجلة لحذفها", "error");
+  }
+
+  if (!confirm("هل أنت متأكد من مسح صورة العلامة المائية نهائياً؟")) {
+    return;
+  }
+
+  const button = $("#deleteWatermarkBtn");
+  button.disabled = true;
+  button.textContent = "جارٍ حذف الصورة...";
+
+  try {
+    const response = await fetch(`${API}/delete-image`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify({ type: "watermark" })
+    });
+
+    await readResponse(response);
+
+    $("#watermark_image_url").value = "";
+    if ($("#watermarkImageFile")) $("#watermarkImageFile").value = "";
+    showWatermarkImage("");
+
+    toast("تم حذف صورة العلامة المائية ومسح رابطها بنجاح");
+  } catch (error) {
+    toast("تعذر حذف صورة العلامة المائية: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "🗑️ مسح صورة العلامة المائية";
+  }
+};
+
+// ---------- Watermark Settings ----------
+function syncWatermarkTypeFields() {
+  const type = $("#watermark_type")?.value || "text";
+  const textField = $("#watermarkTextField");
+  const imageField = $("#watermarkImageField");
+
+  if (textField) {
+    textField.classList.toggle("hidden", type !== "text");
+  }
+
+  if (imageField) {
+    imageField.classList.toggle("hidden", type !== "image");
+  }
+}
+
+$("#watermark_type")?.addEventListener("change", syncWatermarkTypeFields);
+
+$("#saveWatermarkBtn").onclick = async () => {
+  const button = $("#saveWatermarkBtn");
+  const enabled = $("#watermark_enabled").checked ? "1" : "0";
+  const type = $("#watermark_type").value || "text";
+  const text = $("#watermark_text").value.trim();
+  const imageUrl = $("#watermark_image_url").value.trim();
+
+  let opacityNum = parseFloat($("#watermark_opacity").value);
+  if (Number.isNaN(opacityNum)) opacityNum = 0.10;
+  opacityNum = Math.min(0.40, Math.max(0.05, opacityNum));
+  const opacity = opacityNum.toFixed(2);
+  $("#watermark_opacity").value = opacity;
+
+  if (enabled === "1") {
+    if (type === "text" && !text) {
+      return toast("أدخل نص العلامة المائية أولاً", "error");
+    }
+    if (type === "image" && !imageUrl) {
+      return toast("أدخل رابط صورة العلامة المائية أو ارفعها أولاً", "error");
+    }
+    if (type === "logo" && !currentLogoUrl) {
+      return toast("لا يوجد شعار مرفوع حالياً لاستخدامه كعلامة مائية", "error");
+    }
+  }
+
+  const payload = {
+    settings: {
+      watermark_enabled: enabled,
+      watermark_type: type,
+      watermark_text: text,
+      watermark_image_url: imageUrl,
+      watermark_opacity: opacity
+    }
+  };
+
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify(payload)
+    });
+
+    await readResponse(response);
+    toast("تم حفظ إعدادات العلامة المائية بنجاح");
+  } catch (error) {
+    toast("فشل حفظ إعدادات العلامة المائية: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Load Payment Methods ----------
+async function loadPaymentMethods() {
+  try {
+    const response = await fetch(`${API}/payment-methods?admin=1`, {
+      headers: { "X-Admin-Password": ADMIN_PASS }
+    });
+
+    const data = await readResponse(response);
+    renderPmTable(data.methods || []);
+  } catch (error) {
+    toast("فشل تحميل طرق الدفع: " + error.message, "error");
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[character]));
+}
+
+function renderPmTable(list) {
+  const tbody = $("#pmTbody");
+  const empty = $("#pmEmpty");
+
+  tbody.innerHTML = "";
+
+  if (!list.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+
+  list.forEach((method, index) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${escapeHtml(method.name)}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+          title="${escapeHtml(method.details)}">${escapeHtml(method.details)}</td>
+      <td>${method.is_active
+        ? '<span class="badge-active">نشطة</span>'
+        : '<span class="badge-inactive">موقوفة</span>'}</td>
+      <td>${Number(method.sort_order) || 0}</td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-sm btn-primary" data-edit="${escapeHtml(method.id)}">✏️</button>
+          <button class="btn btn-sm btn-danger" data-del="${escapeHtml(method.id)}">🗑️</button>
+        </div>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+  });
+
+  tbody.querySelectorAll("[data-edit]").forEach(button => {
+    button.onclick = () => {
+      openPmModal(list.find(item => String(item.id) === button.dataset.edit));
+    };
+  });
+
+  tbody.querySelectorAll("[data-del]").forEach(button => {
+    button.onclick = () => deletePm(button.dataset.del);
+  });
+}
+
+// ---------- Payment Method Modal ----------
+function openPmModal(method = null) {
+  $("#pmModalTitle").textContent = method
+    ? "تعديل طريقة دفع"
+    : "إضافة طريقة دفع";
+
+  $("#pmEditId").value = method ? method.id : "";
+  $("#pmName").value = method ? method.name : "";
+  $("#pmDetails").value = method ? method.details : "";
+  $("#pmSort").value = method ? method.sort_order : 0;
+  $("#pmActive").checked = method ? !!method.is_active : true;
+
+  $("#pmModal").classList.remove("hidden");
+}
+
+$("#addPmBtn").onclick = () => openPmModal();
+
+$("#pmCancelBtn").onclick = () => {
+  $("#pmModal").classList.add("hidden");
+};
+
+$("#pmModal").addEventListener("click", event => {
+  if (event.target === $("#pmModal")) {
+    $("#pmModal").classList.add("hidden");
+  }
+});
+
+// ---------- Save Payment Method ----------
+$("#pmSaveBtn").onclick = async () => {
+  const payload = {
+    id: $("#pmEditId").value || null,
+    name: $("#pmName").value.trim(),
+    details: $("#pmDetails").value.trim(),
+    sort_order: parseInt($("#pmSort").value, 10) || 0,
+    is_active: $("#pmActive").checked
+  };
+
+  if (!payload.name || !payload.details) {
+    return toast("الاسم والتفاصيل مطلوبان", "error");
+  }
+
+  const button = $("#pmSaveBtn");
+  button.disabled = true;
+
+  try {
+    const response = await fetch(`${API}/payment-methods`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await readResponse(response);
+
+    toast(data.message || "تم حفظ طريقة الدفع");
+    $("#pmModal").classList.add("hidden");
+
+    await loadPaymentMethods();
+  } catch (error) {
+    toast("فشل الحفظ: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+};
+
+// ---------- Delete Payment Method ----------
+async function deletePm(id) {
+  if (!confirm("هل أنت متأكد من حذف هذه الطريقة؟")) return;
+
+  try {
+    const response = await fetch(
+      `${API}/payment-methods?id=${encodeURIComponent(id)}`,
+      {
+        method: "DELETE",
+        headers: { "X-Admin-Password": ADMIN_PASS }
+      }
+    );
+
+    const data = await readResponse(response);
+
+    toast(data.message || "تم الحذف");
+    await loadPaymentMethods();
+  } catch (error) {
+    toast("فشل الحذف: " + error.message, "error");
+  }
+}
+
+// ---------- تنظيف الطلبات ----------
+let pendingCleanupStatus = null;
+
+const cleanupLabels = {
+  approved: "الطلبات التي تمت الموافقة عليها",
+  rejected: "الطلبات المرفوضة",
+  pending: "الطلبات المعلقة"
+};
+
+$("#checkCleanupBtn").onclick = async () => {
+  const status = $("#cleanupStatus").value;
+  const button = $("#checkCleanupBtn");
+  const resultBox = $("#cleanupResult");
+
+  pendingCleanupStatus = null;
+  $("#confirmCleanupBtn").classList.add("hidden");
+  $("#cancelCleanupBtn").classList.add("hidden");
+
+  button.disabled = true;
+  button.textContent = "جارٍ فحص الطلبات...";
+
+  try {
+    const response = await fetch(
+      `${API}/admin?status=${encodeURIComponent(status)}`,
+      {
+        headers: { "X-Admin-Password": ADMIN_PASS }
+      }
+    );
+
+    const data = await readResponse(response);
+    const count = (data.orders || []).length;
+
+    resultBox.classList.remove("hidden");
+
+    if (count === 0) {
+      resultBox.textContent = "لا توجد طلبات في هذه الحالة.";
+      return;
+    }
+
+    pendingCleanupStatus = status;
+
+    resultBox.textContent =
+      `سيتم حذف ${count} طلب من فئة: ${cleanupLabels[status]}. ` +
+      "لن يتم حذف المنتجات أو تغيير المخزون.";
+
+    $("#confirmCleanupBtn").classList.remove("hidden");
+    $("#cancelCleanupBtn").classList.remove("hidden");
+
+  } catch (error) {
+    resultBox.classList.remove("hidden");
+    resultBox.textContent = "فشل فحص الطلبات: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "🗑️ متابعة تنظيف الطلبات";
+  }
+};
+
+$("#cancelCleanupBtn").onclick = () => {
+  pendingCleanupStatus = null;
+  $("#cleanupResult").classList.add("hidden");
+  $("#confirmCleanupBtn").classList.add("hidden");
+  $("#cancelCleanupBtn").classList.add("hidden");
+};
+
+$("#confirmCleanupBtn").onclick = async () => {
+  if (!pendingCleanupStatus) {
+    return toast("يرجى فحص الطلبات أولاً", "error");
+  }
+
+  const status = pendingCleanupStatus;
+  const button = $("#confirmCleanupBtn");
+
+  button.disabled = true;
+  button.textContent = "جارٍ الحذف...";
+
+  try {
+    const response = await fetch(`${API}/admin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Password": ADMIN_PASS
+      },
+      body: JSON.stringify({
+        action: "delete_status",
+        status
+      })
+    });
+
+    const data = await readResponse(response);
+
+    pendingCleanupStatus = null;
+
+    $("#cleanupResult").classList.remove("hidden");
+    $("#cleanupResult").textContent =
+      `${data.message}. عدد الطلبات المحذوفة: ${data.deleted}`;
+
+    $("#confirmCleanupBtn").classList.add("hidden");
+    $("#cancelCleanupBtn").classList.add("hidden");
+
+    toast("تم تنظيف الطلبات بنجاح");
+
+  } catch (error) {
+    toast("فشل حذف الطلبات: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "تأكيد حذف الطلبات";
+  }
+};
+
+$("#cleanupStatus").addEventListener("change", () => {
+  pendingCleanupStatus = null;
+  $("#cleanupResult").classList.add("hidden");
+  $("#confirmCleanupBtn").classList.add("hidden");
+  $("#cancelCleanupBtn").classList.add("hidden");
+});
+
+// ---------- Auto Login ----------
+(async function autoLogin() {
+  const saved = sessionStorage.getItem("admin_pass");
+
+  if (!saved) {
+    $("#loginSection").classList.remove("hidden");
+    return;
+  }
+
+  try {
+    if (await tryLogin(saved)) {
+      await enterSettings(saved);
+    } else {
+      sessionStorage.removeItem("admin_pass");
+      $("#loginSection").classList.remove("hidden");
+    }
+  } catch {
+    $("#loginSection").classList.remove("hidden");
+    toast("تعذر الاتصال بالخادم للتحقق من الجلسة.", "error");
+  }
+})();
+</script>
+
+<script src="/js/brand-palette.js"></script>
+</body>
+</html>

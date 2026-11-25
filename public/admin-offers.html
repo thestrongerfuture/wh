@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إدارة العروض | شركة المستقبل الأقوى</title>
-  <link rel="icon" type="image/png" href="/images/logo.png">
+  <title>إدارة العروض</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .admin-page { padding: 30px 0 60px; }
@@ -59,6 +58,12 @@
       font-weight: 700;
       margin-top: 8px;
     }
+
+    .page-fixed-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
   </style>
 
   <style>
@@ -87,13 +92,7 @@
 
   <header class="site-header">
     <div class="container header-inner">
-      <a href="/admin.html" class="brand">
-        <img src="/images/logo.png" alt="شعار" class="brand-logo">
-        <div class="brand-text">
-          <span class="ar">إدارة العروض</span>
-          <span class="en">Offers Management</span>
-        </div>
-      </a>
+      <div class="page-fixed-title">🏷️ إدارة العروض</div>
       <div class="header-actions">
         <a href="/admin.html" class="icon-btn" style="background: #fff; color: #0040C0; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 700;">
           ⬅️ <span>العودة للطلبات</span>
@@ -121,12 +120,12 @@
       
       <div class="form-group">
         <label>عنوان العرض</label>
-        <input type="text" id="offerTitle" placeholder="مثال: عرض السماعة + الشاحن">
+        <input type="text" id="offerTitle" placeholder="أدخل اسم العرض">
       </div>
       
       <div class="form-group">
         <label>نسبة الخصم (%)</label>
-        <input type="number" id="offerDiscount" value="0" min="0" max="100" step="0.1" placeholder="مثال: 5 أو 2.5">
+        <input type="number" id="offerDiscount" value="0" min="0" max="100" step="0.1" placeholder="أدخل نسبة الخصم">
       </div>
       
       <div class="form-group">
@@ -159,7 +158,27 @@
   <script>
     let adminPassword = sessionStorage.getItem('admin_pass') || '';
     let allProducts = [];
+    let storeCurrency = (typeof window.STORE_CURRENCY === 'string')
+      ? window.STORE_CURRENCY
+      : (localStorage.getItem('store_currency') || '');
     const $ = (s) => document.querySelector(s);
+
+    function formatCurrency(amount) {
+      const num = Number(amount || 0).toFixed(2);
+      const cur = String(storeCurrency ?? '').trim();
+      return cur ? `${num} ${cur}` : num;
+    }
+
+    async function loadStoreCurrency() {
+      try {
+        const res = await fetch('/api/settings', { cache: 'no-store' });
+        const data = await res.json();
+        const val = data?.settings?.store_currency ?? data?.store_currency ?? '';
+        storeCurrency = String(val).trim();
+        window.STORE_CURRENCY = storeCurrency;
+        localStorage.setItem('store_currency', storeCurrency);
+      } catch (e) {}
+    }
 
     // ---------- LOGIN ----------
     $('#loginBtn').onclick = tryLogin;
@@ -185,6 +204,7 @@
     async function showAdmin() {
       $('#loginView').style.display = 'none';
       $('#adminView').style.display = 'block';
+      await loadStoreCurrency();
       try {
         const res = await fetch('/api/products');
         const data = await res.json();
@@ -290,7 +310,7 @@
         filtered.forEach((p, index) => {
           const item = document.createElement('div');
           item.style.cssText = 'padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;';
-          item.textContent = `#${p.id} - ${p.name} ($${p.price})`;
+          item.textContent = `#${p.id} - ${p.name} (${formatCurrency(p.price)})`;
           item.dataset.index = index;
           
           item.onmouseover = () => {
@@ -521,7 +541,51 @@
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
         
-        alert(editId ? '✅ تم تعديل العرض' : '✅ تم إضافة العرض');
+        let savedOfferId = editId ? parseInt(editId, 10) : (data?.offer_id || data?.id || null);
+
+        if (!savedOfferId) {
+          try {
+            const listRes = await fetch('/api/offers?admin=true', {
+              headers: { 'X-Admin-Password': adminPassword }
+            });
+            const listData = await listRes.json();
+            const matched = (listData?.offers || []).find(
+              (o) => String(o.title || '').trim() === title
+            );
+            if (matched?.id) {
+              savedOfferId = matched.id;
+            }
+          } catch (_) {}
+        }
+
+        let gridUploaded = false;
+        if (savedOfferId) {
+          try {
+            const pngBase64 = await generateOfferGridPngBase64(items);
+            if (pngBase64) {
+              const upRes = await fetch('/api/upload-offer-image', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-Admin-Password': adminPassword
+                },
+                body: JSON.stringify({
+                  offer_id: savedOfferId,
+                  image_base64: pngBase64
+                })
+              });
+              const upData = await upRes.json().catch(() => ({}));
+              gridUploaded = Boolean(upRes.ok && upData?.ok);
+            }
+          } catch (gridErr) {
+            console.warn('تعذر توليد أو رفع صورة الشبكة تلقائياً:', gridErr);
+          }
+        }
+
+        alert(
+          (editId ? '✅ تم تعديل العرض' : '✅ تم إضافة العرض') +
+            (gridUploaded ? '\n🖼️ وتم رفع صورة شبكة العرض تلقائياً للمستودع' : '')
+        );
         resetForm();
         loadOffers();
       } catch (e) { alert('❌ ' + e.message); }
@@ -538,11 +602,113 @@
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
+
+        try {
+          await fetch('/api/upload-offer-image', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Admin-Password': adminPassword
+            },
+            body: JSON.stringify({ offer_id: id })
+          });
+        } catch (_) {}
+
         loadOffers();
       } catch (e) { alert('❌ ' + e.message); }
+    };
+
+    async function loadImageForCanvas(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    async function generateOfferGridPngBase64(items) {
+      if (!Array.isArray(items) || items.length === 0) return '';
+
+      const width = 1200;
+      const height = 630;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return '';
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, width, height);
+
+      const maxSlots = Math.min(items.length, 4);
+      const cols = maxSlots === 1 ? 1 : 2;
+      const rows = maxSlots <= 2 ? 1 : 2;
+      const gap = 20;
+      const padX = 40;
+      const padY = 40;
+      const cellW = (width - padX * 2 - gap * (cols - 1)) / cols;
+      const cellH = (height - padY * 2 - gap * (rows - 1)) / rows;
+
+      const candidatesList = items.slice(0, maxSlots).map((it) => {
+        const pid = encodeURIComponent(String(it.product_id));
+        return [
+          `/api/image/products/${pid}.webp`,
+          `/api/image/${pid}.webp`,
+          `https://raw.githubusercontent.com/monqezaleskaf/elsaadany/main/products/${pid}.webp`
+        ];
+      });
+
+      const loadedImgs = await Promise.all(
+        candidatesList.map(async (urls) => {
+          for (const url of urls) {
+            const img = await loadImageForCanvas(url);
+            if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+              return img;
+            }
+          }
+          return null;
+        })
+      );
+
+      for (let i = 0; i < maxSlots; i++) {
+        const r = Math.floor(i / cols);
+        const c = i % cols;
+        const x = padX + c * (cellW + gap);
+        const y = padY + r * (cellH + gap);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, cellW, cellH);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, cellW, cellH);
+
+        const img = loadedImgs[i];
+        if (img) {
+          const scale = Math.max(cellW / img.naturalWidth, cellH / img.naturalHeight);
+          const drawW = img.naturalWidth * scale;
+          const drawH = img.naturalHeight * scale;
+          const drawX = x + (cellW - drawW) / 2;
+          const drawY = y + (cellH - drawH) / 2;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(x + 2, y + 2, cellW - 4, cellH - 4);
+          ctx.clip();
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          ctx.restore();
+        }
+      }
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const parts = dataUrl.split(',');
+      return parts.length === 2 ? parts[1] : '';
     }
 
     if (adminPassword) showAdmin();
   </script>
+
+  <script src="/js/brand-palette.js"></script>
 </body>
 </html>

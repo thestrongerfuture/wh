@@ -1,25 +1,65 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة الإدارة | شركة المستقبل الأقوى</title>
-  <link rel="icon" type="image/png" href="/images/logo.png">
+  <title>إدارة الطلبات</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .admin-page { padding: 30px 0 60px; }
-    .login-box { max-width: 400px; margin: 80px auto; background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
+    
+    .login-box {
+      max-width: 400px;
+      margin: 80px auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
     .login-box h2 { color: var(--primary); margin-bottom: 20px; }
-    .login-box input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; margin-bottom: 12px; font-family: inherit; text-align: center; }
-    .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      margin-bottom: 12px;
+      font-family: inherit;
+      text-align: center;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 1rem;
+    }
 
-    .order-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
-    .order-header { background: #f8fafc; padding: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); }
+    .order-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .order-header {
+      background: #f8fafc;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
     .order-info { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
     .order-info strong { color: var(--primary); font-size: 1rem; }
     
     .order-body { padding: 16px; }
     
+    /* ترتيب الأعمدة: المنتج أولاً (يمين)، ثم السعر، فالإجمالي، فالكمية، وأخيراً زر الحذف (يسار) */
     .order-item-row {
       display: grid;
       grid-template-columns: 1fr 100px 100px 100px 40px;
@@ -31,6 +71,7 @@
     }
     .order-item-row:last-child { border-bottom: none; }
     
+    /* تنسيق زر الحذف ليكون مربعاً صغيراً وأنيقاً */
     .btn-delete-item {
       width: 32px;
       height: 32px;
@@ -48,34 +89,112 @@
     }
     .btn-delete-item:hover { background: #fca5a5; }
 
-    .order-item-row input { width: 70px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: center; }
-    .order-actions { padding: 16px; background: #f8fafc; display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-approve { background: var(--success); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
+    .order-item-row input {
+      width: 70px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .order-actions {
+      padding: 16px;
+      background: #f8fafc;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-approve {
+      background: var(--success);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
     .btn-approve:hover { background: #059669; }
-    .btn-reject { background: var(--danger); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; }
+    .btn-reject {
+      background: var(--danger);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
     .btn-reject:hover { background: #dc2626; }
+
+    .btn-save-order {
+      background: #0284c7;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
+    .btn-save-order:hover { background: #0369a1; }
+
+    .btn-print-order {
+      background: #475569;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
+    .btn-print-order:hover { background: #334155; }
+
+    .btn-customer-invoice {
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-customer-invoice:hover { background: #dbeafe; }
+
+    @media print {
+      .site-header, #loginView, .tabs, .order-actions, .btn-delete-item {
+        display: none !important;
+      }
+      body { background: #fff !important; }
+      .order-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+      .order-item-row input { border: none !important; background: transparent !important; font-weight: 700; }
+    }
     
-    .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
     .status-pending { background: #fef3c7; color: #92400e; }
     .status-approved { background: #d1fae5; color: #065f46; }
     .status-rejected { background: #fee2e2; color: #991b1b; }
 
     .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .tab-btn { padding: 8px 16px; border-radius: var(--radius-sm); background: #fff; border: 2px solid var(--border); font-weight: 700; font-size: 0.9rem; }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      border: 2px solid var(--border);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .page-fixed-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="/" class="icon-btn" style="background:#fff; color:#0040C0; border:none; box-shadow:0 2px 5px rgba(0,0,0,0.1); font-weight:700;">
-        <img src="/images/logo.png" alt="شعار" class="brand-logo">
-        <div class="brand-text">
-          <span class="ar">شركة المستقبل الأقوى</span>
-          <span class="en">متجر الجملة - لوحة الإدارة</span>
-        </div>
-      </a>
+      <div class="page-fixed-title">📋 إدارة الطلبات</div>
       <div class="header-actions">
         <a href="/" class="icon-btn" style="background:#fff; color:#0040C0; border:none; box-shadow:0 2px 5px rgba(0,0,0,0.1); font-weight:700;">🏠 <span>الرئيسية</span></a>
         <button class="icon-btn" id="logoutBtn" style="display:none; background: #fef2f2; color: #dc2626; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🚪 <span>خروج</span></button>
@@ -83,6 +202,7 @@
     </div>
   </header>
 
+  <!-- LOGIN -->
   <div id="loginView" class="login-box">
     <h2>🔒 الدخول للوحة الإدارة</h2>
     <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" autofocus>
@@ -90,13 +210,15 @@
     <p id="loginError" style="color: var(--danger); margin-top: 10px; font-size: 0.9rem; display: none;"></p>
   </div>
 
+  <!-- ADMIN CONTENT -->
   <main id="adminView" class="container admin-page" style="display: none;">
     <div class="tabs" style="align-items: center;">
       <a href="/admin-products.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem;">📦 إدارة المنتجات</a>
       <a href="/admin-offers.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; background: #ffb300; color: #ffffff;">🏷️ إدارة العروض</a>
-      <button class="tab-btn active" data-status="pending">⏳ معلقة</button>
-      <button class="tab-btn" data-status="approved">✅ موافق عليها</button>
-      <button class="tab-btn" data-status="rejected">❌ مرفوضة</button>
+      <a href="/admin-settings.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; background: #6b7280; color: #ffffff;">⚙️ إعدادات المتجر</a>
+      <button class="tab-btn active" data-status="pending">⏳ الطلبات المعلقة</button>
+      <button class="tab-btn" data-status="approved">✅ الطلبات التي تمت الموافقة عليها</button>
+      <button class="tab-btn" data-status="rejected">❌ الطلبات المرفوضة</button>
     </div>
 
     <div id="loading" class="loading">⏳ جاري التحميل...</div>
@@ -110,6 +232,81 @@
   <script>
     let adminPassword = sessionStorage.getItem('admin_pass') || '';
     let currentStatus = 'pending';
+    let storeCurrency = (typeof window.STORE_CURRENCY === 'string')
+      ? window.STORE_CURRENCY
+      : (localStorage.getItem('store_currency') || '');
+
+    let storeTimezone = (typeof window.STORE_TIMEZONE === 'string')
+      ? window.STORE_TIMEZONE
+      : (localStorage.getItem('store_timezone') || '');
+
+    function formatCurrency(amount) {
+      const num = Number(amount || 0).toFixed(2);
+      const cur = String(storeCurrency ?? '').trim();
+      return cur ? `${num} ${cur}` : num;
+    }
+
+    function normalizeTimezoneOption(tzRaw) {
+      const tz = String(tzRaw || '').trim();
+      if (!tz) return null;
+
+      const offsetMatch = tz.match(/^(?:GMT|UTC)?\s*([+-])\s*(\d{1,2})(?::?(\d{2}))?$/i);
+      if (offsetMatch) {
+        const sign = offsetMatch[1];
+        const hours = parseInt(offsetMatch[2], 10);
+        const minutes = parseInt(offsetMatch[3] || '0', 10);
+        if (minutes === 0 && hours >= 0 && hours <= 14) {
+          if (hours === 0) return 'UTC';
+          const etcSign = sign === '+' ? '-' : '+';
+          return `Etc/GMT${etcSign}${hours}`;
+        }
+      }
+
+      return tz;
+    }
+
+    function formatStoreDateTime(dateValue) {
+      if (!dateValue) return '—';
+      const rawStr = String(dateValue).trim();
+      const safeDate = (rawStr.includes('T') || rawStr.includes('Z'))
+        ? rawStr
+        : rawStr.replace(' ', 'T') + 'Z';
+      const dateObj = new Date(safeDate);
+      if (Number.isNaN(dateObj.getTime())) return rawStr;
+
+      const resolvedTz = normalizeTimezoneOption(storeTimezone);
+      const options = resolvedTz ? { timeZone: resolvedTz } : {};
+
+      try {
+        return dateObj.toLocaleString('ar-EG', options);
+      } catch {
+        return dateObj.toLocaleString('ar-EG');
+      }
+    }
+
+    async function loadStoreCurrency() {
+      try {
+        const res = await fetch('/api/settings', { cache: 'no-store' });
+        const data = await res.json();
+        const val = data?.settings?.store_currency ?? data?.store_currency ?? '';
+        const nextCurrency = String(val).trim();
+        const currencyChanged = nextCurrency !== storeCurrency;
+        storeCurrency = nextCurrency;
+        window.STORE_CURRENCY = nextCurrency;
+        localStorage.setItem('store_currency', nextCurrency);
+
+        const tzVal = data?.settings?.store_timezone ?? data?.store_timezone ?? '';
+        const nextTimezone = String(tzVal).trim();
+        const timezoneChanged = nextTimezone !== storeTimezone;
+        storeTimezone = nextTimezone;
+        window.STORE_TIMEZONE = nextTimezone;
+        localStorage.setItem('store_timezone', nextTimezone);
+
+        if ((currencyChanged || timezoneChanged) && adminPassword && adminView.style.display !== 'none') {
+          loadOrders();
+        }
+      } catch (e) {}
+    }
 
     const $ = (s) => document.querySelector(s);
     const loginView = $('#loginView');
@@ -119,31 +316,47 @@
     const emptyState = $('#emptyState');
     const logoutBtn = $('#logoutBtn');
 
+    // ---------- LOGIN ----------
     $('#loginBtn').onclick = tryLogin;
     $('#passwordInput').onkeypress = (e) => { if (e.key === 'Enter') tryLogin(); };
-    logoutBtn.onclick = () => { sessionStorage.removeItem('admin_pass'); location.reload(); };
+    logoutBtn.onclick = () => {
+      sessionStorage.removeItem('admin_pass');
+      location.reload();
+    };
 
     async function tryLogin() {
       const pass = $('#passwordInput').value;
       if (!pass) return;
       const errEl = $('#loginError');
       errEl.style.display = 'none';
+
       try {
-        const res = await fetch('/api/admin?status=pending', { headers: { 'X-Admin-Password': pass } });
-        if (res.status === 401) { errEl.textContent = 'كلمة المرور غير صحيحة'; errEl.style.display = 'block'; return; }
+        const res = await fetch('/api/admin?status=pending', {
+          headers: { 'X-Admin-Password': pass }
+        });
+        if (res.status === 401) {
+          errEl.textContent = 'كلمة المرور غير صحيحة';
+          errEl.style.display = 'block';
+          return;
+        }
         adminPassword = pass;
         sessionStorage.setItem('admin_pass', pass);
         showAdmin();
-      } catch (e) { errEl.textContent = 'خطأ في الاتصال'; errEl.style.display = 'block'; }
+      } catch (e) {
+        errEl.textContent = 'خطأ في الاتصال';
+        errEl.style.display = 'block';
+      }
     }
 
     function showAdmin() {
       loginView.style.display = 'none';
       adminView.style.display = 'block';
       logoutBtn.style.display = 'inline-flex';
+      loadStoreCurrency();
       loadOrders();
     }
 
+    // ---------- TABS ----------
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.onclick = () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -153,16 +366,26 @@
       };
     });
 
+    // ---------- LOAD ORDERS ----------
     async function loadOrders() {
       loading.style.display = 'block';
       emptyState.classList.add('hidden');
       ordersContainer.innerHTML = '';
+
       try {
-        const res = await fetch(`/api/admin?status=${currentStatus}`, { headers: { 'X-Admin-Password': adminPassword } });
+        const res = await fetch(`/api/admin?status=${currentStatus}`, {
+          headers: { 'X-Admin-Password': adminPassword }
+        });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
+
         loading.style.display = 'none';
-        if (data.orders.length === 0) { emptyState.classList.remove('hidden'); return; }
+
+        if (data.orders.length === 0) {
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
         data.orders.forEach(o => ordersContainer.appendChild(renderOrder(o)));
       } catch (e) {
         loading.style.display = 'none';
@@ -170,32 +393,29 @@
       }
     }
 
+    // ---------- RENDER ORDER ----------
     function renderOrder(o) {
       const card = document.createElement('div');
       card.className = 'order-card';
-      card.dataset.orderId = o.id;
 
-      const safeDate = o.created_at.includes('Z') ? o.created_at : o.created_at.replace(' ', 'T') + 'Z';
-      const date = new Date(safeDate);
-      const dateStr = date.toLocaleString('ar-EG', { timeZone: 'Asia/Damascus' });
+      const dateStr = formatStoreDateTime(o.created_at);
       const isPending = o.status === 'pending';
-      const statusLabels = { pending: 'معلقة', approved: 'موافق عليها', rejected: 'مرفوضة' };
+      const statusLabels = { pending: 'الطلبات المعلقة', approved: 'الطلبات التي تمت الموافقة عليها', rejected: 'الطلبات المرفوضة' };
 
       let itemsHtml = '';
       o.items.forEach(it => {
-        const subtotal = Number(it.price) * Number(it.quantity);
         itemsHtml += `
-          <div class="order-item-row" data-item-id="${it.id}" data-price="${Number(it.price)}" data-qty="${Number(it.quantity)}">
+          <div class="order-item-row" data-item-id="${it.id}" data-price="${it.price}">
             <span>${it.product_id ? `<strong>#${it.product_id}</strong> ` : ''}${it.name || 'منتج'}${it.offer_id ? ' (عرض)' : ''}</span>
-            <span>$${Number(it.price).toFixed(2)}</span>
-            <span class="line-subtotal">$${subtotal.toFixed(2)}</span>
+            <span><span>${formatCurrency(it.price)}</span></span>
+            <span class="item-subtotal" style="font-weight:bold; color:var(--primary);">${formatCurrency(it.quantity * it.price)}</span>
             <span>
               ${isPending 
                 ? `<input type="number" class="qty-input" data-pid="${it.product_id || ''}" data-oid="${it.offer_id || ''}" min="1" max="${it.stock || 999}" value="${it.quantity}">`
                 : `<strong>${it.quantity}</strong>`
               }
             </span>
-            ${isPending ? `<button class="btn-delete-item" title="حذف الصنف">🗑️</button>` : `<span></span>`}
+            ${isPending ? `<button class="btn-delete-item">🗑️</button>` : `<span></span>`}
           </div>
         `;
       });
@@ -211,60 +431,135 @@
           </div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <span class="status-badge status-${o.status}">${statusLabels[o.status]}</span>
-            <strong id="total-${o.id}" style="color:var(--primary); font-size:1.2rem;">$${Number(o.total).toFixed(2)}</strong>
+            <strong class="order-total-display" data-order-id="${o.id}" style="color:var(--primary); font-size:1.2rem;"><span>${formatCurrency(o.total)}</span></strong>
           </div>
         </div>
         <div class="order-body">${itemsHtml}</div>
-        ${isPending ? `
-          <div class="order-actions">
-            <button class="btn-approve">✅ موافقة (خصم المخزون)</button>
-            <button class="btn-reject">❌ رفض</button>
-          </div>
-        ` : ''}
+        <div class="order-actions">
+          ${isPending ? `
+            <button type="button" class="btn-save-order">💾 حفظ الفاتورة</button>
+            <button type="button" class="btn-approve">✅ موافقة (خصم المخزون)</button>
+            <button type="button" class="btn-reject">❌ رفض</button>
+          ` : ''}
+          <button type="button" class="btn-print-order">🖨️ طباعة</button>
+          <a href="/invoice.html?id=${encodeURIComponent(o.id)}" target="_blank" rel="noopener noreferrer" class="btn-customer-invoice">🧾 فاتورة العميل</a>
+        </div>
       `;
 
+      card.querySelector('.btn-print-order').onclick = () => printSingleOrder(o);
+
       if (isPending) {
+        card.querySelector('.btn-save-order').onclick = () => saveOrderChanges(o, card);
         card.querySelector('.btn-approve').onclick = () => approveOrder(o, card);
         card.querySelector('.btn-reject').onclick = () => rejectOrder(o);
-
+        
+        // تفعيل أزرار الحذف
         card.querySelectorAll('.btn-delete-item').forEach(btn => {
-          btn.onclick = () => {
-            if (confirm('حذف هذا الصنف من الطلب؟')) {
-              const row = btn.closest('.order-item-row');
-              row.remove();
-              recalcTotal(card);
-            }
+          btn.onclick = (e) => {
+            const row = e.target.closest('.order-item-row');
+            row.remove();
+            recalcCardTotal(card);
           };
         });
 
-        card.querySelectorAll('.qty-input').forEach(inp => {
-          inp.addEventListener('input', () => recalcTotal(card));
+        // الاستماع لتغيرات الكمية لتحديث الإجمالي تلقائياً
+        card.querySelectorAll('.qty-input').forEach(input => {
+          input.addEventListener('input', () => recalcCardTotal(card));
         });
       }
 
       return card;
     }
 
-    function recalcTotal(card) {
-      let total = 0;
+    // دالة إعادة حساب الإجمالي للبطاقة
+    function recalcCardTotal(card) {
+      let newTotal = 0;
       card.querySelectorAll('.order-item-row').forEach(row => {
         const price = parseFloat(row.dataset.price) || 0;
         const qtyInput = row.querySelector('.qty-input');
-        const qty = qtyInput ? (parseInt(qtyInput.value) || 0) : (parseInt(row.dataset.qty) || 0);
-        const lineTotal = price * qty;
-        const subEl = row.querySelector('.line-subtotal');
-        if (subEl) subEl.textContent = '$' + lineTotal.toFixed(2);
-        total += lineTotal;
+        const qty = qtyInput ? (parseInt(qtyInput.value) || 0) : 0;
+        const rowTotal = price * qty;
+        newTotal += rowTotal;
+        
+        const subTotalEl = row.querySelector('.item-subtotal');
+        if (subTotalEl) subTotalEl.textContent = formatCurrency(rowTotal);
       });
-      const totalEl = card.querySelector('[id^="total-"]');
-      if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
+      
+      const totalDisplay = card.querySelector('.order-total-display span');
+      if (totalDisplay) totalDisplay.textContent = formatCurrency(newTotal);
     }
 
+    function collectEditedOrderPayload(o, card) {
+      const items = Array.from(card.querySelectorAll('.order-item-row')).map(row => {
+        const inp = row.querySelector('.qty-input');
+        const itemId = parseInt(row.dataset.itemId, 10);
+        const productId = inp?.dataset.pid;
+        const offerId = inp?.dataset.oid;
+        const quantity = Math.max(1, parseInt(inp?.value, 10) || 1);
+
+        if (offerId && offerId !== 'null' && offerId !== '') {
+          return { id: itemId, offer_id: parseInt(offerId, 10), quantity };
+        }
+        return { id: itemId, product_id: parseInt(productId, 10), quantity };
+      });
+
+      const currentItemIds = Array.from(card.querySelectorAll('.order-item-row')).map(r => parseInt(r.dataset.itemId, 10));
+      const originalItemIds = (o.items || []).map(it => it.id);
+      const deletedIds = originalItemIds.filter(id => !currentItemIds.includes(id));
+
+      let newTotal = 0;
+      card.querySelectorAll('.order-item-row').forEach(row => {
+        const price = parseFloat(row.dataset.price) || 0;
+        const qtyInput = row.querySelector('.qty-input');
+        const qty = qtyInput ? (Math.max(1, parseInt(qtyInput.value, 10) || 1)) : 0;
+        newTotal += price * qty;
+      });
+
+      return { items, deletedIds, total: newTotal };
+    }
+
+    // ---------- SAVE ORDER CHANGES ----------
+    async function saveOrderChanges(o, card) {
+      const { items, deletedIds, total } = collectEditedOrderPayload(o, card);
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminPassword
+          },
+          body: JSON.stringify({
+            action: 'save',
+            order_id: o.id,
+            items,
+            deleted_item_ids: deletedIds,
+            total
+          })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'تعذر حفظ التعديلات');
+        alert('💾 تم حفظ تعديلات الفاتورة بنجاح');
+        loadOrders();
+      } catch (e) {
+        alert('❌ ' + e.message);
+      }
+    }
+
+    // ---------- PRINT SINGLE ORDER (A4 + 80mm via invoice.html) ----------
+    function printSingleOrder(order) {
+      if (!order || !order.id) return;
+      const printUrl = `/invoice.html?id=${encodeURIComponent(order.id)}&print=1`;
+      window.open(printUrl, '_blank');
+    }
+
+    // ---------- APPROVE ----------
     async function approveOrder(o, card) {
       const inputs = card.querySelectorAll('.qty-input');
       const items = Array.from(inputs).map(inp => {
         const productId = inp.dataset.pid;
         const offerId = inp.dataset.oid;
+        
         if (offerId && offerId !== 'null' && offerId !== '') {
           return { offer_id: parseInt(offerId), quantity: parseInt(inp.value) };
         } else {
@@ -281,32 +576,62 @@
       try {
         const res = await fetch('/api/admin', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminPassword
+          },
           body: JSON.stringify({ action: 'approve', order_id: o.id, items, deleted_item_ids: deletedIds })
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
         alert('✅ تمت الموافقة بنجاح');
         loadOrders();
-      } catch (e) { alert('❌ ' + e.message); }
+      } catch (e) {
+        alert('❌ ' + e.message);
+      }
     }
 
+    // ---------- REJECT ----------
     async function rejectOrder(o) {
       if (!confirm(`رفض الطلب #${o.id}؟`)) return;
       try {
         const res = await fetch('/api/admin', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminPassword
+          },
           body: JSON.stringify({ action: 'reject', order_id: o.id })
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error);
         alert('❌ تم رفض الطلب');
         loadOrders();
-      } catch (e) { alert('❌ ' + e.message); }
+      } catch (e) {
+        alert('❌ ' + e.message);
+      }
     }
 
+    // ---------- تنزيل نموذج CSV ----------
+    const downloadSampleBtn = document.getElementById('downloadSampleBtn');
+    if (downloadSampleBtn) {
+      downloadSampleBtn.onclick = () => {
+        const csvContent = "id,name,brand,category,stock,price\n" +
+                           "5001,منتج تجريبي 1,ATARAXY,شاحن,150,5.99\n" +
+                           "5002,منتج تجريبي 2,أخرى,سماعة,80,12.50\n";
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'sample_products.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+      };
+    }
+
+    // ---------- INIT ----------
     if (adminPassword) showAdmin();
   </script>
+
+  <script src="/js/brand-palette.js"></script>
 </body>
 </html>

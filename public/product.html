@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تفاصيل المنتج | شركة المستقبل الأقوى</title>
+  <title>تفاصيل المنتج | متجر السعدني</title>
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/style.css">
   <style>
@@ -39,7 +39,7 @@
       padding: 40px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
     }
     .product-details-info h1 {
       color: var(--primary);
@@ -64,6 +64,15 @@
       font-weight: 800;
       color: var(--primary);
     }
+    .product-description {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 1rem;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border);
+    }
     .back-btn {
       display: inline-block;
       margin-bottom: 20px;
@@ -75,14 +84,13 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="brand">
         <img src="/images/logo.png" alt="شعار" class="brand-logo">
         <div class="brand-text">
-          <span class="ar">شركة المستقبل الأقوى</span>
-          <span class="en">The Stronger Future</span>
+          <span class="ar">متجر السعدني</span>
+          <span class="en">Elsaadany Store</span>
         </div>
       </a>
       <div class="header-actions">
@@ -94,7 +102,6 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="container product-page">
     <div style="width: 100%;">
       <a href="/" class="back-btn">← العودة للمتجر</a>
@@ -115,13 +122,17 @@
             <span class="badge" id="prodCategory" style="background:#f3f4f6; color:#333;"></span>
           </div>
           <h1 id="prodName"></h1>
+          
+          <!-- قسم الوصف -->
+          <div class="product-description" id="prodDesc" style="display: none;"></div>
+          
           <div class="price-large" id="prodPrice"></div>
           
           <div style="color:var(--text-muted);">
             رقم المنتج: <strong id="prodId"></strong>
           </div>
 
-          <div style="margin-top: 20px; border-top:1px solid var(--border); padding-top:20px;">
+          <div style="margin-top: 10px; border-top:1px solid var(--border); padding-top:20px;">
             <p style="margin-bottom: 10px; font-weight:700;">الكمية:</p>
             <div class="qty-control" style="max-width: 200px;">
               <button class="qty-btn" id="btnMinus">−</button>
@@ -141,7 +152,6 @@
   </main>
 
   <script>
-    // إدارة السلة
     const CART_KEY = 'tsf_cart';
     const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || '[]');
     const saveCart = (c) => { localStorage.setItem(CART_KEY, JSON.stringify(c)); updateBadge(); };
@@ -152,8 +162,33 @@
     };
 
     let currentProduct = null;
+    let storeCurrency = (typeof window.STORE_CURRENCY === 'string')
+      ? window.STORE_CURRENCY
+      : (localStorage.getItem('store_currency') ?? 'ج.م');
 
-    // جلب المنتج من الرابط
+    function formatCurrency(amount) {
+      const num = Number(amount || 0).toFixed(2);
+      const cur = String(storeCurrency ?? '').trim();
+      return cur ? `${num} ${cur}` : num;
+    }
+
+    async function loadStoreCurrency() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        const val =
+          data?.settings?.store_currency ??
+          data?.store_currency ??
+          '';
+        storeCurrency = String(val).trim();
+        window.STORE_CURRENCY = storeCurrency;
+        localStorage.setItem('store_currency', storeCurrency);
+        if (currentProduct) {
+          renderProduct();
+        }
+      } catch (e) {}
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
@@ -179,14 +214,29 @@
       document.getElementById('prodName').textContent = p.name;
       document.getElementById('prodBrand').textContent = p.brand;
       document.getElementById('prodCategory').textContent = p.category;
-      document.getElementById('prodPrice').textContent = `$${p.price.toFixed(2)}`;
+      
+      // عرض السعر حسب العملة المحددة (أو الرقم فقط إذا كانت فارغة)
+      document.getElementById('prodPrice').textContent = formatCurrency(p.price);
       document.getElementById('prodId').textContent = `#${p.id}`;
+
+      // عرض الوصف (بشكل آمن)
+      
+      if (p.description && p.description.trim() !== '') {
+        const descEl = document.getElementById('prodDesc');
+        descEl.innerText = p.description; // استخدام innerText لضمان العرض
+        descEl.style.display = 'block';
+      } else {
+        document.getElementById('prodDesc').style.display = 'none';
+      }
       
       const img = document.getElementById('prodImg');
-      img.src = `/images/products/${p.id}.png`;
-      img.onerror = () => { img.src = '/images/logo.png'; }; // صورة بديلة
+      img.src = `/images/products/${p.id}.webp`;
+      img.onerror = function() {
+        if (this.src.endsWith('.webp')) this.src = `/images/products/${p.id}.png`;
+        else if (this.src.endsWith('.png')) this.src = `/images/products/${p.id}.jpg`;
+        else { this.src = '/images/logo.png'; this.onerror = null; }
+      };
 
-      // إعداد شريط الكمية
       const slider = document.getElementById('qtySlider');
       slider.max = p.stock;
       if (p.stock <= 0) {
@@ -197,7 +247,6 @@
         document.getElementById('addToCartBtn').textContent = 'نفد المخزون';
       }
 
-      // ربط الأحداث
       const setQ = (v) => {
         v = Math.max(1, Math.min(p.stock, v));
         slider.value = v;
@@ -232,7 +281,10 @@
     }
 
     updateBadge();
+    loadStoreCurrency();
     loadProduct();
   </script>
+
+  <script src="/js/brand-palette.js"></script>
 </body>
 </html>

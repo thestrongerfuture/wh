@@ -5,6 +5,50 @@
 
 const API_BASE = '/api';
 const CART_KEY = 'tsf_cart';
+let storeCurrency = (typeof window.STORE_CURRENCY === 'string')
+  ? window.STORE_CURRENCY
+  : (localStorage.getItem('store_currency') ?? 'ج.م');
+
+function formatCurrency(amount) {
+  const num = Number(amount || 0).toFixed(2);
+  const cur = String(storeCurrency ?? '').trim();
+  return cur ? `${num} ${cur}` : num;
+}
+
+let storeTimezone = (typeof window.STORE_TIMEZONE === 'string')
+  ? window.STORE_TIMEZONE
+  : (localStorage.getItem('store_timezone') ?? '');
+
+async function loadStoreCurrency() {
+  try {
+    const res = await fetch(`${API_BASE}/settings`);
+    const data = await res.json();
+    const val =
+      data?.settings?.store_currency ??
+      data?.store_currency ??
+      '';
+    storeCurrency = String(val).trim();
+    window.STORE_CURRENCY = storeCurrency;
+    localStorage.setItem('store_currency', storeCurrency);
+
+    const tzVal =
+      data?.settings?.store_timezone ??
+      data?.store_timezone ??
+      '';
+    storeTimezone = String(tzVal).trim();
+    window.STORE_TIMEZONE = storeTimezone;
+    localStorage.setItem('store_timezone', storeTimezone);
+
+    if (state.products.length > 0) {
+      renderProducts();
+      if (typeof pmCurrentProduct !== 'undefined' && pmCurrentProduct) {
+        renderProductModal(pmCurrentProduct);
+      }
+    }
+  } catch (e) {
+    // في حال فشل الجلب نكتفي بالقيمة الحالية المخزنة
+  }
+}
 
 // ---------- State ----------
 const state = {
@@ -24,7 +68,6 @@ const categoryChips = $('#categoryChips');
 const loadingState = $('#loadingState');
 const emptyState = $('#emptyState');
 const cartBadge = $('#cartBadge');
-const shamCashModal = $('#shamCashModal');
 
 // ============================================================
 // 1) CART (localStorage)
@@ -121,7 +164,7 @@ function renderBrands() {
   
   // 1. إضافة زر "جميع الماركات" في البداية
   const allBtn = document.createElement('button');
-  allBtn.className = 'btn-primary';
+  allBtn.className = 'category-chip active';
   allBtn.id = 'showAllBtn';
   allBtn.style.flexShrink = '0';
   allBtn.innerHTML = 'جميع الماركات';
@@ -213,13 +256,13 @@ function buildProductCard(p) {
     ${p.created_at && (new Date() - new Date(p.created_at)) < 7 * 24 * 60 * 60 * 1000 ? '<span style="position:absolute; top:10px; left:10px; background:#10b981; color:#fff; padding:3px 10px; border-radius:999px; font-size:0.7rem; font-weight:700; z-index:2;">جديد</span>' : ''}
     <span class="product-id-badge">#${p.id}</span>
     <div class="product-img-wrap">
-      <img src="/images/products/${p.id}.webp" alt="${escapeHtml(p.name)}" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='/images/products/${p.id}.jpg';}else{this.outerHTML='<div class=&quot;product-placeholder&quot;>🛍️</div>';}">
+      <img src="/api/image/products/${p.id}.webp" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;product-placeholder&quot;>🛍️</div>';">
     </div>
     <div class="product-info">
       <div class="product-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
       <div class="product-meta">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span class="product-price">$${Number(p.price).toFixed(2)}</span>
+          <span class="product-price">${formatCurrency(p.price)}</span>
           <span class="qty-total" style="display:none; font-size:0.85rem; color:var(--success); font-weight:700;"></span>
         </div>
         <span class="product-stock ${p.stock <= 5 ? 'low' : ''}">${outOfStock ? 'نفد' : `مخزون: ${p.stock}`}</span>
@@ -256,8 +299,8 @@ function buildProductCard(p) {
     const totalEl = card.querySelector('.qty-total');
     if (totalEl) {
       if (v > 1) {
-        const total = (v * Number(p.price)).toFixed(2);
-        totalEl.textContent = `$${total}`;
+        const total = formatCurrency(v * Number(p.price));
+        totalEl.textContent = ` ${total}`;
         totalEl.style.display = 'inline';
       } else {
         totalEl.style.display = 'none';
@@ -277,21 +320,33 @@ function buildProductCard(p) {
   };
 
   // ---------- Share ----------
-  shareBtn.onclick = async () => {
-    const url = `${location.origin}/product.html?id=${p.id}`;
-    const shareData = {
-      title: p.name,
-      text: `شاهد ${p.name} على متجر شركة المستقبل الأقوى`,
-      url
-    };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
+  shareBtn.onclick = () => {
+    const arEl = document.querySelector('.brand-text .ar');
+    const enEl = document.querySelector('.brand-text .en');
+    const storeName = (arEl && arEl.textContent.trim()) || (enEl && enEl.textContent.trim()) || 'متجرنا';
+    const url = `${location.origin}/share?id=${p.id}`;
+    const text = `شاهد ${p.name} على ${storeName}`;
+
+    document.getElementById('shareWa').href = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+    document.getElementById('shareFb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    document.getElementById('shareTg').href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+
+    document.getElementById('shareCopy').onclick = async () => {
+      try {
         await navigator.clipboard.writeText(url);
         showToast('📋 تم نسخ رابط المنتج');
+        document.getElementById('shareModal').classList.add('hidden');
+      } catch (e) {
+        showToast('❌ فشل النسخ');
       }
-    } catch (e) { /* المستخدم ألغى */ }
+    };
+
+    const closeMenu = () => document.getElementById('shareModal').classList.add('hidden');
+    document.getElementById('shareWa').onclick = closeMenu;
+    document.getElementById('shareFb').onclick = closeMenu;
+    document.getElementById('shareTg').onclick = closeMenu;
+
+    document.getElementById('shareModal').classList.remove('hidden');
   };
 
   // ---------- Trash (remove from cart) ----------
@@ -320,16 +375,10 @@ function escapeHtml(s) {
 
 // تم حذف الكود القديم (الزر أصبح يُولد ديناميكياً)
 
-$('#shamCashBtn').onclick = () => shamCashModal.classList.remove('hidden');
-$('#closeShamCash').onclick = () => shamCashModal.classList.add('hidden');
-shamCashModal.addEventListener('click', (e) => {
-  if (e.target === shamCashModal) shamCashModal.classList.add('hidden');
-});
-
-// ============================================================
 // 11) INIT
 // ============================================================
 updateCartBadge();
+loadStoreCurrency();
 fetchProducts();
 
 // ============================================================
@@ -373,9 +422,12 @@ async function openProductModal(productId) {
 function closeProductModal(pushHistory = true) {
   if (!productModal) return;
   productModal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+
   if (pushHistory) {
     history.pushState({}, '', location.pathname);
   }
+
   pmCurrentProduct = null;
 }
 
@@ -391,55 +443,221 @@ function renderProductModal(p) {
   pmError.classList.add('hidden');
   pmContent.classList.remove('hidden');
 
+  // تنسيق محتوى النافذة بشكل متناسق وملموم
+  if (pmContent) {
+    pmContent.style.display = 'flex';
+    pmContent.style.flexDirection = 'column';
+    pmContent.style.gap = '6px';
+    pmContent.style.textAlign = 'right';
+  }
+
   const maxQty = Math.max(1, p.stock || 1);
   const outOfStock = (p.stock || 0) <= 0;
 
-  document.getElementById('pmId').textContent = `#${p.id}`;
+  const pmIdEl = document.getElementById('pmId');
+  if (pmIdEl) pmIdEl.textContent = `#${p.id}`;
   document.getElementById('pmName').textContent = p.name;
+  const pmDesc = document.getElementById('pmDesc');
+  if (p.description && p.description.trim() !== '') { pmDesc.textContent = p.description; pmDesc.style.display = 'block'; } else { pmDesc.style.display = 'none'; }
   document.getElementById('pmBrand').textContent = p.brand || '';
   document.getElementById('pmCategory').textContent = p.category || '';
-  document.getElementById('pmPrice').textContent = `$${Number(p.price).toFixed(2)}`;
+  document.getElementById('pmPrice').textContent = formatCurrency(p.price);
   document.getElementById('pmStock').textContent = outOfStock ? 'نفد' : p.stock;
 
   const img = document.getElementById('pmImg');
-  img.dataset.fb = '';
-  img.onerror = () => {
-    if (!img.dataset.fb) {
-      img.dataset.fb = '1';
-      img.src = `/images/products/${p.id}.jpg`;
-    } else {
+  if (img) {
+    img.onerror = () => {
       img.outerHTML = '<div class="product-placeholder">🛍️</div>';
-    }
-  };
-  img.src = `/images/products/${p.id}.webp`;
+    };
+    img.src = `/api/image/products/${p.id}.webp`;
+  }
 
-  // --- إضافة تكبير/تصغير الصورة بعجلة الماوس (آمن) ---
+// --- تكبير وتحريك الصورة يمين ويسار وفوق وتحت (كمبيوتر وموبايل) ---
   try {
     const imgWrap = document.querySelector('.pm-image-wrap');
-    if (imgWrap) {
+    if (imgWrap && img) {
+      const freshWrap = imgWrap.cloneNode(true);
+      freshWrap.style.height = '52vh';
+      freshWrap.style.minHeight = '220px';
+      freshWrap.style.width = '100%';
+      imgWrap.parentNode.replaceChild(freshWrap, imgWrap);
+      const freshImg = freshWrap.querySelector('img');
+      if (freshImg) {
+        freshImg.style.width = '100%';
+        freshImg.style.height = '100%';
+        freshImg.style.maxHeight = '100%';
+        freshImg.style.objectFit = 'contain';
+        freshImg.onerror = () => {
+          freshImg.outerHTML = '<div class="product-placeholder">🛍️</div>';
+        };
+        freshImg.src = `/api/image/products/${p.id}.webp`;
+      }
+
       let scale = 1;
-      // إزالة الحدث القديم إن وجد
-      imgWrap.onwheel = null;
-      imgWrap.addEventListener('wheel', (e) => {
+      let panX = 0;
+      let panY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let pinchStartDist = 0;
+      let pinchStartScale = 1;
+
+      const clampPan = () => {
+        if (!freshImg || scale <= 1) {
+          scale = 1;
+          panX = 0;
+          panY = 0;
+          return;
+        }
+        const wrapRect = freshWrap.getBoundingClientRect();
+        const baseW = freshImg.clientWidth || wrapRect.width;
+        const baseH = freshImg.clientHeight || wrapRect.height;
+        const maxX = Math.max(0, (baseW * scale - wrapRect.width) / 2);
+        const maxY = Math.max(0, (baseH * scale - wrapRect.height) / 2);
+        panX = Math.max(-maxX, Math.min(maxX, panX));
+        panY = Math.max(-maxY, Math.min(maxY, panY));
+      };
+
+      const renderZoom = () => {
+        if (!freshImg) return;
+        clampPan();
+        freshImg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        freshWrap.classList.toggle('is-zoomed', scale > 1);
+      };
+
+      const resetZoom = () => {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        isDragging = false;
+        pinchStartDist = 0;
+        freshWrap.classList.remove('is-dragging');
+        renderZoom();
+      };
+
+      resetZoom();
+
+      freshWrap.addEventListener('wheel', (e) => {
         e.preventDefault();
-        if (e.deltaY < 0) scale = Math.min(3, scale + 0.1);
-        else scale = Math.max(1, scale - 0.1);
-        img.style.transform = `scale(${scale})`;
-        img.style.transition = 'transform 0.1s ease';
+        if (!freshImg) return;
+
+        const prevScale = scale;
+        const nextScale = e.deltaY < 0
+          ? Math.min(3.5, +(prevScale + 0.25).toFixed(2))
+          : Math.max(1, +(prevScale - 0.25).toFixed(2));
+
+        if (nextScale === prevScale) return;
+        if (nextScale <= 1) {
+          resetZoom();
+          return;
+        }
+
+        const wrapRect = freshWrap.getBoundingClientRect();
+        const imgCenterX = wrapRect.left + wrapRect.width / 2 + panX;
+        const imgCenterY = wrapRect.top + wrapRect.height / 2 + panY;
+        const dx = e.clientX - imgCenterX;
+        const dy = e.clientY - imgCenterY;
+        const ratio = nextScale / prevScale;
+
+        panX = panX - dx * (ratio - 1);
+        panY = panY - dy * (ratio - 1);
+        scale = nextScale;
+        renderZoom();
       }, { passive: false });
-      
-      // إعادة تعيين الحجم عند إغلاق النافذة
+
+      freshWrap.addEventListener('mousedown', (e) => {
+        if (e.button !== 0 || scale <= 1) return;
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        freshWrap.classList.add('is-dragging');
+      });
+
+      const onWindowMouseMove = (e) => {
+        if (!isDragging || scale <= 1) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        renderZoom();
+      };
+
+      const onWindowMouseUp = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        freshWrap.classList.remove('is-dragging');
+      };
+
+      window.addEventListener('mousemove', onWindowMouseMove);
+      window.addEventListener('mouseup', onWindowMouseUp);
+
+      const getTouchDist = (t1, t2) => Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+
+      freshWrap.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          isDragging = false;
+          freshWrap.classList.remove('is-dragging');
+          pinchStartDist = getTouchDist(e.touches[0], e.touches[1]);
+          pinchStartScale = scale;
+        } else if (e.touches.length === 1 && scale > 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - panX;
+          startY = e.touches[0].clientY - panY;
+          freshWrap.classList.add('is-dragging');
+        }
+      }, { passive: false });
+
+      freshWrap.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && pinchStartDist > 0) {
+          e.preventDefault();
+          const dist = getTouchDist(e.touches[0], e.touches[1]);
+          scale = Math.max(1, Math.min(3.5, +(pinchStartScale * (dist / pinchStartDist)).toFixed(2)));
+          if (scale <= 1) {
+            panX = 0;
+            panY = 0;
+          }
+          renderZoom();
+        } else if (e.touches.length === 1 && isDragging && scale > 1) {
+          e.preventDefault();
+          panX = e.touches[0].clientX - startX;
+          panY = e.touches[0].clientY - startY;
+          renderZoom();
+        }
+      }, { passive: false });
+
+      const onTouchEnd = (e) => {
+        if (e.touches.length < 2) pinchStartDist = 0;
+        if (e.touches.length === 0) {
+          isDragging = false;
+          freshWrap.classList.remove('is-dragging');
+        }
+      };
+
+      freshWrap.addEventListener('touchend', onTouchEnd);
+      freshWrap.addEventListener('touchcancel', onTouchEnd);
+
+      freshWrap.addEventListener('dblclick', () => {
+        if (scale > 1) {
+          resetZoom();
+        } else {
+          scale = 2;
+          renderZoom();
+        }
+      });
+
       const closeBtn = document.getElementById('closeProductModal');
       if (closeBtn) {
         const originalClose = closeBtn.onclick;
         closeBtn.onclick = (e) => {
-          scale = 1;
-          img.style.transform = 'scale(1)';
+          resetZoom();
+          window.removeEventListener('mousemove', onWindowMouseMove);
+          window.removeEventListener('mouseup', onWindowMouseUp);
           if (originalClose) originalClose(e);
         };
       }
     }
-  } catch(err) { console.log('خطأ في التكبير:', err); }
+  } catch (err) {
+    console.log('خطأ في تكبير وتحريك الصورة:', err);
+  }
 
   // شريط الكمية
   const slider = document.getElementById('pmQtySlider');
@@ -467,8 +685,8 @@ function renderProductModal(p) {
     const totalEl = document.getElementById('pmTotalPrice');
     if (totalEl) {
       if (v > 1) {
-        const total = (v * Number(p.price)).toFixed(2);
-        totalEl.textContent = `$${total}`;
+        const total = formatCurrency(v * Number(p.price));
+        totalEl.textContent = ` ${total}`;
         totalEl.style.display = 'block';
       } else {
         totalEl.style.display = 'none';
@@ -500,8 +718,11 @@ function renderProductModal(p) {
   }
   // مشاركة (تفتح القائمة)
   shareBtn.onclick = () => {
+    const arEl = document.querySelector('.brand-text .ar');
+    const enEl = document.querySelector('.brand-text .en');
+    const storeName = (arEl && arEl.textContent.trim()) || (enEl && enEl.textContent.trim()) || 'متجرنا';
     const url = `${location.origin}/share?id=${p.id}`;
-    const text = `شاهد ${p.name} على متجر الجملة - شركة المستقبل الأقوى`;
+    const text = `شاهد ${p.name} على ${storeName}`;
     
     // تجهيز روابط المنصات
     document.getElementById('shareWa').href = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
@@ -634,50 +855,12 @@ if (searchInput) {
     };
   }
 }
-
-
-// ============================================================
-// 15) إغلاق قائمة المشاركة
-// ============================================================
-// const shareModal = document.getElementById('shareModal'); // (تم التعطيل لحل التكرار)
-const closeShareModal = document.getElementById('closeShareModal');
-if (shareModal && closeShareModal) {
-  closeShareModal.onclick = () => shareModal.classList.add('hidden');
-  shareModal.addEventListener('click', (e) => {
-    if (e.target === shareModal) shareModal.classList.add('hidden');
-  });
-}
-
-// ============================================================
-// 15) إغلاق نافذة المشاركة
-// ============================================================
-// const shareModal = document.getElementById('shareModal'); // (تم التعطيل لحل التكرار)
-const closeShareBtn = document.getElementById('closeShareModal');
-
-if (shareModal && closeShareBtn) {
-  // إغلاق بزر X
-  closeShareBtn.onclick = () => {
-    shareModal.classList.add('hidden');
-  };
-  
-  // إغلاق عند النقر خارج النافذة
-  shareModal.addEventListener('click', (e) => {
-    if (e.target === shareModal) {
-      shareModal.classList.add('hidden');
-    }
-  });
-}
-
-// ============================================================
-
-// ============================================================
-
-
 // ============================================================
 // إغلاق نافذة المشاركة (نسخة آمنة)
 // ============================================================
 document.addEventListener('click', (e) => {
   const shareModal = document.getElementById('shareModal');
+
   // إذا كانت النافذة مخفية، لا داعي لفعل شيء
   if (!shareModal || shareModal.classList.contains('hidden')) return;
 
@@ -685,13 +868,12 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('#closeShareModal')) {
     shareModal.classList.add('hidden');
   }
-  
+
   // إذا تم النقر على الخلفية الداكنة (خارج الصندوق)
   if (e.target === shareModal) {
     shareModal.classList.add('hidden');
   }
 });
-
 // ============================================================
 // ضمان عمل عجلة الماوس داخل النافذة المنبثقة
 // ============================================================

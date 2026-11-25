@@ -1,65 +1,129 @@
-﻿
-/* استيراد خط Tajawal من Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+﻿/* ============================================================
+   متجر السعدني - نظام التصميم الموحد
+   الهوية الافتراضية: أبيض وأسود | جاهز للتلوين الديناميكي
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap');
+
 /* ============================================================
-   china-tsf — المتجر المحلي
-   الهوية البصرية: أزرق كحلي (من الشعار) + ذهبي (مميز)
+   1. متغيرات الهوية والألوان
    ============================================================ */
 
 :root {
-  --primary:       #0A2472;
-  --primary-dark:  #001845;
-  --primary-light: #1E3A8A;
-  --accent:        #FFB300;
-  --accent-dark:   #E6A000;
-  --bg:            #F5F7FA;
-  --card-bg:       #FFFFFF;
-  --text:          #1A1A2E;
-  --text-muted:    #6B7280;
-  --border:        #E5E7EB;
-  --success:       #10B981;
-  --danger:        #EF4444;
-  --whatsapp:      #25D366;
-  --radius:        12px;
-  --radius-sm:     8px;
-  --shadow:        0 2px 8px rgba(10, 36, 114, 0.08);
-  --shadow-hover:  0 6px 20px rgba(10, 36, 114, 0.15);
-  --transition:    all 0.25s ease;
+  /* ألوان الهوية الافتراضية (أبيض وأسود) */
+  --primary: #111111;
+  --primary-dark: #000000;
+  --primary-light: #333333;
+
+  --secondary: #E5E7EB;
+  --secondary-dark: #9CA3AF;
+
+  --accent: #F3F4F6;
+  --accent-dark: #D1D5DB;
+
+  --background: #FAFAFA;
+  --surface: #FFFFFF;
+  --text: #000000;
+  --text-muted: #4B5563;
+
+  --bg: var(--background);
+  --card-bg: var(--surface);
+  --border: var(--secondary);
+
+  /* ألوان الحالات والتواصل (ثابتة لا تتغير بتغير الشعار) */
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --whatsapp: #25D366;
+  --whatsapp-dark: #1DAF54;
+  --facebook: #1877F2;
+  --facebook-dark: #166FE5;
+  --telegram: #0088CC;
+  --telegram-dark: #0077B3;
+
+  /* الحواف والظلال والحركة */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  --transition: all 0.25s ease;
 }
 
-/* ---------- Reset ---------- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ============================================================
+   2. الإعدادات العامة (Reset)
+   ============================================================ */
 
-html { scroll-behavior: smooth; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
-  background: var(--bg);
+  background: var(--background);
   color: var(--text);
   line-height: 1.6;
   direction: rtl;
   min-height: 100vh;
+  padding-bottom: 100px;
+  unicode-bidi: plaintext;
 }
 
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; }
-img { max-width: 100%; display: block; }
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
 
-/* ---------- Utility ---------- */
-.container { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
-.hidden { display: none !important; }
-.text-center { text-align: center; }
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.text-center {
+  text-align: center;
+}
 
 /* ============================================================
-   HEADER
+   3. رأس المتجر
    ============================================================ */
+
 .site-header {
-  background: var(--primary);
-  color: #fff;
-  padding: 12px 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  padding: 12px 0;
+  color: #FFFFFF;
+  background: var(--primary-dark);
+  border-bottom: 2px solid var(--secondary);
   box-shadow: var(--shadow);
 }
 
@@ -71,36 +135,64 @@ img { max-width: 100%; display: block; }
   flex-wrap: wrap;
 }
 
-/* الشعار + الاسم (يمين) */
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
   order: 1;
+  min-width: 0;
 }
 
 .brand-logo {
   width: 56px;
   height: 56px;
+  flex-shrink: 0;
   border-radius: 50%;
   object-fit: contain;
-  background: #fff;
+  background: #FFFFFF;
   padding: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
-.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
-.brand-text .ar { font-size: 1.15rem; font-weight: 700; }
-.brand-text .en { font-size: 0.75rem; opacity: 0.85; letter-spacing: 0.5px; }
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
 
-/* أزرار الرأس (يسار) */
+.brand-text .ar {
+  color: #FFFFFF;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.brand-text .en {
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.header-clock {
+  order: 2;
+  white-space: nowrap;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
-  order: 2;
   flex-wrap: wrap;
+  order: 3;
 }
+
+/* ============================================================
+   4. أزرار الرأس والسلة
+   ============================================================ */
 
 .icon-btn {
   display: inline-flex;
@@ -109,158 +201,242 @@ img { max-width: 100%; display: block; }
   gap: 6px;
   padding: 8px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.12);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   transition: var(--transition);
-  border: 1px solid rgba(255,255,255,0.2);
 }
 
-.icon-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
-.icon-btn.whatsapp { background: var(--whatsapp); border-color: var(--whatsapp); }
-.icon-btn.whatsapp:hover { background: #1DAF54; }
-.icon-btn.accent { background: var(--accent); color: var(--primary-dark); border-color: var(--accent); }
-.icon-btn.accent:hover { background: var(--accent-dark); }
+.icon-btn:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--secondary);
+  transform: translateY(-1px);
+}
 
-/* ---------- Cart button ---------- */
+.icon-btn.whatsapp {
+  background: var(--whatsapp);
+  color: #FFFFFF;
+  border-color: var(--whatsapp);
+}
+
+.icon-btn.whatsapp:hover {
+  background: var(--whatsapp-dark);
+}
+
+.icon-btn.accent,
 .cart-btn {
-  position: relative;
-  background: var(--accent);
-  color: var(--primary-dark);
-  padding: 10px 18px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: #000000;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: var(--transition);
 }
 
-.cart-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.icon-btn.accent:hover,
+.cart-btn:hover {
+  background: var(--accent);
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.cart-btn {
+  position: relative;
+  gap: 8px;
+  padding: 10px 18px;
+  font-weight: 800;
+}
 
 .cart-badge {
-  background: var(--danger);
-  color: #fff;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 22px;
-  text-align: center;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pill-cart .cart-badge {
+  background: var(--primary);
+  color: #FFFFFF;
+  margin-right: 4px;
 }
 
 /* ============================================================
-   MARQUEE / BRAND SELECTOR
+   5. شريط الماركات والأزرار العامة
    ============================================================ */
+
 .brand-selector {
-  background: var(--card-bg);
-  padding: 16px 0;
+  padding: 10px 0;
+  margin-bottom: 16px;
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
 }
 
 .brand-selector .container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .brand-buttons {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
   gap: 8px;
-  justify-content: center;
+  overflow-x: auto;
+  padding: 8px 4px;
+  scrollbar-width: none;
+  cursor: grab;
 }
 
-.brand-chip {
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: #fff;
-  border: 2px solid var(--border);
-  color: var(--text);
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: var(--transition);
+.brand-buttons:active {
+  cursor: grabbing;
 }
 
-.brand-chip:hover { border-color: var(--primary); color: var(--primary); }
-.brand-chip.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
+.brand-buttons > * {
+  flex-shrink: 0;
 }
 
 .selector-actions {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  scrollbar-width: none;
+}
+
+.selector-actions::-webkit-scrollbar,
+.brand-buttons::-webkit-scrollbar,
+.category-bar .container::-webkit-scrollbar {
+  display: none;
+}
+
+.brand-chip,
+.category-chip {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: #000000;
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.brand-chip {
+  height: 34px;
+  padding: 0 16px;
+}
+
+.brand-chip:hover,
+.category-chip:hover {
+  background: var(--accent);
+  color: #000000;
+  border-color: var(--accent-dark);
+}
+
+.brand-chip.active,
+.brand-chip[data-brand="all"],
+.category-chip.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border: 2px solid var(--primary-dark);
+  font-weight: 800;
+}
+
+.btn-primary,
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: var(--transition);
 }
 
 .btn-primary {
   background: var(--primary);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  transition: var(--transition);
+  color: #FFFFFF;
+  border: 1px solid var(--primary);
 }
-.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
 
 .btn-outline {
   background: transparent;
-  color: var(--primary);
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
+  color: #000000;
   border: 2px solid var(--primary);
-  transition: var(--transition);
 }
-.btn-outline:hover { background: var(--primary); color: #fff; }
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+}
 
 /* ============================================================
-   CATEGORY FILTER BAR
+   6. شريط الأقسام
    ============================================================ */
+
 .category-bar {
-  background: var(--card-bg);
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
   position: sticky;
   top: 80px;
-  z-index: 50;
+  z-index: 90;
+  padding: 12px 0;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .category-bar .container {
   display: flex;
+  align-items: center;
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 4px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  cursor: grab;
 }
 
-.category-chip {
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: #fff;
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.category-chip:hover { border-color: var(--primary); }
-.category-chip.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
+.category-bar .container:active {
+  cursor: grabbing;
 }
 
 /* ============================================================
-   PRODUCT GRID
+   7. شبكة المنتجات وبطاقة المنتج
    ============================================================ */
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -268,58 +444,62 @@ img { max-width: 100%; display: block; }
   padding: 20px 0 60px;
 }
 
-/* ============================================================
-   PRODUCT CARD
-   ============================================================ */
 .product-card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  transition: var(--transition);
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .product-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
+  border-color: var(--primary);
 }
 
-/* الرقم الفريد (يمين أعلى) */
 .product-id-badge {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--primary);
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: 700;
+  z-index: 2;
   padding: 3px 8px;
   border-radius: 999px;
-  z-index: 2;
-  opacity: 0.9;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 800;
 }
 
 .product-img-wrap {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #f9fafb;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
+  padding: 8px;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
 }
 
 .product-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transform: scale(1);
+  transition: transform 0.35s ease;
 }
 
-.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+.product-card:hover .product-img-wrap img {
+  transform: scale(1.08);
+}
 
 .product-placeholder {
   font-size: 3rem;
@@ -327,107 +507,167 @@ img { max-width: 100%; display: block; }
 }
 
 .product-info {
-  padding: 12px;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
+  padding: 12px;
 }
 
 .product-name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.3;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 2.6em;
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.3;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #000000;
   font-size: 0.8rem;
-  color: var(--text-muted);
 }
 
 .product-price {
+  color: #000000;
   font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--primary);
+  font-weight: 900;
 }
 
 .product-stock {
+  color: #000000;
   font-size: 0.75rem;
-  color: var(--text-muted);
 }
-.product-stock.low { color: var(--danger); font-weight: 700; }
 
-/* ---------- Quantity slider ---------- */
+.product-stock.low {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+/* ============================================================
+   8. التحكم في الكمية وأزرار البطاقة
+   ============================================================ */
+
 .qty-control {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  width: 100%;
   margin-top: 4px;
 }
 
 .qty-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--primary-light);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-  display: flex;
+  display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 800;
   transition: var(--transition);
-  flex-shrink: 0;
 }
-.qty-btn:hover { background: var(--primary); }
-.qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.qty-slider {
-  flex: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--border);
-  outline: none;
+.qty-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
 }
-.qty-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.qty-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  border: 2px solid #fff;
+
+.qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .qty-value {
-  min-width: 32px;
+  min-width: 30px;
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 900;
   text-align: center;
-  font-weight: 800;
-  color: var(--primary);
-  font-size: 0.95rem;
 }
 
-/* ---------- Card actions ---------- */
+.qty-slider {
+  flex: 1 1 100%;
+  width: 100%;
+  height: 4px;
+  padding: 0;
+  margin-top: 8px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.qty-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.qty-slider::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.qty-slider::-moz-range-track {
+  height: 4px;
+  border: none;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.qty-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+.qty-control .qty-btn[data-act="minus"],
+.qty-control #pmBtnMinus {
+  order: 1;
+}
+
+.qty-control .qty-value,
+.qty-control #pmQtyVal {
+  order: 2;
+}
+
+.qty-control .qty-btn[data-act="plus"],
+.qty-control #pmBtnPlus {
+  order: 3;
+}
+
+.qty-control .qty-slider,
+.qty-control #pmQtySlider {
+  order: 4;
+}
+
 .card-actions {
   display: flex;
   gap: 6px;
@@ -436,183 +676,107 @@ img { max-width: 100%; display: block; }
 
 .btn-add-cart {
   flex: 1;
-  background: var(--primary);
-  color: #fff;
   padding: 9px;
+  border: 1px solid var(--primary-dark);
   border-radius: var(--radius-sm);
-  font-weight: 700;
+  background: var(--primary);
+  color: #FFFFFF;
   font-size: 0.85rem;
+  font-weight: 800;
   transition: var(--transition);
 }
-.btn-add-cart:hover { background: var(--primary-dark); }
-.btn-add-cart:disabled { background: var(--text-muted); cursor: not-allowed; }
+
+.btn-add-cart:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-add-cart:disabled {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  cursor: not-allowed;
+}
 
 .btn-icon-small {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
   width: 38px;
   height: 38px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #f3f4f6;
-  color: var(--primary);
+  background: var(--background);
+  color: #000000;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.btn-icon-small:hover {
+  background: var(--accent);
+  color: #000000;
+}
+
+.btn-icon-small.share {
+  color: var(--whatsapp);
+}
+
+/* ============================================================
+   9. زر الواتساب العائم
+   ============================================================ */
+
+.floating-whatsapp {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 1001;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  transition: var(--transition);
-  flex-shrink: 0;
-}
-.btn-icon-small:hover { background: var(--accent); color: var(--primary-dark); }
-.btn-icon-small.share { color: var(--whatsapp); }
-
-/* ============================================================
-   FLOATING WHATSAPP
-   ============================================================ */
-.floating-whatsapp {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
   width: 60px;
   height: 60px;
   border-radius: 50%;
   background: var(--whatsapp);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #FFFFFF;
   font-size: 1.8rem;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.45);
-  z-index: 90;
-  transition: var(--transition);
-}
-.floating-whatsapp:hover { transform: scale(1.1); background: #1DAF54; }
-
-/* ============================================================
-   MODAL (Sham Cash QR)
-   ============================================================ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  padding: 16px;
+  box-shadow: 0 5px 18px rgba(37, 211, 102, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.modal-content {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 24px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  position: relative;
+.floating-whatsapp:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.5);
+  background: var(--whatsapp-dark);
 }
 
-.modal-content h3 {
-  color: var(--primary);
-  margin-bottom: 12px;
-  font-size: 1.2rem;
-}
-
-.modal-content img {
-  max-width: 280px;
-  margin: 0 auto 12px;
-  border-radius: var(--radius-sm);
-  border: 2px solid var(--border);
-}
-
-.modal-close {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  color: var(--text);
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-close:hover { background: var(--danger); color: #fff; }
-
-/* ============================================================
-   EMPTY STATE
-   ============================================================ */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-muted);
-}
-.empty-state .emoji { font-size: 3rem; margin-bottom: 12px; }
-
-/* ============================================================
-   LOADING
-   ============================================================ */
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-muted);
-  font-size: 1rem;
-}
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-@media (max-width: 768px) {
-  .header-inner { justify-content: center; }
-  .brand { order: 1; }
-  .header-actions { order: 2; justify-content: center; width: 100%; }
-  .brand-logo { width: 44px; height: 44px; }
-  .brand-text .ar { font-size: 1rem; }
-  .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-  .category-bar { top: 0; position: relative; }
-  .floating-whatsapp { width: 52px; height: 52px; font-size: 1.5rem; bottom: 16px; left: 16px; }
-}
-
-@media (max-width: 480px) {
-  .icon-btn span { display: none; }
-  .icon-btn { padding: 8px 10px; }
-  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .product-name { font-size: 0.8rem; }
-}
-
-
-/* ============================================================
-   تلميح زر الواتساب (Tooltip) - إضافة آمنة
-   ============================================================ */
 .wa-tooltip {
   position: absolute;
-  left: 75px;
   top: 50%;
-  transform: translateY(-50%) translateX(-10px);
-  background-color: #1f2937;
-  color: #ffffff;
+  left: 75px;
+  z-index: 1000;
   padding: 10px 16px;
   border-radius: 8px;
+  background: #1F2937;
+  color: #FFFFFF;
   font-size: 0.9rem;
-  font-family: inherit;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1000;
+  transform: translateY(-50%) translateX(-10px);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
 }
 
 .wa-tooltip::before {
-  content: '';
   position: absolute;
-  right: 100%;
   top: 50%;
-  transform: translateY(-50%);
+  right: 100%;
   border: 6px solid transparent;
-  border-right-color: #1f2937;
+  border-right-color: #1F2937;
+  content: '';
+  transform: translateY(-50%);
 }
 
 .floating-whatsapp:hover .wa-tooltip {
@@ -621,1755 +785,651 @@ img { max-width: 100%; display: block; }
   transform: translateY(-50%) translateX(0);
 }
 
-/* تأكيد وجود الزر العائم في مكانه */
-.floating-whatsapp {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  width: 60px;
-  height: 60px;
-  background-color: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
-  z-index: 9999;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-}
-
 /* ============================================================
-   لمسة ويندوز 11 (Fluent Design & Acrylic)
+   10. النوافذ المنبثقة وتفاصيل المنتج
    ============================================================ */
 
-/* 1. جعل الخلفية العامة ناعمة ومريحة */
-body {
-  background: #f3f4f6 !important; /* خلفية رمادية فاتحة جداً مثل ويندوز */
-}
-
-/* 2. الزجاجية (Acrylic) للشريط العلوي والبطاقات */
-.site-header {
-  background: rgba(255, 255, 255, 0.85) !important; /* شفافية */
-  backdrop-filter: blur(20px) !important; /* تأثير الزجاج */
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* تغيير ألوان الهيدر لتناسب الخلفية الزجاجية البيضاء */
-.brand-text .ar { color: var(--primary) !important; }
-.brand-text .en { color: #6b7280 !important; }
-
-/* 3. بطاقات المنتجات (تأثير ويندوز 11) */
-.product-card {
-  border-radius: 16px !important; /* حواف دائرية أكثر */
-  background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-
-.product-card:hover {
-  transform: translateY(-5px) scale(1.01) !important;
-  box-shadow: 0 12px 24px rgba(0, 64, 192, 0.15) !important;
-  border-color: rgba(0, 64, 192, 0.1) !important;
-}
-
-/* 4. أزرار ويندوز 11 (Pills) */
-.btn-primary, .btn-outline, .cart-btn, .icon-btn, .qty-btn {
-  border-radius: 999px !important; /* أزرار كبسولة */
-  transition: all 0.2s ease !important;
-  border: none !important;
-}
-
-.btn-primary {
-  background: var(--primary) !important;
-  box-shadow: 0 2px 5px rgba(0, 64, 192, 0.2) !important;
-}
-.btn-primary:hover {
-  background: var(--primary-dark) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 10px rgba(0, 64, 192, 0.3) !important;
-}
-
-/* 5. شريط البحث (ويندوز 11) */
-#searchInput {
-  border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
-  padding: 12px 20px 12px 44px !important;
-}
-#searchInput:focus {
-  background: #ffffff !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 4px rgba(0, 64, 192, 0.1) !important;
-}
-
-/* 6. النافذة المنبثقة (تأثير زجاجي للمحتوى) */
-.modal-content {
-  border-radius: 20px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.6) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
-}
 .modal-overlay {
-  background: rgba(0, 0, 0, 0.3) !important; /* تعتيم أفتح */
-  backdrop-filter: blur(4px) !important; /* تعتيم زجاجي */
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-/* 7. شريط الفلترة (الأقسام) */
-.category-bar {
-  background: transparent !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
-}
-.category-chip, .brand-chip {
-  border-radius: 999px !important;
-  background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
-}
-.category-chip:hover, .brand-chip:hover {
-  background: #f8fafc !important;
-  border-color: rgba(0, 64, 192, 0.2) !important;
-}
-.category-chip.active, .brand-chip.active {
-  background: var(--primary) !important;
-  color: #ffffff !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 4px 12px rgba(0, 64, 192, 0.3) !important;
-}
-
-/* 8. تحسين شريط السحب (Slider) */
-.qty-slider::-webkit-slider-thumb {
-  width: 20px !important;
-  height: 20px !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
-}
-
-/* 9. تحسين صورة المنتج */
-.product-img-wrap {
-  background: #f8fafc !important;
-  border-bottom: 1px solid rgba(0,0,0,0.03) !important;
-}
-
-/* ============================================================
-   إصلاح ألوان أزرار المشاركة (واتساب، فيسبوك، تيليجرام)
-   ============================================================ */
-
-/* زر واتساب (أخضر) */
-#shareWa {
-  background-color: #25D366 !important;
-  color: #ffffff !important;
-}
-#shareWa:hover {
-  background-color: #1DAF54 !important;
-}
-
-/* زر فيسبوك (أزرق فيسبوك) */
-#shareFb {
-  background-color: #1877F2 !important;
-  color: #ffffff !important;
-}
-#shareFb:hover {
-  background-color: #166FE5 !important;
-}
-
-/* زر تيليجرام (أزرق فاتح) */
-#shareTg {
-  background-color: #0088cc !important;
-  color: #ffffff !important;
-}
-#shareTg:hover {
-  background-color: #0077b3 !important;
-}
-
-/* زر نسخ الرابط (تصميم محايد أو شفاف) */
-#shareCopy {
-  background-color: transparent !important;
-  color: var(--primary) !important;
-  border: 2px solid var(--primary) !important;
-  box-shadow: none !important;
-}
-#shareCopy:hover {
-  background-color: rgba(0, 64, 192, 0.05) !important;
-}
-
-/* ============================================================
-   تحسين شريط الأقسام ليطابق الشريط العلوي (زجاجي وأنيق)
-   ============================================================ */
-
-.category-bar {
-  background: rgba(255, 255, 255, 0.85) !important; /* خلفية زجاجية بيضاء */
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
-  padding: 12px 0 !important;
-  position: sticky !important;
-  top: 73px !important; /* ليظهر أسفل الهيدر تماماً */
-  z-index: 90 !important;
-  margin-bottom: 20px !important;
-}
-
-/* إخفاء شريط التمرير الأفقي (لجمالية أكثر) */
-.category-bar .container::-webkit-scrollbar {
-  display: none !important;
-}
-.category-bar .container {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
-}
-
-/* تحسين شكل أزرار الأقسام (الكبسولات) */
-.category-chip {
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
-  color: #374151 !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-}
-.category-chip:hover {
-  background: #f8fafc !important;
-  border-color: var(--primary) !important;
-}
-.category-chip.active {
-  background: var(--primary) !important;
-  color: #ffffff !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 4px 10px rgba(0, 64, 192, 0.2) !important;
-}
-
-/* ============================================================
-   تعميق ظل الأزرار (3D & Depth) لجميع الصفحات
-   ============================================================ */
-
-/* 1. الأزرار العامة (الرئيسية، الإدارة، السلة) */
-.icon-btn, .btn-primary, .btn-outline, .cart-btn {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-
-/* زيادة الظل عند تمرير الماوس (يبدو كأن الزر يرتفع) */
-.icon-btn:hover, .btn-primary:hover, .btn-outline:hover, .cart-btn:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-  transform: translateY(-2px) !important;
-}
-
-/* 2. أزرار الماركات والأقسام */
-.brand-chip, .category-chip {
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06) !important;
-  transition: all 0.2s ease !important;
-}
-.brand-chip:hover, .category-chip:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-}
-
-/* 3. الزر النشط (المختار) */
-.brand-chip.active, .category-chip.active {
-  box-shadow: 0 6px 15px rgba(0, 64, 192, 0.25) !important;
-}
-
-/* 4. أزرار نافذة المشاركة (لتبدو أكثر بروزاً) */
-#shareWa, #shareFb, #shareTg, #shareCopy {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.2s ease !important;
-}
-#shareWa:hover, #shareFb:hover, #shareTg:hover, #shareCopy:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
-  transform: translateY(-2px) !important;
-}
-
-/* 5. بطاقات المنتجات (تعميق بسيط للظل لتبدو أكثر وضوحاً) */
-.product-card {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 1px 5px rgba(0, 0, 0, 0.03) !important;
-}
-.product-card:hover {
-  box-shadow: 0 15px 35px rgba(0, 64, 192, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* 6. زر الواتساب العائم */
-.floating-whatsapp {
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5) !important;
-}
-.floating-whatsapp:hover {
-  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.7) !important;
-}
-
-/* ============================================================
-   التوافق مع الموبايل (Responsive Design) - شاشات أقل من 768px
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* 1. الشريط العلوي (Header) */
-  .header-inner {
-    flex-direction: column !important;
-    gap: 12px !important;
-    padding: 10px 0 !important;
-  }
-  
-  .brand {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  
-  .header-actions {
-    width: 100% !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-  }
-
-  /* تصغير حجم النصوص في الأزرار قليلاً لتناسب الشاشة */
-  .icon-btn, .cart-btn {
-    padding: 6px 12px !important;
-    font-size: 0.8rem !important;
-  }
-
-  /* إخفاء النصوص الطويلة في الأزرار والاكتفاء بالأيقونات لتوفير المساحة */
-  .icon-btn span:not(.cart-badge) {
-    display: none !important; 
-  }
-  .pill-cart span:not(.cart-badge) {
-    display: inline-block !important; /* إبقاء كلمة السلة ظاهرة */
-  }
-
-  /* 2. شريط البحث */
-  #searchInput {
-    padding: 10px 40px 10px 16px !important;
-    font-size: 0.9rem !important;
-  }
-
-  /* 3. شريط الأقسام والماركات */
-  .brand-selector, .category-bar {
-    padding: 8px 0 !important;
-  }
-  .category-chip, .brand-chip {
-    padding: 6px 12px !important;
-    font-size: 0.8rem !important;
-  }
-
-  /* 4. شبكة المنتجات (عمودين على الموبايل) */
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-    padding: 10px !important;
-  }
-
-  /* 5. بطاقة المنتج */
-  .product-card {
-    border-radius: 12px !important;
-  }
-  .product-name {
-    font-size: 0.8rem !important;
-    min-height: 2.4em !important;
-  }
-  .product-price {
-    font-size: 0.95rem !important;
-  }
-  .btn-add-cart {
-    padding: 8px !important;
-    font-size: 0.8rem !important;
-  }
-  /* إخفاء زر المشاركة وزر الحذف في البطاقة على الموبايل لتوفير المساحة (تظهر داخل النافذة) */
-  .card-actions .btn-icon-small {
-    display: none !important;
-  }
-
-  /* 6. النافذة المنبثقة للمنتج */
-  .product-modal-content {
-    width: 95% !important;
-    max-height: 90vh !important;
-    padding: 15px !important;
-  }
-  .modal-content {
-    width: 95% !important;
-  }
-  .pm-image-wrap {
-    aspect-ratio: 16/9 !important; /* جعل الصورة أعرض قليلاً على الموبايل */
-  }
-  .price-large {
-    font-size: 1.3rem !important;
-  }
-
-  /* 7. صفحة السلة */
-  .cart-layout {
-    grid-template-columns: 1fr !important;
-  }
-  .cart-item {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  .cart-item-img {
-    width: 100% !important;
-    height: 150px !important;
-  }
-  .cart-item-controls {
-    width: 100% !important;
-    justify-content: space-between !important;
-    margin-top: 10px !important;
-  }
-
-  /* 8. لوحة الإدارة */
-  .order-item-row {
-    grid-template-columns: 1fr !important;
-    gap: 5px !important;
-    padding: 15px 0 !important;
-    border-bottom: 1px solid #eee;
-  }
-  .order-item-row span {
-    display: block !important;
-  }
-  .order-item-row input {
-    width: 100% !important;
-    margin-top: 5px !important;
-  }
-  .order-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-
-  /* 9. زر الواتساب العائم (أصغر قليلاً) */
-  .floating-whatsapp {
-    width: 50px !important;
-    height: 50px !important;
-    bottom: 15px !important;
-    left: 15px !important;
-  }
-  .floating-whatsapp svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-  /* إخفاء تلميح الواتساب على الموبايل (لأنه لا يوجد ماوس) */
-  .wa-tooltip {
-    display: none !important;
-  }
-}
-
-/* ============================================================
-   إصلاح شريط الكمية والأزرار على الموبايل (شاشات أقل من 768px)
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* تصغير أزرار (+ و -) */
-  .qty-btn {
-    width: 22px !important;
-    height: 22px !important;
-    font-size: 0.9rem !important;
-  }
-
-  /* تصغير شريط السحب */
-  .qty-slider {
-    height: 4px !important;
-  }
-  .qty-slider::-webkit-slider-thumb {
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  /* تصغير مساحة العرض الكلية للكمية */
-  .qty-control {
-    gap: 4px !important;
-  }
-  .qty-value {
-    font-size: 0.8rem !important;
-    min-width: 20px !important;
-  }
-
-  /* تصغير زر "أضف للسلة" ليتناسب مع العمودين */
-  .btn-add-cart {
-    padding: 6px !important;
-    font-size: 0.75rem !important;
-    border-radius: 8px !important;
-  }
-
-  /* تصغير صورة المنتج قليلاً لتوفير مساحة */
-  .product-img-wrap {
-    aspect-ratio: 1/1 !important;
-    padding: 8px !important;
-  }
-  .product-img-wrap img {
-    max-height: 90% !important;
-    max-width: 90% !important;
-    object-fit: contain !important;
-  }
-
-  /* تصغير اسم المنتج */
-  .product-name {
-    font-size: 0.75rem !important;
-    min-height: 2.2em !important;
-  }
-
-  /* تصغير السعر والمخزون */
-  .product-price {
-    font-size: 0.85rem !important;
-  }
-  .product-stock {
-    font-size: 0.65rem !important;
-  }
-
-  /* تعديل المسافات داخل بطاقة المنتج */
-  .product-info {
-    padding: 8px !important;
-    gap: 4px !important;
-  }
-
-  /* تصغير الرقم الفريد (#) */
-  .product-id-badge {
-    font-size: 0.6rem !important;
-    padding: 2px 6px !important;
-    top: 6px !important;
-    right: 6px !important;
-  }
-}
-
-/* ============================================================
-   إصلاح جذري لشريط الكمية على الموبايل (تغيير الهيكل لعمودي)
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* جعل شريط الكمية عمودياً */
-  .qty-control {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 6px !important;
-    width: 100% !important;
-    padding: 0 8px !important;
-  }
-
-  /* وضع الأزرار (+ و -) والشريط في صف واحد فوق بعضهما */
-  .qty-slider {
-    width: 100% !important;
-    margin: 4px 0 !important;
-  }
-
-  /* إعادة ترتيب الأزرار والقيمة لتكون في صف أفقي */
-  .qty-control {
-    position: relative !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-  
-  .qty-slider {
-     /* الشريط في الأسفل */
-    flex: 1 1 100% !important; /* يأخذ العرض الكامل */
-  }
-
-  .qty-btn {
-    
-    margin: 0 4px !important;
-  }
-
-  .qty-value {
-    
-    margin: 0 4px !important;
-    min-width: 24px !important;
-  }
-
-  /* تصغير الأزرار قليلاً */
-  .qty-btn {
-    width: 26px !important;
-    height: 26px !important;
-    font-size: 1rem !important;
-  }
-}
-
-/* ============================================================
-   الترتيب النهائي لشريط الكمية على الموبايل
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* ترتيب العناصر: (-) ثم (العدد) ثم (+) في صف واحد */
-  .qty-control {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important; /* لتوزيع المسافات */
-    align-items: center !important;
-    gap: 4px !important;
-    padding: 0 4px !important;
-    width: 100% !important;
-  }
-
-  /* الشريط في الأسفل يأخذ العرض كاملاً */
-  .qty-slider {
-     /* آخر عنصر */
-    flex: 1 1 100% !important;
-    width: 100% !important;
-    margin-top: 8px !important;
-  }
-
-  /* الأزرار والعدد */
-  .qty-btn {
-    
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.9rem !important;
-    margin: 0 !important;
-  }
-  
-  .qty-value {
-    
-    min-width: 20px !important;
-    text-align: center !important;
-    font-size: 0.8rem !important;
-    margin: 0 !important;
-  }
-
-  /* نعدل ترتيب زر (+) ليكون بعد العدد */
-  .qty-btn[data-act="plus"] {
-    
-  }
-
-  /* إخفاء الشريط (Slider) وإظهار الأزرار فقط على الموبايل لتوفير المساحة */
-  .qty-slider {
-    display: none !important;
-  }
-}
-
-/* ============================================================
-   جعل شريط الماركات في سطر واحد (أفقي)
-   ============================================================ */
-
-.brand-selector .container {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-.selector-actions {
-  display: flex !important;
-  flex-wrap: nowrap !important; /* منع الالتفاف لسطر جديد */
-  overflow-x: auto !important; /* السماح بالسحب الأفقي */
-  gap: 8px !important;
-  padding-bottom: 5px !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  -ms-overflow-style: none;  /* إخفاء شريط التمرير */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.selector-actions::-webkit-scrollbar {
-  display: none; /* إخفاء شريط التمرير في كروم */
-}
-
-.brand-buttons {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  gap: 8px !important;
-  justify-content: flex-start !important;
-  padding-bottom: 5px !important;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.brand-buttons::-webkit-scrollbar {
-  display: none;
-}
-
-/* تصغير أزرار الماركات قليلاً لتتناسب مع السطر الواحد */
-.brand-chip {
-  padding: 6px 14px !important;
-  font-size: 0.8rem !important;
-  white-space: nowrap !important; /* منع انقسام النص */
-}
-.btn-primary, .btn-outline {
-  padding: 8px 16px !important;
-  font-size: 0.85rem !important;
-  white-space: nowrap !important;
-}
-/* ============================================================
-   ضبط شريط الماركات ليكون في سطر واحد وبارتفاع مناسب
-   ============================================================ */
-
-.brand-selector {
-  padding: 8px 0 !important;
-}
-
-.brand-selector .container {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0 !important;
-}
-
-/* جعل قائمة الماركات سطراً واحداً أفقيًا */
-.brand-buttons {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  gap: 8px !important;
-  padding: 0 4px 4px 4px !important; /* تقليل الحشو */
-  align-items: center !important;
-}
-
-/* إخفاء شريط التمرير */
-.brand-buttons::-webkit-scrollbar {
-  display: none;
-}
-.brand-buttons {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* توحيد ارتفاع الأزرار (الزر الأزرق والكبسولات) */
-.brand-buttons .btn-primary,
-.brand-buttons .brand-chip {
-  height: 32px !important; /* ارتفاع ثابت */
-  padding: 0 16px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 0.85rem !important;
-  white-space: nowrap !important;
-  border-radius: 999px !important;
-  flex-shrink: 0 !important;
-  margin: 0 !important;
-}
-
-/* إزالة الهوامش الإضافية التي قد ترفع الارتفاع */
-.brand-chip {
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #374151;
-}
-
-/* ============================================================
-   توسيط أزرار الماركات في سطر واحد
-   ============================================================ */
-
-.brand-buttons {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  justify-content: center !important; /* توسيط الأزرار في المنتصف */
-  align-items: center !important;
-  overflow-x: auto !important;
-  gap: 8px !important;
-  padding: 8px 4px !important;
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
-}
-
-.brand-buttons::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* التأكد من أن الأزرار لا تنقسم لسطرين */
-.brand-buttons > * {
-  flex-shrink: 0 !important; /* منع تصغير الأزرار */
-}
-
-/* ============================================================
-   جعل شريط الماركات قابلاً للسحب (مثل شريط الأقسام)
-   ============================================================ */
-
-.brand-buttons {
-  display: flex !important;
-  flex-wrap: nowrap !important; /* منع الالتفاف (سطر واحد) */
-  overflow-x: auto !important; /* السماح بالسحب الأفقي */
-  justify-content: flex-start !important; /* البدء من اليمين (لأن الاتجاه RTL) */
-  gap: 8px !important;
-  padding: 8px 4px !important;
-  -ms-overflow-style: none !important; /* إخفاء شريط التمرير في IE/Edge */
-  scrollbar-width: none !important; /* إخفاء شريط التمرير في Firefox */
-}
-
-/* إخفاء شريط التمرير في كروم وسفاري */
-.brand-buttons::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* منع الأزرار من الانكماش */
-.brand-buttons > * {
-  flex-shrink: 0 !important;
-}
-
-/* تحسين مظهر الأزرار (الارتفاع المناسب) */
-.brand-buttons .btn-primary,
-.brand-buttons .brand-chip {
-  height: 32px !important;
-  padding: 0 16px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 0.85rem !important;
-  white-space: nowrap !important;
-  border-radius: 999px !important;
-}
-
-/* على الموبايل، تصغير الأزرار قليلاً لتوفير المساحة */
-@media (max-width: 768px) {
-  .brand-buttons .btn-primary,
-  .brand-buttons .brand-chip {
-    height: 28px !important;
-    padding: 0 12px !important;
-    font-size: 0.75rem !important;
-  }
-}
-
-/* ============================================================
-   ميزة تكبير الصورة (Zoom) في بطاقات المنتجات
-   ============================================================ */
-
-/* 1. حاوية الصورة في البطاقة */
-.product-img-wrap {
-  overflow: hidden !important; /* إخفاء أي جزء يخرج عن الإطار */
+.modal-content {
   position: relative;
-  cursor: pointer; /* تغيير شكل المؤشر ليدل على إمكانية التكبير */
-}
-
-/* 2. الصورة داخل البطاقة */
-.product-img-wrap img {
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  transform-origin: center center;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 400px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: #000000;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
 }
 
-/* 3. تأثير التكبير عند تمرير الماوس على البطاقة */
-.product-card:hover .product-img-wrap img {
-  transform: scale(1.15) !important; /* تكبير بنسبة 15% */
+.modal-content h3 {
+  margin-bottom: 12px;
+  color: #000000;
+  font-size: 1.2rem;
 }
 
-/* 4. تحسين مظهر صورة المنتج داخل النافذة المنبثقة */
+.modal-content img {
+  max-width: 280px;
+  margin: 0 auto 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--background);
+  color: #000000;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: var(--danger);
+  color: #FFFFFF;
+}
+
+.product-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 650px;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin-bottom: 100px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--surface);
+  color: #000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.product-modal-content::-webkit-scrollbar {
+  display: none;
+}
+
+.product-modal-content * {
+  pointer-events: auto;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
 .pm-image-wrap {
-  overflow: hidden !important;
-  cursor: pointer;
-}
-.pm-image-wrap img {
-  transition: transform 0.4s ease !important;
-}
-.pm-image-wrap:hover img {
-  transform: scale(1.1) !important; /* تكبير خفيف داخل النافذة */
-}
-
-/* 5. إضافة خلفية ناعمة خلف الصورة لتبدو أكثر وضوحاً */
-.product-img-wrap {
-  background: #f8fafc !important;
-}
-
-/* ============================================================
-   ضبط حاوية الصورة لتسمح بالتكبير داخل النافذة المنبثقة
-   ============================================================ */
-
-.pm-image-wrap {
-  overflow: hidden !important; /* إخفاء الأجزاء التي تخرج */
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f9fafb;
-  border-radius: 8px;
-  min-height: 250px;
+  height: 180px;
+  max-height: 180px;
+  min-height: 140px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--background);
+  cursor: zoom-in;
+  user-select: none;
+  touch-action: none;
+}
+
+.pm-image-wrap.is-zoomed {
+  cursor: grab;
+}
+
+.pm-image-wrap.is-dragging {
+  cursor: grabbing;
 }
 
 .pm-image-wrap img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: transform 0.1s ease;
   transform-origin: center center;
-  will-change: transform; /* لتحسين أداء التكبير */
+  transform: translate(0px, 0px) scale(1);
+  transition: transform 0.08s ease-out;
+  will-change: transform;
 }
 
-/* منع تحديد النص أثناء التكبير */
-.pm-image-wrap {
-  user-select: none;
+.pm-image-wrap.is-dragging img {
+  transition: none;
 }
 
-/* ============================================================
-   تأثير تكبير الصورة عند تمرير الماوس (Hover Zoom)
-   ============================================================ */
-
-/* 1. الحاوية: إخفاء أي جزء يخرج عن الحدود */
-.product-img-wrap {
-  overflow: hidden !important;
-  position: relative !important;
+.product-modal-content .qty-control {
+  gap: 8px;
 }
 
-/* 2. الصورة: تجهيزها للحركة */
-.product-img-wrap img {
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  transform: scale(1) !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-}
-
-/* 3. عند تمرير الماوس على البطاقة: تكبير الصورة بنسبة 12% */
-.product-card:hover .product-img-wrap img {
-  transform: scale(1.12) !important;
-}
-
-/* 4. (اختياري) نفس التأثير داخل النافذة المنبثقة */
-.pm-image-wrap {
-  overflow: hidden !important;
-}
-.pm-image-wrap img {
-  transition: transform 0.4s ease !important;
-}
-.pm-image-wrap:hover img {
-  transform: scale(1.08) !important;
-}
-
-/* 5. تغيير شكل المؤشر ليدل على أن الصورة قابلة للتكبير */
-.product-img-wrap {
-  cursor: pointer !important;
-}
-
-/* ============================================================
-   شريط التنقل السفلي (Bottom Navigation)
-   ============================================================ */
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 8px 0 12px 0;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  z-index: 1000;
-  margin: 0 16px 16px 16px; /* لإعطائه شكل الكبسولة كما في الصورة */
-  border-radius: 999px;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  text-decoration: none;
-  color: #6b7280;
-  padding: 6px 16px;
-  border-radius: 999px;
-  transition: all 0.2s ease;
-  flex: 1;
-}
-
-.nav-item.active {
-  color: var(--primary);
-  background: #eff6ff; /* لون أزرق فاتح للعنصر النشط */
-}
-
-.nav-icon {
-  font-size: 1.3rem;
-}
-
-.nav-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-/* إضافة مسافة أسفل الصفحة حتى لا يغطي الشريط المحتوى */
-body {
-  padding-bottom: 100px !important;
-}
-
-/* على الموبايل، نجعل الشريط يلتصق بالأسفل بدون هوامش */
-@media (max-width: 768px) {
-  .bottom-nav {
-    margin: 0;
-    border-radius: 16px 16px 0 0;
-    padding: 10px 0 15px 0;
-  }
-}
-
-/* تطبيق الخط على جميع العناصر */
-body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, a {
-  font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif !important;
-}
-
-/* ============================================================
-   تعديل الشريط السفلي لتجنب تداخل زر الواتساب العائم
-   ============================================================ */
-
-/* 1. على الكمبيوتر (شاشات كبيرة): تقصير الشريط من اليسار */
-@media (min-width: 769px) {
-  .bottom-nav {
-    left: 100px !important; /* ترك مساحة لزر الواتساب */
-    right: 16px !important; /* الحفاظ على الهامش الأيمن */
-    margin: 0 0 16px 0 !important;
-    border-radius: 999px !important; /* إبقاء الشكل الكبسولة */
-  }
-}
-
-/* 2. على الموبايل (شاشات صغيرة): تقصير الشريط أيضاً */
-@media (max-width: 768px) {
-  .bottom-nav {
-    left: 80px !important; /* ترك مساحة لزر الواتساب */
-    right: 8px !important;
-    margin: 0 0 12px 0 !important;
-    border-radius: 16px !important;
-  }
-}
-
-/* 3. التأكد من أن زر الواتساب فوق الشريط السفلي */
-.floating-whatsapp {
-  z-index: 1001 !important; /* أعلى من الشريط السفلي */
-}
-
-/* ============================================================
-   توسيط الشريط السفلي وتصغيره (النسخة النهائية)
-   ============================================================ */
-
-/* 1. على الكمبيوتر (شاشات كبيرة) */
-@media (min-width: 769px) {
-  .bottom-nav {
-    left: 100px !important;   /* مسافة من اليسار (لزر الواتساب) */
-    right: 100px !important;  /* مسافة من اليمين (للتوسيط) */
-    margin: 0 auto 12px auto !important; /* توسيط أفقي */
-    border-radius: 999px !important;
-    padding: 4px 0 6px 0 !important; /* تقليل الارتفاع */
-    max-width: 600px !important; /* عرض أقصى */
-  }
-  
-  .nav-item {
-    padding: 2px 12px !important; /* تصغير الأزرار */
-  }
-  
-  .nav-icon {
-    font-size: 1.1rem !important; /* تصغير الأيقونة */
-  }
-  
-  .nav-label {
-    font-size: 0.7rem !important; /* تصغير النص */
-  }
-}
-
-/* 2. على الموبايل (شاشات صغيرة) */
-@media (max-width: 768px) {
-  .bottom-nav {
-    left: 70px !important;   /* مسافة من اليسار (لزر الواتساب) */
-    right: 70px !important;  /* مسافة من اليمين (للتوسيط) */
-    margin: 0 auto 10px auto !important;
-    border-radius: 16px !important;
-    padding: 4px 0 6px 0 !important; /* تقليل الارتفاع */
-    max-width: 90% !important;
-  }
-  
-  .nav-item {
-    padding: 2px 8px !important;
-  }
-  
-  .nav-icon {
-    font-size: 1rem !important;
-  }
-  
-  .nav-label {
-    font-size: 0.65rem !important;
-  }
-}
-
-/* 3. التأكد من أن زر الواتساب لا يتداخل */
-.floating-whatsapp {
-  z-index: 1001 !important;
-}
-
-/* ============================================================
-   إعادة إظهار شريط السحب (Slider) على الموبايل
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* إعادة إظهار الشريط (إلغاء display: none) */
-  .qty-slider {
-    display: block !important;
-    width: 100% !important;
-    margin: 4px 0 !important;
-    height: 4px !important; /* رفيع قليلاً */
-  }
-  
-  /* إعادة ترتيب شريط الكمية ليتسع للشريط والأزرار */
-  .qty-control {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 4px !important;
-  }
-  
-  /* تصغير الأزرار أكثر قليلاً */
-  .qty-btn {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.85rem !important;
-  }
-  
-  /* تصغير الرقم المعروض */
-  .qty-value {
-    font-size: 0.8rem !important;
-    min-width: 20px !important;
-  }
-  
-  /* جعل الشريط يأخذ العرض الكامل في سطر منفصل */
-  .qty-slider {
-    flex: 1 1 100% !important;
-     /* يظهر بعد الأزرار والرقم */
-  }
-}
-
-/* ============================================================
-   الحل النهائي: النافذة المنبثقة (لا تداخل + حواف دائرية)
-   ============================================================ */
-
-/* 1. ضبط النافذة: ارتفاع مناسب، مسافة سفلية، وحواف دائرية */
-.product-modal-content {
-  max-height: 80vh !important; /* ارتفاع مناسب */
-  overflow-y: auto !important; /* تمرير داخلي (بعجلة الماوس) */
-  padding: 20px !important;
-  margin-bottom: 100px !important; /* مسافة سفلية لتجنب الشريط السفلي */
-  border-radius: 20px !important; /* حواف دائرية من كل الجهات */
-  background: #fff !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-  
-  /* إخفاء شريط التمرير (مع الحفاظ على إمكانية التمرير) */
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* Edge/IE */
-}
-
-/* إخفاء شريط التمرير في كروم وسفاري */
-.product-modal-content::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* 2. التأكد من أن الحواف اليسرى دائرية */
-.product-modal-content {
-  border-top-left-radius: 20px !important;
-  border-bottom-left-radius: 20px !important;
-}
-
-/* 3. تصغير الصورة قليلاً لتناسب */
-.pm-image-wrap {
-  height: 180px !important;
-  max-height: 180px !important;
-  border-radius: 12px !important;
-}
-
-/* 4. على الموبايل: تعديل إضافي */
-@media (max-width: 768px) {
-  .product-modal-content {
-    max-height: 75vh !important;
-    padding: 16px !important;
-    margin-bottom: 110px !important; /* مسافة أكبر لتجنب الشريط السفلي */
-  }
-  .pm-image-wrap {
-    height: 140px !important;
-    max-height: 140px !important;
-  }
-}
-
-/* ============================================================
-   ضمان عمل عجلة الماوس داخل النافذة المنبثقة
-   ============================================================ */
-
-.product-modal-content {
-  overflow-y: auto !important;
-  /* إخفاء شريط التمرير */
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-.product-modal-content::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* التأكد من أن العناصر الداخلية لا تمنع تمرير العجلة */
-.product-modal-content * {
-  pointer-events: auto !important;
-}
-
-/* منع التمرير في الصفحة الخلفية عند تمرير العجلة داخل النافذة */
-body.modal-open {
-  overflow: hidden !important;
-}
-
-
-
-/* 2. الأزرار */
 .product-modal-content .qty-btn {
-  
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 1.1rem !important;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
 }
 
-/* 3. الرقم */
+.product-modal-content .qty-slider {
+  margin-top: 10px;
+}
 
-
-/* 4. زر (+) يأتي بعد الرقم */
-
-
-/* 5. الشريط في الأسفل يأخذ عرض كامل */
-
-
-/* 6. تحسين شكل السعر الإجمالي */
 #pmTotalPrice {
   transition: all 0.2s ease;
 }
 
-/* ============================================================
-   الترتيب النهائي لشريط الكمية داخل النافذة المنبثقة
-   ============================================================ */
-
-/* 1. الحاوية: ترتيب أفقي مع التفاف */
-.product-modal-content .qty-control {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-}
-
-/* 2. زر (-) في البداية */
-
-
-/* 3. الرقم في المنتصف */
-
-
-/* 4. زر (+) بعد الرقم */
-
-
-/* 5. الشريط في الأسفل (عرض كامل) */
-
-
-/* 6. تصغير الأزرار قليلاً لتناسب النافذة */
-.product-modal-content .qty-btn {
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 1.1rem !important;
-}
-
-/* ============================================================
-   الترتيب النهائي (بدون order) - يعتمد على HTML
-   ============================================================ */
-
-.product-modal-content .qty-control {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-}
-
-/* الشريط في الأسفل (يأخذ عرض كامل) */
-
-
-/* تصغير الأزرار */
-.product-modal-content .qty-btn {
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 1.1rem !important;
-}
-
-/* ============================================================
-   جعل عداد السلة ديناميكياً (يتوسع أفقيًا حسب حجم الرقم)
-   ============================================================ */
-
-/* 1. إزالة العرض والارتفاع الثابتين من العداد */
-.cart-badge {
-  display: inline-flex !important; /* يسمح بالتوسع */
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 22px !important;      /* الحد الأدنى للعرض (دائرة صغيرة) */
-  height: 22px !important;          /* الارتفاع ثابت */
-  padding: 0 6px !important;       /* حشو أفقي للسماح بالتوسع */
-  border-radius: 999px !important; /* يجعله كبسولة (Pill) بدلاً من دائرة */
-  background: var(--danger) !important; /* اللون الأحمر (أو حسب التصميم) */
-  color: #fff !important;
-  font-size: 0.75rem !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;  /* يمنع كسر النص */
-  width: auto !important;           /* إلغاء العرض الثابت */
-}
-
-/* 2. تحسين المظهر داخل الزر الذي يحمل كلاس pill-cart (الزر الأبيض) */
-.pill-cart .cart-badge {
-  background: var(--primary) !important; /* اللون الأزرق (حسب تصميمك) */
-  margin-right: 4px !important;
-}
-
-/* 3. على الموبايل، تصغير الحشو قليلاً */
-@media (max-width: 768px) {
-  .cart-badge {
-    padding: 0 4px !important;
-    font-size: 0.7rem !important;
-    min-width: 20px !important;
-    height: 20px !important;
-  }
-}
-
-/* تغيير شكل المؤشر على أشرطة التمرير القابلة للسحب */
-.brand-buttons, .category-bar .container {
-  cursor: grab;
-}
-.brand-buttons:active, .category-bar .container:active {
-  cursor: grabbing;
-}
-
-/* تلميح بصري لأشرطة التمرير الأفقية */
-.brand-buttons::after,
-.category-bar .container::after {
-  content: '';
-  display: block;
-  min-width: 1px;
-}
-
-/* ============================================================
-   إعادة شريط التمرير الأفقي (المرئي) على الكمبيوتر
-   ============================================================ */
-
-/* 1. شريط الماركات والأقسام: إظهار شريط التمرير على الكمبيوتر */
-@media (min-width: 769px) {
-  .brand-buttons,
-  .category-bar .container {
-    overflow-x: auto !important; /* السماح بالتمرير الأفقي */
-    scrollbar-width: thin !important; /* شريط رفيع في Firefox */
-    scrollbar-color: var(--primary) #f1f5f9 !important; /* لون الشريط */
-  }
-  
-  /* تخصيص شريط التمرير في كروم وسفاري */
-  .brand-buttons::-webkit-scrollbar,
-  .category-bar .container::-webkit-scrollbar {
-    height: 6px !important; /* ارتفاع الشريط */
-  }
-  .brand-buttons::-webkit-scrollbar-track,
-  .category-bar .container::-webkit-scrollbar-track {
-    background: #f1f5f9 !important;
-    border-radius: 10px !important;
-  }
-  .brand-buttons::-webkit-scrollbar-thumb,
-  .category-bar .container::-webkit-scrollbar-thumb {
-    background: var(--primary) !important;
-    border-radius: 10px !important;
-  }
-}
-
-/* 2. على الموبايل: إخفاء شريط التمرير (لأنه يعمل باللمس) */
-@media (max-width: 768px) {
-  .brand-buttons,
-  .category-bar .container {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-  }
-  .brand-buttons::-webkit-scrollbar,
-  .category-bar .container::-webkit-scrollbar {
-    display: none !important;
-  }
-}
-
-
-
-  /* 2. ترتيب العناصر: (-) ثم (الرقم) ثم (+) */
-  .qty-btn[data-act="minus"] {
-    
-  }
-  .qty-value {
-    
-    min-width: 30px !important;
-    text-align: center !important;
-    font-size: 0.9rem !important;
-  }
-  .qty-btn[data-act="plus"] {
-    
-  }
-
-  /* 3. شريط السحب في الأسفل (يأخذ عرض كامل) */
-  .qty-slider {
-    
-    flex: 1 1 100% !important;
-    width: 100% !important;
-    margin-top: 8px !important;
-  }
-
-  /* 4. تصغير الأزرار قليلاً */
-  .qty-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 1rem !important;
-  }
-}
-
-/* ============================================================
-   الترتيب النهائي لشريط الكمية على الموبايل (مثل الكمبيوتر)
-   ============================================================ */
-
-@media (max-width: 768px) {
-  /* 1. الحاوية: عمودية (الأزرار والرقم في صف، والشريط في صف آخر) */
-  .qty-control {
-    display: flex !important;
-    flex-wrap: wrap !important; /* يسمح بالالتفاف */
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 6px !important;
-    width: 100% !important;
-  }
-
-  /* 2. الأزرار والرقم: في صف واحد (بدون التفاف) */
-  .qty-btn, .qty-value {
-    flex-shrink: 0 !important;
-  }
-
-  /* 3. ترتيب الأزرار: (-) ثم (الرقم) ثم (+) */
-  .qty-btn[data-act="minus"] {
-    
-  }
-  .qty-value {
-    
-    min-width: 30px !important;
-    text-align: center !important;
-    font-size: 0.9rem !important;
-  }
-  .qty-btn[data-act="plus"] {
-    
-  }
-
-  /* 4. شريط السحب: في صف منفصل (يأخذ عرض كامل) */
-  .qty-slider {
-    
-    flex: 1 1 100% !important; /* يأخذ عرض كامل */
-    width: 100% !important;
-    margin-top: 8px !important;
-  }
-
-  /* 5. تصغير الأزرار قليلاً */
-  .qty-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 1rem !important;
-  }
-}
-
-/* ============================================================
-   ترتيب الكمية على الكمبيوتر: الأزرار والرقم فوق، والشريط تحتها
-   ============================================================ */
-
-@media (min-width: 769px) {
-  /* 1. الحاوية: عمودية (الأزرار والرقم في صف، والشريط في صف آخر) */
-  .qty-control {
-    display: flex !important;
-    flex-wrap: wrap !important; /* يسمح بالالتفاف */
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 6px !important;
-    width: 100% !important;
-  }
-
-  /* 2. الأزرار والرقم: في صف واحد (بدون التفاف) */
-  .qty-btn, .qty-value {
-    flex-shrink: 0 !important;
-  }
-
-  /* 3. ترتيب الأزرار: (-) ثم (الرقم) ثم (+) */
-  .qty-btn[data-act="minus"] {
-    
-  }
-  .qty-value {
-    
-    min-width: 30px !important;
-    text-align: center !important;
-    font-size: 0.9rem !important;
-  }
-  .qty-btn[data-act="plus"] {
-    
-  }
-
-  /* 4. شريط السحب: في صف منفصل (يأخذ عرض كامل) */
-  .qty-slider {
-    
-    flex: 1 1 100% !important; /* يأخذ عرض كامل */
-    width: 100% !important;
-    margin-top: 8px !important;
-  }
-
-  /* 5. تصغير الأزرار قليلاً */
-  .qty-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 1rem !important;
-  }
-}
-
-/* ============================================================
-   الترتيب النهائي لأزرار الكمية داخل النافذة المنبثقة
-   ============================================================ */
-
-.product-modal-content .qty-control {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-}
-
-/* الشريط في الأسفل (يأخذ عرض كامل) */
-.product-modal-content .qty-slider {
-  flex: 1 1 100% !important;
-  width: 100% !important;
-  margin-top: 10px !important;
-}
-
-/* تصغير الأزرار */
-.product-modal-content .qty-btn {
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 1.1rem !important;
-}
-
-/* ============================================================
-   الترتيب النهائي للبطاقات الخارجية (الصفحة الرئيسية)
-   ============================================================ */
-
-.product-card .qty-control {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 6px !important;
-  width: 100% !important;
-}
-
-/* ترتيب العناصر: (-) ثم (الكمية) ثم (+) ثم (الشريط) */
-.product-card .qty-btn[data-act="minus"] {
-  order: 1 !important;
-}
-.product-card .qty-value {
-  order: 2 !important;
-  min-width: 30px !important;
-  text-align: center !important;
-  font-size: 0.9rem !important;
-}
-.product-card .qty-btn[data-act="plus"] {
-  order: 3 !important;
-}
-
-/* الشريط في الأسفل (يأخذ عرض كامل) */
-.product-card .qty-slider {
-  order: 4 !important;
-  flex: 1 1 100% !important;
-  width: 100% !important;
-  margin-top: 8px !important;
-}
-
-/* تصغير الأزرار على الموبايل */
-@media (max-width: 768px) {
-  .product-card .qty-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 1rem !important;
-  }
-  .product-card .qty-value {
-    font-size: 0.85rem !important;
-  }
-}
-
-/* ============================================================
-   إخفاء نص المخزون (لأن شريط السحب يعبر عنه)
-   ============================================================ */
-
-/* في البطاقات الخارجية */
-.product-card .product-stock {
-  display: none !important;
-}
-
-/* في النافذة المنبثقة */
-#pmStock {
-  display: none !important;
-}
-#pmStock.parentElement {
-  display: none !important;
-}
-
-/* إخفاء الحاوية التي تحتوي على كلمة "المخزون" في النافذة المنبثقة */
-#pmStock {
-  display: none !important;
-}
-#pmStock.parentElement {
-  display: none !important;
-}
-
-/* ============================================================
-   إخفاء حاوية المخزون في النافذة المنبثقة (بدون لمس HTML)
-   ============================================================ */
-
-/* إخفاء أي عنصر يحتوي على كلمة "المخزون" */
+/* قواعد إخفاء المخزون (محفوظة كما هي) */
+.product-card .product-stock,
+#pmStock,
 .pm-stock-container,
 div:has(> #pmStock) {
   display: none !important;
 }
 
-/* إخفاء العنصر الأب لـ pmStock (إذا كان موجوداً) */
-#pmStock {
-  display: none !important;
-}
 /* ============================================================
-   تصحيح ترتيب الشريط العلوي في الموبايل (الساعة تحت الأزرار)
+   11. أزرار المشاركة الاجتماعية
    ============================================================ */
-@media (max-width: 768px) {
-    .header-actions {
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-    .header-clock {
-        order: 2 !important; /* ترتيب الساعة ليكون في الأسفل */
-        margin: 10px auto 0 auto !important;
-    }
+
+#shareWa,
+#shareFb,
+#shareTg,
+#shareCopy {
+  transition: var(--transition);
 }
 
-/* ============================================================
-   تصحيح ترتيب الشريط العلوي في الموبايل (الساعة تحت الأزرار)
-   ============================================================ */
-@media (max-width: 768px) {
-    .header-actions {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-    }
-    .header-clock {
-        flex-basis: 100% !important; /* الساعة تأخذ سطراً كاملاً وتنزل للأسفل */
-        order: 99 !important;
-        margin: 10px auto 0 auto !important;
-    }
+#shareWa:hover,
+#shareFb:hover,
+#shareTg:hover,
+#shareCopy:hover {
+  transform: translateY(-2px);
 }
 
-/* ============================================================
-   تصحيح شكل الساعة في الموبايل (تصغير العرض والتوسط)
-   ============================================================ */
-@media (max-width: 768px) {
-    .header-actions {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-    }
-    .header-clock {
-        flex-basis: 100% !important;
-        order: 99 !important;
-        margin: 10px auto 0 auto !important;
-        width: 85% !important; /* تصغير العرض */
-        justify-content: center !important; /* توسيط النص داخل الساعة */
-        font-size: 0.75rem !important; /* تصغير الخط قليلاً */
-    }
+#shareWa {
+  background: var(--whatsapp);
+  color: #FFFFFF;
 }
 
-/* ============================================================
-   📱 ترتيب الشريط العلوي في الموبايل (نفس متجر السعدني)
-   ============================================================ */
-@media (max-width: 768px) {
-    .header-inner {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 12px !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
+#shareWa:hover {
+  background: var(--whatsapp-dark);
+}
 
-    /* 1. ترتيب الشعار أولاً */
-    .brand {
-        order: 1 !important;
-        margin-bottom: 5px !important;
-    }
+#shareFb {
+  background: var(--facebook);
+  color: #FFFFFF;
+}
 
-    /* 2. ترتيب الأزرار ثالثاً وأسفل الساعة */
-    .header-actions {
-        order: 3 !important;
-        justify-content: center !important;
-        width: 100% !important;
-        flex-wrap: wrap !important;
-    }
+#shareFb:hover {
+  background: var(--facebook-dark);
+}
 
-    /* 3. ترتيب الساعة في الأسفل لتأخذ سطراً كاملاً وتتوسط */
-    .header-clock {
-        order: 2 !important;
-        flex-basis: 100% !important;
-        margin: 10px auto 0 auto !important;
-        width: 85% !important;
-        justify-content: center !important;
-        font-size: 0.75rem !important;
-    }
+#shareTg {
+  background: var(--telegram);
+  color: #FFFFFF;
+}
+
+#shareTg:hover {
+  background: var(--telegram-dark);
+}
+
+#shareCopy {
+  background: transparent;
+  color: #000000;
+  border: 2px solid var(--primary);
+  box-shadow: none;
+}
+
+#shareCopy:hover {
+  background: var(--background);
 }
 
 /* ============================================================
-   📱 ترتيب الشريط العلوي في الموبايل (نفس متجر السعدني)
+   12. شريط التنقل السفلي
    ============================================================ */
-@media (max-width: 768px) {
-    .header-inner {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 12px !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
 
-    /* 1. الشعار أولاً */
-    .brand {
-        order: 1 !important;
-        margin-bottom: 5px !important;
-    }
+.bottom-nav {
+  position: fixed;
+  right: 100px;
+  bottom: 12px;
+  left: 100px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 5px 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
 
-    /* 2. الأزرار في المنتصف */
-    .header-actions {
-        order: 2 !important;
-        justify-content: center !important;
-        width: 100% !important;
-        flex-wrap: wrap !important;
-    }
+.nav-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: #000000;
+  transition: var(--transition);
+}
 
-    /* 3. الساعة في الأسفل (تأخذ سطراً كاملاً وصغيرة في المنتصف) */
-    .header-clock {
-        order: 3 !important;
-        flex-basis: 100% !important;
-        margin: 10px auto 0 auto !important;
-        width: 85% !important;
-        justify-content: center !important;
-        font-size: 0.75rem !important;
-    }
+.nav-item.active {
+  background: var(--background);
+  color: #000000;
+  font-weight: 800;
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+}
+
+.nav-label {
+  font-size: 0.7rem;
+  font-weight: 800;
 }
 
 /* ============================================================
-   📱 ترتيب الشريط العلوي في الموبايل (الساعة كبسولة صغيرة)
+   13. عناصر مساعدة، البحث، العملات، والطلبات
    ============================================================ */
+
+.empty-state {
+  padding: 60px 20px;
+  color: #000000;
+  text-align: center;
+}
+
+.empty-state .emoji {
+  margin-bottom: 12px;
+  font-size: 3rem;
+}
+
+.loading {
+  padding: 40px;
+  color: #000000;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.price-ltr {
+  display: inline-block;
+  direction: ltr !important;
+  unicode-bidi: embed !important;
+  white-space: nowrap;
+}
+
+.price-currency {
+  display: inline-block;
+  color: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+#searchInput,
+.search-input {
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: #000000;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: var(--transition);
+}
+
+#searchInput:focus,
+.search-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+  color: #000000;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline-color: var(--primary);
+}
+
+.order-item-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  align-items: center;
+  gap: 10px;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* ============================================================
+   14. التجاوب مع الأجهزة اللوحية والهواتف (≤ 768px)
+   ============================================================ */
+
 @media (max-width: 768px) {
-    .header-inner {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 12px !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
+  body {
+    padding-bottom: 90px;
+  }
 
-    /* 1. الشعار أولاً */
-    .brand {
-        order: 1 !important;
-        margin-bottom: 5px !important;
-    }
+  .site-header {
+    padding: 10px 0;
+  }
 
-    /* 2. الأزرار في المنتصف */
-    .header-actions {
-        order: 2 !important;
-        justify-content: center !important;
-        width: 100% !important;
-        flex-wrap: wrap !important;
-    }
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
 
-    /* 3. الساعة في الأسفل، بحجم المحتوى فقط، ومتوسطة */
-    .header-clock {
-        order: 3 !important;
-        display: inline-flex !important;
-        width: max-content !important; /* العرض على قدر المحتوى */
-        margin: 10px auto 0 auto !important; /* توسيط */
-        font-size: 0.75rem !important;
-    }
+  .brand {
+    order: 1;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand-text .ar {
+    font-size: 1.15rem;
+  }
+
+  .brand-text .en {
+    font-size: 0.9rem;
+  }
+
+  .header-clock {
+    order: 2;
+    display: flex;
+    width: max-content;
+    margin: 0 auto;
+  }
+
+  .header-actions {
+    order: 3;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .icon-btn,
+  .cart-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .icon-btn span:not(.cart-badge) {
+    display: none;
+  }
+
+  .pill-cart span:not(.cart-badge) {
+    display: inline-block;
+  }
+
+  .brand-selector,
+  .category-bar {
+    padding: 8px 0;
+  }
+
+  .category-bar {
+    position: relative;
+    top: auto;
+  }
+
+  .brand-chip,
+  .category-chip {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 10px 0 45px;
+  }
+
+  .product-card {
+    border-radius: 12px;
+  }
+
+  .product-info {
+    padding: 8px;
+    gap: 5px;
+  }
+
+  .product-name {
+    min-height: 2.2em;
+    font-size: 0.78rem;
+  }
+
+  .product-price {
+    font-size: 0.9rem;
+  }
+
+  .product-stock {
+    font-size: 0.65rem;
+  }
+
+  .product-img-wrap img {
+    max-width: 90%;
+    max-height: 90%;
+  }
+
+  .product-card .qty-control {
+    gap: 5px;
+  }
+
+  .product-card .qty-slider {
+    height: 4px;
+    margin-top: 6px;
+  }
+
+  .qty-slider::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-add-cart {
+    padding: 7px;
+    font-size: 0.78rem;
+  }
+
+  .card-actions .btn-icon-small {
+    display: none;
+  }
+
+  .product-id-badge {
+    top: 6px;
+    right: 6px;
+    padding: 2px 6px;
+    font-size: 0.6rem;
+  }
+
+  .product-modal-content {
+    width: 95%;
+    max-height: 75vh;
+    margin-bottom: 110px;
+    padding: 16px;
+  }
+
+  .pm-image-wrap {
+    height: 140px;
+    max-height: 140px;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+
+  .cart-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-img {
+    width: 100%;
+    height: 150px;
+  }
+
+  .cart-item-controls {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .order-item-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 15px 0;
+    border-bottom: 1px solid #EEEEEE;
+  }
+
+  .order-item-row span {
+    display: block;
+  }
+
+  .order-item-row input {
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .floating-whatsapp {
+    left: 15px;
+    bottom: 15px;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .floating-whatsapp svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wa-tooltip {
+    display: none;
+  }
+
+  .bottom-nav {
+    right: 70px;
+    bottom: 10px;
+    left: 70px;
+    max-width: 90%;
+    padding: 4px 0 6px;
+    border-radius: 16px;
+  }
+
+  .nav-item {
+    padding: 2px 8px;
+  }
+
+  .nav-icon {
+    font-size: 1rem;
+  }
+
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* ============================================================
+   15. الهواتف الصغيرة جداً (≤ 480px)
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .container {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .icon-btn {
+    padding: 8px 10px;
+  }
+
+  .products-grid {
+    gap: 8px;
+  }
+
+  .product-name {
+    font-size: 0.75rem;
+  }
+
+  .product-price {
+    font-size: 0.85rem;
+  }
+
+  .product-info {
+    padding: 7px;
+  }
+
+  .btn-add-cart {
+    padding: 6px;
+    font-size: 0.72rem;
+  }
+
+  .bottom-nav {
+    right: 65px;
+    left: 65px;
+  }
+
+  .nav-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* ============================================================
+   16. تقليل الحركة لمن يفضل ذلك
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

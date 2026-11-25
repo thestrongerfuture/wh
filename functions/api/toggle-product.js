@@ -13,16 +13,16 @@
       return jsonError('كلمة المرور غير صحيحة', 401);
     }
 
-    // 2. استقبال ID المنتج (يدعم id أو product_id)
+    // 2. استقبال ID المنتج
     const body = await request.json();
-    const productId = body.id || body.product_id;
+    const { product_id } = body;
 
-    if (!productId) return jsonError('رقم المنتج مطلوب', 400);
+    if (!product_id) return jsonError('رقم المنتج مطلوب', 400);
 
     // 3. عكس حالة الإخفاء (0 -> 1، 1 -> 0)
     const product = await env.DB.prepare(
       'SELECT id, is_hidden FROM products WHERE id = ?'
-    ).bind(productId).first();
+    ).bind(product_id).first();
 
     if (!product) return jsonError('المنتج غير موجود', 404);
 
@@ -30,10 +30,10 @@
 
     await env.DB.prepare(
       'UPDATE products SET is_hidden = ? WHERE id = ?'
-    ).bind(newState, productId).run();
+    ).bind(newState, product_id).run();
 
-    return new Response(JSON.stringify({
-      ok: true,
+    return new Response(JSON.stringify({ 
+      ok: true, 
       is_hidden: newState,
       message: newState ? 'تم إخفاء المنتج' : 'تم إظهار المنتج'
     }), {

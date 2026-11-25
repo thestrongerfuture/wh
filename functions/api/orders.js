@@ -12,6 +12,9 @@
       const order = await env.DB.prepare('SELECT * FROM orders WHERE id = ?').bind(id).first();
       if (!order) return jsonError('الطلب غير موجود', 404);
 
+      // إجبار المتصفح على قراءة التاريخ كتوقيت جرينتش (UTC) ثم تحويله للقاهرة
+      if (order.created_at && !order.created_at.includes('Z')) { order.created_at = order.created_at.replace(' ', 'T') + 'Z'; }
+
       const items = await env.DB.prepare(
         `SELECT oi.*, 
                 COALESCE(p.name, oi.item_name, 'عرض') as name

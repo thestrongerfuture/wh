@@ -26,16 +26,16 @@
 
     if (lines.length < 2) return jsonError('الملف فارغ', 400);
 
-    // 3. تحليل رأس الجدول (يقبل id و price فقط)
+    // 3. تحليل رأس الجدول
     const headers = parseCSVLine(lines[0].trim()).map(h => h.trim().toLowerCase());
 
     const idIdx = headers.indexOf('id');
-    const nameIdx = headers.indexOf('name');
     const stockIdx = headers.indexOf('stock');
+    const nameIdx = headers.indexOf('name');
     const priceIdx = headers.indexOf('price');
     const brandIdx = headers.indexOf('brand');
     const catIdx = headers.indexOf('category');
-    const descIdx = headers.indexOf('description');
+    const descIdx = headers.indexOf('description'); // العمود الجديد
 
     if (idIdx === -1 || nameIdx === -1) {
       return jsonError('الملف يجب أن يحتوي على الأقل على: id, name', 400);
@@ -57,19 +57,21 @@
 
       const stock = stockIdx !== -1 && cols[stockIdx] ? parseInt(cols[stockIdx]) : 0;
       const price = priceIdx !== -1 && cols[priceIdx] ? parseFloat(cols[priceIdx]) : 0;
-      const brand = brandIdx !== -1 && cols[brandIdx] ? cols[brandIdx].trim() : 'أخرى';
-      const category = catIdx !== -1 && cols[catIdx] ? cols[catIdx].trim() : 'عام';
-      const description = descIdx !== -1 && cols[descIdx] ? cols[descIdx].trim() : '';
+      const brand = brandIdx !== -1 && cols[brandIdx] ? cols[brandIdx].trim() : '';
+      const category = catIdx !== -1 && cols[catIdx] ? cols[catIdx].trim() : '';
+      const description = descIdx !== -1 && cols[descIdx] ? cols[descIdx].trim() : ''; // قراءة الوصف
 
-      // التحقق هل المنتج موجود
+      // التحقق هل المنتج موجود (لحساب الإحصائيات فقط)
       const existing = await env.DB.prepare('SELECT id FROM products WHERE id = ?').bind(id).first();
 
       if (existing) {
+        // إضافة استعلام التحديث إلى المصفوفة (مع الوصف)
         stmts.push(env.DB.prepare(
           'UPDATE products SET name = ?, brand = ?, category = ?, price = ?, stock = ?, description = ? WHERE id = ?'
         ).bind(name, brand, category, price, stock, description, id));
         updated++;
       } else {
+        // إضافة استعلام الإضافة إلى المصفوفة (مع الوصف)
         stmts.push(env.DB.prepare(
           'INSERT INTO products (id, name, brand, category, price, stock, description) VALUES (?, ?, ?, ?, ?, ?, ?)'
         ).bind(id, name, brand, category, price, stock, description));
@@ -77,7 +79,7 @@
       }
     }
 
-    // 5. تنفيذ جميع الاستعلامات دفعة واحدة
+    // 5. تنفيذ جميع الاستعلامات دفعة واحدة (Batch)
     if (stmts.length > 0) {
       await env.DB.batch(stmts);
     }

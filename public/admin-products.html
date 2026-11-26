@@ -1587,21 +1587,77 @@
         "picture"
       ];
 
+      async function checkUrlExists(url) {
+        if (!url) return false;
+        try {
+          const res = await fetch(url, {
+            method: "HEAD",
+            cache: "no-store"
+          });
+          if (res.ok) return true;
+          if (res.status === 405) {
+            const getRes = await fetch(url, {
+              method: "GET",
+              cache: "no-store"
+            });
+            return getRes.ok;
+          }
+          return false;
+        } catch {
+          return false;
+        }
+      }
+
+      async function hasProductPicture(product) {
+        const candidates = [];
+        const directUrl = String(product?.image_url || "").trim();
+        const legacyImg = String(product?.image || "").trim();
+        const pid = Number(product?.id);
+
+        if (directUrl) candidates.push(directUrl);
+        if (legacyImg && legacyImg !== directUrl) candidates.push(legacyImg);
+        if (Number.isFinite(pid) && pid > 0) {
+          const fallbackApi = `/api/image/products/${pid}.webp`;
+          if (!candidates.includes(fallbackApi)) {
+            candidates.push(fallbackApi);
+          }
+        }
+
+        if (!candidates.length) return false;
+
+        for (const candidate of candidates) {
+          if (/^https?:\/\//i.test(candidate) || candidate.startsWith("/")) {
+            const exists = await checkUrlExists(candidate);
+            if (exists) return true;
+          } else {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
       const csvRows = [headers.join(",")];
+      const concurrency = 6;
 
-      for (const product of allProducts) {
-        const row = [
-          product.id,
-          `"${String(product.name || "").replace(/"/g, '""')}"`,
-          `"${String(product.brand || "").replace(/"/g, '""')}"`,
-          `"${String(product.category || "").replace(/"/g, '""')}"`,
-          product.stock ?? 0,
-          product.price ?? 0,
-          `"${String(product.description || "").replace(/"/g, '""')}"`,
-          `"${product.image_url ? "نعم" : "لا"}"`
-        ];
-
-        csvRows.push(row.join(","));
+      for (let i = 0; i < allProducts.length; i += concurrency) {
+        const chunk = allProducts.slice(i, i + concurrency);
+        const chunkRows = await Promise.all(
+          chunk.map(async (product) => {
+            const hasPic = await hasProductPicture(product);
+            return [
+              product.id,
+              `"${String(product.name || "").replace(/"/g, '""')}"`,
+              `"${String(product.brand || "").replace(/"/g, '""')}"`,
+              `"${String(product.category || "").replace(/"/g, '""')}"`,
+              product.stock ?? 0,
+              product.price ?? 0,
+              `"${String(product.description || "").replace(/"/g, '""')}"`,
+              `"${hasPic ? "نعم" : "لا"}"`
+            ].join(",");
+          })
+        );
+        csvRows.push(...chunkRows);
       }
 
       const blob = new Blob(

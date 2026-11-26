@@ -299,8 +299,9 @@ img {
   justify-content: flex-start;
   gap: 8px;
   overflow-x: auto;
-  padding: 8px 4px;
-  scrollbar-width: none;
+  padding: 8px 4px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--border);
   cursor: grab;
 }
 
@@ -323,10 +324,31 @@ img {
   scrollbar-width: none;
 }
 
-.selector-actions::-webkit-scrollbar,
+.selector-actions::-webkit-scrollbar {
+  display: none;
+}
+
 .brand-buttons::-webkit-scrollbar,
 .category-bar .container::-webkit-scrollbar {
-  display: none;
+  display: block;
+  height: 7px;
+}
+
+.brand-buttons::-webkit-scrollbar-track,
+.category-bar .container::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.brand-buttons::-webkit-scrollbar-thumb,
+.category-bar .container::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+.brand-buttons::-webkit-scrollbar-thumb:hover,
+.category-bar .container::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 .brand-chip,
@@ -424,8 +446,9 @@ img {
   align-items: center;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--border);
   cursor: grab;
 }
 

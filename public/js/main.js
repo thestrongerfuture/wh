@@ -212,12 +212,21 @@ function renderBrands() {
 // 5) RENDER CATEGORIES
 // ============================================================
 function renderCategories() {
+  const categoryBar = document.getElementById('categoryBar');
   categoryChips.innerHTML = '';
 
   const availableCats = getAvailableCategories();
   if (state.selectedCategory && !availableCats.includes(state.selectedCategory)) {
     state.selectedCategory = null;
   }
+
+  if (availableCats.length === 0) {
+    state.selectedCategory = null;
+    if (categoryBar) categoryBar.classList.add('hidden');
+    return;
+  }
+
+  if (categoryBar) categoryBar.classList.remove('hidden');
 
   const allChip = document.createElement('button');
   allChip.className = 'category-chip' + (state.selectedCategory === null ? ' active' : '');

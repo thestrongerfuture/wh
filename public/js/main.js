@@ -156,15 +156,25 @@ async function fetchProducts() {
   }
 }
 
+function getAvailableCategories() {
+  const sourceProducts = state.selectedBrand
+    ? state.products.filter(p => p.brand === state.selectedBrand)
+    : state.products;
+
+  return [...new Set(sourceProducts.map(p => p.category).filter(Boolean))];
+}
+
 // ============================================================
 // 4) RENDER BRANDS
 // ============================================================
 function renderBrands() {
   brandButtons.innerHTML = '';
-  
+
+  const isAllSelected = state.selectedBrand === null;
+
   // 1. إضافة زر "جميع الماركات" في البداية
   const allBtn = document.createElement('button');
-  allBtn.className = 'category-chip active';
+  allBtn.className = 'category-chip' + (isAllSelected ? ' active' : '');
   allBtn.id = 'showAllBtn';
   allBtn.style.flexShrink = '0';
   allBtn.innerHTML = 'جميع الماركات';
@@ -184,8 +194,15 @@ function renderBrands() {
     chip.textContent = brand;
     chip.onclick = () => {
       state.selectedBrand = brand;
-      applyFilters();
+
+      const availableCats = getAvailableCategories();
+      if (state.selectedCategory && !availableCats.includes(state.selectedCategory)) {
+        state.selectedCategory = null;
+      }
+
       renderBrands();
+      renderCategories();
+      applyFilters();
     };
     brandButtons.appendChild(chip);
   });
@@ -197,17 +214,30 @@ function renderBrands() {
 function renderCategories() {
   categoryChips.innerHTML = '';
 
+  const availableCats = getAvailableCategories();
+  if (state.selectedCategory && !availableCats.includes(state.selectedCategory)) {
+    state.selectedCategory = null;
+  }
+
   const allChip = document.createElement('button');
   allChip.className = 'category-chip' + (state.selectedCategory === null ? ' active' : '');
   allChip.textContent = 'الكل';
-  allChip.onclick = () => { state.selectedCategory = null; applyFilters(); renderCategories(); };
+  allChip.onclick = () => {
+    state.selectedCategory = null;
+    renderCategories();
+    applyFilters();
+  };
   categoryChips.appendChild(allChip);
 
-  state.categories.forEach(cat => {
+  availableCats.forEach(cat => {
     const chip = document.createElement('button');
     chip.className = 'category-chip' + (state.selectedCategory === cat ? ' active' : '');
     chip.textContent = cat;
-    chip.onclick = () => { state.selectedCategory = cat; applyFilters(); renderCategories(); };
+    chip.onclick = () => {
+      state.selectedCategory = cat;
+      renderCategories();
+      applyFilters();
+    };
     categoryChips.appendChild(chip);
   });
 }
@@ -216,9 +246,22 @@ function renderCategories() {
 // 6) APPLY FILTERS
 // ============================================================
 function applyFilters() {
+  const q = (typeof searchInput !== 'undefined' && searchInput)
+    ? searchInput.value.trim().toLowerCase()
+    : '';
+
   state.filtered = state.products.filter(p => {
     if (state.selectedBrand && p.brand !== state.selectedBrand) return false;
     if (state.selectedCategory && p.category !== state.selectedCategory) return false;
+
+    if (q) {
+      const nameMatch = (p.name || '').toLowerCase().includes(q);
+      const descMatch = (p.description || '').toLowerCase().includes(q);
+      const brandMatch = (p.brand || '').toLowerCase().includes(q);
+      const idMatch = String(p.id || '').toLowerCase().includes(q);
+      return nameMatch || descMatch || brandMatch || idMatch;
+    }
+
     return true;
   });
   renderProducts();

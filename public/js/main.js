@@ -141,9 +141,13 @@ async function fetchProducts() {
     state.products = data.products || [];
     state.filtered = [...state.products];
 
-    // استخراج الماركات والأقسام
-    state.brands = [...new Set(state.products.map(p => p.brand).filter(Boolean))];
-    state.categories = [...new Set(state.products.map(p => p.category).filter(Boolean))];
+    const sortAlpha = (arr) => [...arr].sort((a, b) =>
+      String(a).localeCompare(String(b), ['ar', 'en'], { sensitivity: 'base' })
+    );
+
+    // استخراج الماركات والأقسام وترتيبها أبجدياً
+    state.brands = sortAlpha([...new Set(state.products.map(p => p.brand).filter(Boolean))]);
+    state.categories = sortAlpha([...new Set(state.products.map(p => p.category).filter(Boolean))]);
 
     renderBrands();
     renderCategories();
@@ -161,7 +165,10 @@ function getAvailableCategories() {
     ? state.products.filter(p => p.brand === state.selectedBrand)
     : state.products;
 
-  return [...new Set(sourceProducts.map(p => p.category).filter(Boolean))];
+  const uniqueCats = [...new Set(sourceProducts.map(p => p.category).filter(Boolean))];
+  return uniqueCats.sort((a, b) =>
+    String(a).localeCompare(String(b), ['ar', 'en'], { sensitivity: 'base' })
+  );
 }
 
 // ============================================================

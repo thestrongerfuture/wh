@@ -979,8 +979,48 @@ let storeCurrency = (typeof window.STORE_CURRENCY === "string")
   ? window.STORE_CURRENCY
   : (localStorage.getItem("store_currency") || "");
 
+function roundConvertedSyp(value, stepRaw) {
+  const num = Number(value || 0);
+  const step = Number(stepRaw || 0);
+  if (!step || step <= 0) return Number(num.toFixed(2));
+  return Math.round(num / step) * step;
+}
+
+function getEffectiveSypRate() {
+  const manualVal = parseFloat(($("#manual_syp_rate")?.value || "").trim());
+  const statusText = $("#exchangeRateStatus")?.textContent || "";
+  const matched = statusText.match(/([0-9]+(?:\.[0-9]+)?)/);
+  const fetchedVal = matched ? parseFloat(matched[1]) : NaN;
+
+  if (!Number.isNaN(fetchedVal) && fetchedVal > 0) return fetchedVal;
+  if (!Number.isNaN(manualVal) && manualVal > 0) return manualVal;
+  return null;
+}
+
+function convertAmountForActiveCurrency(amount) {
+  const baseNum = Number(amount || 0);
+  const secondaryActive = $("#secondary_currency_enabled")?.checked;
+
+  if (!secondaryActive) {
+    return baseNum;
+  }
+
+  const rate = getEffectiveSypRate();
+  if (!rate || rate <= 0) {
+    return baseNum;
+  }
+
+  const step = $("#syp_rounding_step")?.value || "0";
+  return roundConvertedSyp(baseNum * rate, step);
+}
+
 function formatCurrency(amount) {
-  const num = Number(amount || 0).toFixed(2);
+  const finalNum = convertAmountForActiveCurrency(amount);
+  const step = Number($("#syp_rounding_step")?.value || 0);
+  const secondaryActive = $("#secondary_currency_enabled")?.checked;
+  const num = (secondaryActive && step > 0)
+    ? String(Math.round(finalNum))
+    : Number(finalNum || 0).toFixed(2);
   const cur = String(storeCurrency ?? "").trim();
   return cur ? `${num} ${cur}` : num;
 }
@@ -1683,7 +1723,10 @@ async function loadSettings() {
       String(settings.store_brand_palette_active || "0") === "1"
     );
 
-    const loadedCurrency = String(settings.store_currency ?? "").trim();
+    const secondaryActive = String(settings.secondary_currency_enabled ?? "0") === "1";
+    const loadedCurrency = secondaryActive
+      ? "ل.س"
+      : String(settings.store_currency ?? "").trim();
     storeCurrency = loadedCurrency;
     window.STORE_CURRENCY = loadedCurrency;
     localStorage.setItem("store_currency", loadedCurrency);
@@ -2001,9 +2044,10 @@ $("#saveCurrencyBtn").onclick = async () => {
     });
 
     await readResponse(response);
-    storeCurrency = currencyValue;
-    window.STORE_CURRENCY = currencyValue;
-    localStorage.setItem("store_currency", currencyValue);
+    const activeCurrency = secondaryEnabled === "1" ? "ل.س" : currencyValue;
+    storeCurrency = activeCurrency;
+    window.STORE_CURRENCY = activeCurrency;
+    localStorage.setItem("store_currency", activeCurrency);
     syncCurrencyPresetFromInput();
     toast("تم حفظ عملة المتجر بنجاح");
   } catch (error) {

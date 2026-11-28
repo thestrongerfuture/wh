@@ -20,6 +20,7 @@ const PUBLIC_ALLOWED_SETTINGS = [
   'store_brand_palette_active',
   'store_currency',
   'secondary_currency_enabled',
+  'secondary_currency_symbol',
   'exchange_rate_source_url',
   'manual_syp_rate',
   'syp_rounding_step',
@@ -77,6 +78,18 @@ export async function onRequest(context) {
       });
 
       await maybeRefreshSypRate(env, out, false);
+
+      if (String(out.secondary_currency_enabled || '0') === '1') {
+        out.store_currency = String(out.secondary_currency_symbol ?? '').trim();
+        const fetched = parseFloat(out.fetched_syp_rate || '');
+        const manual = parseFloat(out.manual_syp_rate || '');
+        const activeRate = (!Number.isNaN(fetched) && fetched > 0)
+          ? fetched
+          : ((!Number.isNaN(manual) && manual > 0) ? manual : 1);
+        out.active_exchange_rate = String(activeRate);
+      } else {
+        out.active_exchange_rate = '1';
+      }
 
       return jsonOk({ settings: out });
     }
@@ -236,6 +249,9 @@ export async function onRequest(context) {
 
         } else if (key === 'secondary_currency_enabled') {
           value = String(updates[key]) === '1' ? '1' : '0';
+
+        } else if (key === 'secondary_currency_symbol') {
+          value = String(updates[key] ?? '').trim();
 
         } else if (key === 'exchange_rate_source_url') {
           value = String(updates[key] ?? '').trim() || 'https://www.sp-today.com/';

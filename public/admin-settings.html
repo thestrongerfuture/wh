@@ -627,6 +627,25 @@ html, body {
 
     <div id="secondaryCurrencyBox" class="hidden" style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fafafa;margin-bottom:14px;">
       <div class="field">
+        <label for="secondaryCurrencyPresetSelect">اختيار العملة الثانية الجاهزة (اختياري)</label>
+        <select id="secondaryCurrencyPresetSelect">
+          <option value="">-- اختر عملة جاهزة أو اكتب رمزاً مخصصاً --</option>
+          <option value="ل.س">ليرة سورية (ل.س)</option>
+          <option value="ج.م">جنيه مصري (ج.م)</option>
+          <option value="$">دولار أمريكي ($)</option>
+          <option value="ر.س">ريال سعودي (ر.س)</option>
+          <option value="د.إ">درهم إماراتي (د.إ)</option>
+          <option value="€">يورو (€)</option>
+          <option value="__NONE__">بدون عملة (عرض الرقم فقط)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="secondary_currency_symbol">رمز أو اسم العملة الثانية المعروض مع السعر</label>
+        <input type="text" id="secondary_currency_symbol" placeholder="مثال: ل.س أو $ أو ج.م (اتركه فارغاً لعرض الرقم فقط)">
+      </div>
+
+      <div class="field">
         <label for="exchange_rate_source_url">رابط مصدر سعر الصرف</label>
         <input type="url" id="exchange_rate_source_url" value="https://www.sp-today.com/" placeholder="https://www.sp-today.com/">
       </div>
@@ -1724,12 +1743,14 @@ async function loadSettings() {
     );
 
     const secondaryActive = String(settings.secondary_currency_enabled ?? "0") === "1";
+    const secondarySymbol = String(settings.secondary_currency_symbol ?? "").trim();
     const loadedCurrency = secondaryActive
-      ? "ل.س"
+      ? secondarySymbol
       : String(settings.store_currency ?? "").trim();
     storeCurrency = loadedCurrency;
     window.STORE_CURRENCY = loadedCurrency;
     localStorage.setItem("store_currency", loadedCurrency);
+    syncSecondaryCurrencyPresetFromInput();
 
     const loadedTimezone = String(settings.store_timezone ?? "").trim();
     window.STORE_TIMEZONE = loadedTimezone;
@@ -1978,6 +1999,39 @@ function syncSecondaryCurrencyUI(settings = {}) {
   );
 }
 
+function syncSecondaryCurrencyPresetFromInput() {
+  const presetSelect = $("#secondaryCurrencyPresetSelect");
+  const currencyInput = $("#secondary_currency_symbol");
+  if (!presetSelect || !currencyInput) return;
+
+  const currentVal = currencyInput.value.trim();
+  if (!currentVal) {
+    presetSelect.value = "__NONE__";
+    return;
+  }
+
+  const matchedOption = Array.from(presetSelect.options).find(
+    opt => opt.value === currentVal
+  );
+  presetSelect.value = matchedOption ? matchedOption.value : "";
+}
+
+$("#secondaryCurrencyPresetSelect")?.addEventListener("change", () => {
+  const val = $("#secondaryCurrencyPresetSelect").value;
+  const currencyInput = $("#secondary_currency_symbol");
+  if (!currencyInput) return;
+
+  if (val === "__NONE__") {
+    currencyInput.value = "";
+  } else if (val) {
+    currencyInput.value = val;
+  }
+});
+
+$("#secondary_currency_symbol")?.addEventListener("input", () => {
+  syncSecondaryCurrencyPresetFromInput();
+});
+
 $("#secondary_currency_enabled")?.addEventListener("change", () => {
   syncSecondaryCurrencyUI();
 });
@@ -2019,6 +2073,7 @@ $("#saveCurrencyBtn").onclick = async () => {
   const button = $("#saveCurrencyBtn");
   const currencyValue = $("#store_currency").value.trim();
   const secondaryEnabled = $("#secondary_currency_enabled")?.checked ? "1" : "0";
+  const secondarySymbol = ($("#secondary_currency_symbol")?.value || "").trim();
   const rateSourceUrl = ($("#exchange_rate_source_url")?.value || "").trim() || "https://www.sp-today.com/";
   const manualSypRate = ($("#manual_syp_rate")?.value || "").trim();
   const roundingStep = $("#syp_rounding_step")?.value || "0";
@@ -2036,6 +2091,7 @@ $("#saveCurrencyBtn").onclick = async () => {
         settings: {
           store_currency: currencyValue,
           secondary_currency_enabled: secondaryEnabled,
+          secondary_currency_symbol: secondarySymbol,
           exchange_rate_source_url: rateSourceUrl,
           manual_syp_rate: manualSypRate,
           syp_rounding_step: roundingStep
@@ -2044,11 +2100,12 @@ $("#saveCurrencyBtn").onclick = async () => {
     });
 
     await readResponse(response);
-    const activeCurrency = secondaryEnabled === "1" ? "ل.س" : currencyValue;
+    const activeCurrency = secondaryEnabled === "1" ? secondarySymbol : currencyValue;
     storeCurrency = activeCurrency;
     window.STORE_CURRENCY = activeCurrency;
     localStorage.setItem("store_currency", activeCurrency);
     syncCurrencyPresetFromInput();
+    syncSecondaryCurrencyPresetFromInput();
     toast("تم حفظ عملة المتجر بنجاح");
   } catch (error) {
     toast("فشل حفظ عملة المتجر: " + error.message, "error");

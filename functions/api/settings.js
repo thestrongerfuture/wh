@@ -19,6 +19,12 @@ const PUBLIC_ALLOWED_SETTINGS = [
   'store_brand_palette',
   'store_brand_palette_active',
   'store_currency',
+  'secondary_currency_enabled',
+  'exchange_rate_source_url',
+  'manual_syp_rate',
+  'syp_rounding_step',
+  'fetched_syp_rate',
+  'exchange_rate_updated_at',
   'store_timezone',
   'watermark_enabled',
   'watermark_type',
@@ -70,6 +76,8 @@ export async function onRequest(context) {
         out[r.key] = r.value;
       });
 
+      await maybeRefreshSypRate(env, out, false);
+
       return jsonOk({ settings: out });
     }
 
@@ -100,6 +108,31 @@ export async function onRequest(context) {
         ).bind(newPassword).run();
 
         return jsonOk({ message: 'تم تغيير كلمة مرور المدير بنجاح' });
+      }
+
+      // ---------- جلب سعر الصرف الآن ----------
+      if (body.action === 'fetch_exchange_rate') {
+        const sourceUrl = String(
+          body.sourceUrl || 'https://www.sp-today.com/'
+        ).trim() || 'https://www.sp-today.com/';
+
+        const manualFallback = String(body.manualRate ?? '').trim();
+        const result = await fetchAndStoreSypRate(env, sourceUrl, manualFallback);
+
+        if (!result.rate) {
+          return jsonError(
+            result.error || 'تعذر جلب سعر الصرف من الرابط ولا يوجد سعر يدوي احتياطي'
+          );
+        }
+
+        return jsonOk({
+          message: result.fromManual
+            ? 'تم اعتماد السعر اليدوي الاحتياطي'
+            : 'تم جلب سعر مبيع الليرة السورية الجديدة بنجاح',
+          rate: result.rate,
+          updatedAt: result.updatedAt,
+          fromManual: result.fromManual
+        });
       }
 
       // ---------- حفظ إعدادات المتجر العادية ----------
@@ -201,6 +234,34 @@ export async function onRequest(context) {
         } else if (key === 'store_currency') {
           value = String(updates[key] ?? '').trim();
 
+        } else if (key === 'secondary_currency_enabled') {
+          value = String(updates[key]) === '1' ? '1' : '0';
+
+        } else if (key === 'exchange_rate_source_url') {
+          value = String(updates[key] ?? '').trim() || 'https://www.sp-today.com/';
+
+        } else if (key === 'manual_syp_rate' || key === 'fetched_syp_rate') {
+          const raw = String(updates[key] ?? '').trim();
+          if (raw === '') {
+            value = '';
+          } else {
+            const num = parseFloat(raw);
+            if (Number.isNaN(num) || num <= 0) {
+              return jsonError('قيمة سعر الصرف غير صالحة');
+            }
+            value = String(num);
+          }
+
+        } else if (key === 'syp_rounding_step') {
+          const step = String(updates[key] ?? '0').trim();
+          if (!['0', '1', '5', '10', '50'].includes(step)) {
+            return jsonError('قيمة التقريب غير صالحة');
+          }
+          value = step;
+
+        } else if (key === 'exchange_rate_updated_at') {
+          value = String(updates[key] ?? '').trim();
+
         } else if (key === 'store_timezone') {
           value = String(updates[key] ?? '').trim();
 
@@ -246,4 +307,112 @@ function jsonError(msg, status = 400) {
       'Content-Type': 'application/json; charset=utf-8'
     }
   });
+}
+
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
+
+async function maybeRefreshSypRate(env, out, force = false) {
+  const enabled = String(out.secondary_currency_enabled || '0') === '1';
+  if (!enabled && !force) return;
+
+  const lastUpdatedRaw = out.exchange_rate_updated_at || '';
+  const lastUpdatedMs = lastUpdatedRaw ? Date.parse(lastUpdatedRaw) : 0;
+  const isStale = !lastUpdatedMs || (Date.now() - lastUpdatedMs >= FIVE_MINUTES_MS);
+
+  if (!force && !isStale && out.fetched_syp_rate) {
+    return;
+  }
+
+  const sourceUrl = String(out.exchange_rate_source_url || '').trim() || 'https://www.sp-today.com/';
+  const manualFallback = String(out.manual_syp_rate || '').trim();
+
+  const res = await fetchAndStoreSypRate(env, sourceUrl, manualFallback);
+  if (res.rate) {
+    out.fetched_syp_rate = String(res.rate);
+    out.exchange_rate_updated_at = res.updatedAt;
+  }
+}
+
+async function fetchAndStoreSypRate(env, sourceUrl, manualFallback = '') {
+  const nowIso = new Date().toISOString();
+  let parsedRate = null;
+
+  try {
+    const resp = await fetch(sourceUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; StoreCurrencyBot/1.0)',
+        'Accept': 'text/html,application/json,*/*'
+      }
+    });
+
+    if (resp.ok) {
+      const text = await resp.text();
+      parsedRate = extractNewSypSellRate(text);
+    }
+  } catch {
+    parsedRate = null;
+  }
+
+  const fallbackNum = parseFloat(manualFallback);
+  const finalRate = (parsedRate && parsedRate > 0)
+    ? parsedRate
+    : ((!Number.isNaN(fallbackNum) && fallbackNum > 0) ? fallbackNum : null);
+
+  if (!finalRate) {
+    return {
+      rate: null,
+      updatedAt: nowIso,
+      fromManual: false,
+      error: 'تعذر قراءة سعر المبيع من المصدر ولا يوجد سعر يدوي احتياطي'
+    };
+  }
+
+  const fromManual = !(parsedRate && parsedRate > 0);
+
+  await env.DB.batch([
+    env.DB.prepare(
+      'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value'
+    ).bind('fetched_syp_rate', String(finalRate)),
+    env.DB.prepare(
+      'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value'
+    ).bind('exchange_rate_updated_at', nowIso)
+  ]);
+
+  return {
+    rate: finalRate,
+    updatedAt: nowIso,
+    fromManual
+  };
+}
+
+function extractNewSypSellRate(rawText) {
+  if (!rawText) return null;
+
+  // إزالة وسوم HTML وتحويل الكيانات الشائعة
+  const plain = rawText
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // البحث عن سعر المبيع لليرة الجديدة قرب الدولار الأمريكي
+  const patterns = [
+    /(?:USD|دولار\s*أمريكي)[\s\S]{0,160}?(?:مبيع|بيع)[^\d]{0,25}(\d{1,5}(?:[.,]\d{1,2})?)/i,
+    /(?:ل\.س\s*جديدة|جديدة)[\s\S]{0,120}?(?:مبيع|بيع)[^\d]{0,25}(\d{1,5}(?:[.,]\d{1,2})?)/i
+  ];
+
+  for (const re of patterns) {
+    const match = plain.match(re);
+    if (match && match[1]) {
+      const cleaned = parseFloat(match[1].replace(/,/g, ''));
+      if (!Number.isNaN(cleaned) && cleaned > 0 && cleaned < 10000) {
+        return cleaned;
+      }
+    }
+  }
+
+  return null;
 }

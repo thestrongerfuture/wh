@@ -26,6 +26,8 @@ export async function onRequestPost(context) {
     const {
       id,
       name,
+      brand,
+      category,
       price,
       stock,
       description,
@@ -63,14 +65,22 @@ export async function onRequestPost(context) {
 
     // 5. التحقق من وجود المنتج
     const existing = await env.DB.prepare(
-      "SELECT id, image_url FROM products WHERE id = ?"
+      "SELECT id, brand, category, image_url FROM products WHERE id = ?"
     ).bind(productId).first();
 
     if (!existing) {
       return jsonError("لم يتم العثور على المنتج", 404);
     }
 
-    // 6. تجهيز رابط الصورة
+    // 6. تجهيز الماركة والقسم ورابط الصورة
+    const finalBrand = Object.prototype.hasOwnProperty.call(body, "brand")
+      ? (typeof brand === "string" ? brand.trim() : "")
+      : (existing.brand || "");
+
+    const finalCategory = Object.prototype.hasOwnProperty.call(body, "category")
+      ? (typeof category === "string" ? category.trim() : "")
+      : (existing.category || "");
+
     // عدم إرسال image_url يحافظ على الصورة الحالية
     let finalImageUrl = existing.image_url || "";
 
@@ -127,6 +137,8 @@ export async function onRequestPost(context) {
     let sql = `
       UPDATE products
       SET name = ?,
+          brand = ?,
+          category = ?,
           price = ?,
           stock = ?,
           description = ?,
@@ -135,6 +147,8 @@ export async function onRequestPost(context) {
 
     const params = [
       name.trim(),
+      finalBrand,
+      finalCategory,
       Number(price),
       Number(stock),
       typeof description === "string" ? description.trim() : "",

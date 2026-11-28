@@ -560,6 +560,20 @@
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
       <div class="form-field">
+        <label class="form-label">الماركة</label>
+        <input type="text" id="editProductBrand" class="form-input" list="editBrandSuggestions" placeholder="مثال: سامسونج">
+        <datalist id="editBrandSuggestions"></datalist>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">القسم</label>
+        <input type="text" id="editProductCategory" class="form-input" list="editCategorySuggestions" placeholder="مثال: موبايلات">
+        <datalist id="editCategorySuggestions"></datalist>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-field">
         <label class="form-label">السعر</label>
         <input type="number" id="editProductPrice" min="0" step="0.01" class="form-input">
       </div>
@@ -1382,8 +1396,23 @@
     currentEditProduct = product;
     editImageFile = null;
 
+    const brandsList = [...new Set(allProducts.map(p => String(p.brand || "").trim()).filter(Boolean))];
+    const categoriesList = [...new Set(allProducts.map(p => String(p.category || "").trim()).filter(Boolean))];
+
+    const brandDl = $("#editBrandSuggestions");
+    if (brandDl) {
+      brandDl.innerHTML = brandsList.map(b => `<option value="${escapeHtml(b)}"></option>`).join("");
+    }
+
+    const catDl = $("#editCategorySuggestions");
+    if (catDl) {
+      catDl.innerHTML = categoriesList.map(c => `<option value="${escapeHtml(c)}"></option>`).join("");
+    }
+
     $("#editProductIdHidden").value = product.id;
     $("#editProductName").value = product.name || "";
+    $("#editProductBrand").value = product.brand || "";
+    $("#editProductCategory").value = product.category || "";
     $("#editProductPrice").value = product.price ?? "";
     $("#editProductStock").value = product.stock ?? "";
     $("#editProductDescription").value = product.description || "";
@@ -1525,9 +1554,14 @@
     );
 
     try {
+      const brand = ($("#editProductBrand")?.value || "").trim();
+      const category = ($("#editProductCategory")?.value || "").trim();
+
       const payload = {
         id,
         name,
+        brand,
+        category,
         price: Number(price),
         stock: Number(stock),
         description,
